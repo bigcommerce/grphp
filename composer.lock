@@ -4,129 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "074e72b568fdc025477c4ad65ff24f30",
+    "content-hash": "dbeb9e578fb71c415f4c308c599ae811",
     "packages": [
-        {
-            "name": "bigcommerce/bc-interfaces-core-php",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "/Users/shaun.mccormick/www/idl/src/phpcore",
-                "reference": "29a112e4c83418919a926192a2060d102421c01b"
-            },
-            "require": {
-                "google/protobuf": "3.3.0",
-                "grpc/grpc": "1.3.2"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "": "src/"
-                }
-            },
-            "description": "BigCommerce Core Proto definitions and stubs",
-            "time": "2017-05-19 20:53:45"
-        },
-        {
-            "name": "bigcommerce/bc-interfaces-php",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "/Users/shaun.mccormick/www/idl/src/php",
-                "reference": "17ffc429c2837e19db8068ca9fc814ca56eafbb7"
-            },
-            "require": {
-                "google/protobuf": "3.3.0",
-                "grpc/grpc": "1.3.2"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "": "src/"
-                }
-            },
-            "description": "Service interface definitions",
-            "time": "2017-05-19 20:53:41"
-        },
-        {
-            "name": "google/protobuf",
-            "version": "v3.3.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/google/protobuf.git",
-                "reference": "a6189acd18b00611c1dc7042299ad75486f08a1a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/google/protobuf/zipball/a6189acd18b00611c1dc7042299ad75486f08a1a",
-                "reference": "a6189acd18b00611c1dc7042299ad75486f08a1a",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.5.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": ">=4.8.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Google\\Protobuf\\Internal\\": "php/src/Google/Protobuf/Internal",
-                    "GPBMetadata\\Google\\Protobuf\\Internal\\": "php/src/GPBMetadata/Google/Protobuf/Internal"
-                },
-                "files": [
-                    "php/src/Google/Protobuf/descriptor.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "description": "proto library for PHP",
-            "homepage": "https://developers.google.com/protocol-buffers/",
-            "keywords": [
-                "proto"
-            ],
-            "time": "2017-04-26T23:32:21+00:00"
-        },
-        {
-            "name": "grpc/grpc",
-            "version": "v1.3.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/grpc/grpc.git",
-                "reference": "c80d3321d0f77bef8cfff8b32490a07c1e90a5ad"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/grpc/grpc/zipball/c80d3321d0f77bef8cfff8b32490a07c1e90a5ad",
-                "reference": "c80d3321d0f77bef8cfff8b32490a07c1e90a5ad",
-                "shasum": ""
-            },
-            "require": {
-                "google/protobuf": "^v3.1.0",
-                "php": ">=5.5.0"
-            },
-            "require-dev": {
-                "google/auth": "v0.9"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Grpc\\": "src/php/lib/Grpc/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "description": "gRPC library for PHP",
-            "homepage": "http://grpc.io",
-            "keywords": [
-                "rpc"
-            ],
-            "time": "2017-05-11T17:18:56+00:00"
-        },
         {
             "name": "phpunit/php-timer",
             "version": "1.0.9",
@@ -230,7 +109,86 @@
                 "constructor",
                 "instantiate"
             ],
-            "time": "2017-02-16T16:15:51+00:00"
+            "time": "2017-02-16 16:15:51"
+        },
+        {
+            "name": "google/protobuf",
+            "version": "3.3.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/google/protobuf.git",
+                "reference": "bf04c83267619b618e7112b242f424f8b3e785b6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/google/protobuf/zipball/bf04c83267619b618e7112b242f424f8b3e785b6",
+                "reference": "bf04c83267619b618e7112b242f424f8b3e785b6",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": ">=4.8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Google\\Protobuf\\Internal\\": "php/src/Google/Protobuf/Internal",
+                    "GPBMetadata\\Google\\Protobuf\\Internal\\": "php/src/GPBMetadata/Google/Protobuf/Internal"
+                },
+                "files": [
+                    "php/src/Google/Protobuf/descriptor.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "proto library for PHP",
+            "homepage": "https://developers.google.com/protocol-buffers/",
+            "keywords": [
+                "proto"
+            ],
+            "time": "2017-05-19T18:22:45+00:00"
+        },
+        {
+            "name": "grpc/grpc",
+            "version": "v1.3.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/grpc/grpc.git",
+                "reference": "a0396bd28e78f2227cfa66e618ee70de1364fafd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/grpc/grpc/zipball/a0396bd28e78f2227cfa66e618ee70de1364fafd",
+                "reference": "a0396bd28e78f2227cfa66e618ee70de1364fafd",
+                "shasum": ""
+            },
+            "require": {
+                "google/protobuf": "^v3.1.0",
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "google/auth": "v0.9"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Grpc\\": "src/php/lib/Grpc/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "gRPC library for PHP",
+            "homepage": "http://grpc.io",
+            "keywords": [
+                "rpc"
+            ],
+            "time": "2017-05-19T16:06:48+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -327,7 +285,7 @@
                 }
             ],
             "description": "Component for reading phar.io manifest information from a PHP Archive (PHAR)",
-            "time": "2017-04-07T07:07:10+00:00"
+            "time": "2017-04-07 07:07:10"
         },
         {
             "name": "phar-io/version",
@@ -428,7 +386,7 @@
                 "reflection",
                 "static analysis"
             ],
-            "time": "2017-04-30T11:58:12+00:00"
+            "time": "2017-04-30 11:58:12"
         },
         {
             "name": "phpdocumentor/reflection-docblock",
@@ -583,7 +541,7 @@
                 "spy",
                 "stub"
             ],
-            "time": "2017-05-17T11:25:27+00:00"
+            "time": "2017-05-17 11:25:27"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -647,7 +605,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2017-04-21T08:03:57+00:00"
+            "time": "2017-04-21 08:03:57"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -694,7 +652,7 @@
                 "filesystem",
                 "iterator"
             ],
-            "time": "2016-10-03T07:40:28+00:00"
+            "time": "2016-10-03 07:40:28"
         },
         {
             "name": "phpunit/php-text-template",
@@ -784,7 +742,7 @@
             "keywords": [
                 "tokenizer"
             ],
-            "time": "2017-03-07T07:36:57+00:00"
+            "time": "2017-03-07 07:36:57"
         },
         {
             "name": "phpunit/phpunit",
@@ -868,7 +826,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2017-05-19T03:58:51+00:00"
+            "time": "2017-05-19 03:58:51"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -927,7 +885,7 @@
                 "mock",
                 "xunit"
             ],
-            "time": "2017-04-01T10:07:28+00:00"
+            "time": "2017-04-01 10:07:28"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -972,7 +930,7 @@
             ],
             "description": "Looks up which function or method a line of code belongs to",
             "homepage": "https://github.com/sebastianbergmann/code-unit-reverse-lookup/",
-            "time": "2017-03-04T10:23:55+00:00"
+            "time": "2017-03-04 10:23:55"
         },
         {
             "name": "sebastian/comparator",
@@ -1036,7 +994,7 @@
                 "compare",
                 "equality"
             ],
-            "time": "2017-05-19T04:08:27+00:00"
+            "time": "2017-05-19 04:08:27"
         },
         {
             "name": "sebastian/diff",
@@ -1088,7 +1046,7 @@
             "keywords": [
                 "diff"
             ],
-            "time": "2017-05-21T05:03:06+00:00"
+            "time": "2017-05-21 05:03:06"
         },
         {
             "name": "sebastian/environment",
@@ -1138,7 +1096,7 @@
                 "environment",
                 "hhvm"
             ],
-            "time": "2017-05-18T10:10:00+00:00"
+            "time": "2017-05-18 10:10:00"
         },
         {
             "name": "sebastian/exporter",
@@ -1205,7 +1163,7 @@
                 "export",
                 "exporter"
             ],
-            "time": "2017-04-03T13:19:02+00:00"
+            "time": "2017-04-03 13:19:02"
         },
         {
             "name": "sebastian/global-state",
@@ -1256,7 +1214,7 @@
             "keywords": [
                 "global state"
             ],
-            "time": "2017-04-27T15:39:26+00:00"
+            "time": "2017-04-27 15:39:26"
         },
         {
             "name": "sebastian/object-enumerator",
@@ -1303,7 +1261,7 @@
             ],
             "description": "Traverses array structures and object graphs to enumerate all referenced objects",
             "homepage": "https://github.com/sebastianbergmann/object-enumerator/",
-            "time": "2017-03-12T15:17:29+00:00"
+            "time": "2017-03-12 15:17:29"
         },
         {
             "name": "sebastian/object-reflector",
@@ -1348,7 +1306,7 @@
             ],
             "description": "Allows reflection of object attributes, including inherited and non-public ones",
             "homepage": "https://github.com/sebastianbergmann/object-reflector/",
-            "time": "2017-03-29T09:07:27+00:00"
+            "time": "2017-03-29 09:07:27"
         },
         {
             "name": "sebastian/recursion-context",
@@ -1401,7 +1359,7 @@
             ],
             "description": "Provides functionality to recursively process PHP variables",
             "homepage": "http://www.github.com/sebastianbergmann/recursion-context",
-            "time": "2017-03-07T15:09:59+00:00"
+            "time": "2017-03-07 15:09:59"
         },
         {
             "name": "sebastian/resource-operations",
@@ -1443,7 +1401,7 @@
             ],
             "description": "Provides a list of PHP built-in functions that operate on resources",
             "homepage": "https://www.github.com/sebastianbergmann/resource-operations",
-            "time": "2016-10-03T07:43:09+00:00"
+            "time": "2016-10-03 07:43:09"
         },
         {
             "name": "sebastian/version",
@@ -1486,7 +1444,7 @@
             ],
             "description": "Library that helps with managing the version number of Git-hosted PHP projects",
             "homepage": "https://github.com/sebastianbergmann/version",
-            "time": "2016-10-03T07:35:21+00:00"
+            "time": "2016-10-03 07:35:21"
         },
         {
             "name": "theseer/tokenizer",
@@ -1576,15 +1534,12 @@
                 "check",
                 "validate"
             ],
-            "time": "2016-11-23T20:04:41+00:00"
+            "time": "2016-11-23 20:04:41"
         }
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "bigcommerce/bc-interfaces-core-php": 20,
-        "bigcommerce/bc-interfaces-php": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
