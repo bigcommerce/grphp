@@ -4,7 +4,7 @@ php:
   - 7.1
 before_script:
   - composer install
-  - pecl install grpc
+  - pecl update-channels; pecl install grpc
 script:
   - phpunit --configuration phpunit.xml.dist
 matrix:
