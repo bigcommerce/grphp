@@ -1,5 +1,10 @@
 language: php
+php:
+  - 7.0
+  - 7.1
+before_script:
+  - composer install
 script:
-  - echo 0
+  - phpunit --configuration phpunit.xml.dist
 matrix:
   fast_finish: true
