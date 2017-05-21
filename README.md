@@ -30,13 +30,13 @@ grphp currently has active support for gRPC 1.3.x.
 $config = new Grphp\Client\Config([
     'hostname' => 'IP_OF_SERVER:PORT',
 ]);
-$client = new Grphp\Client(ThingsClient::class, $config);
+$client = new Grphp\Client(Things\ThingsClient::class, $config);
 
-$request = new \Things\GetThing();
+$request = new Things\GetThingReq();
 $request->setId(1234);
 
 $resp = $client->call($request, 'GetThing');
-$thing = $resp->getResponse();
+$thing = $resp->getResponse(); // Things\Thing
 echo $thing->id; // 1234
 echo $resp->getElapsed(); // 1.03ms
 echo $resp->getStatusDetails(); // OK
