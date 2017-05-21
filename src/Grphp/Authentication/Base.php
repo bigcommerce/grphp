@@ -1,9 +1,9 @@
 <?php
-namespace Grphp\Authorization;
+namespace Grphp\Authentication;
 
 /**
  * Class Base
- * @package Grphp\Authorization
+ * @package Grphp\Authentication
  */
 abstract class Base implements Iface
 {

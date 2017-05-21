@@ -14,8 +14,8 @@ final class ConfigTest extends BaseTest
     {
         $config = new Config();
         $this->assertEquals('', $config->hostname);
-        $this->assertEquals(null, $config->authorization);
-        $this->assertEquals([], $config->authorizationOptions);
+        $this->assertEquals(null, $config->authentication);
+        $this->assertEquals([], $config->authenticationOptions);
         $this->assertEquals(\Grphp\Serializers\Errors\Json::class, $config->errorSerializer);
         $this->assertEquals([], $config->errorSerializerOptions);
     }

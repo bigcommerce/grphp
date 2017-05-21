@@ -16,19 +16,55 @@ grphp currently has active support for gRPC 1.3.x.
 
 ## Installation
 
-TBD
+```json
+{
+  "require": {
+    "bigcommerce/grphp": "dev-master"
+  }
+}
+```
 
 ## Client
 
-TBD 
+```php
+$config = new Grphp\Client\Config([
+    'hostname' => 'IP_OF_SERVER:PORT',
+]);
+$client = new Grphp\Client(ThingsClient::class, $config);
+
+$request = new \Things\GetThing();
+$request->setId(1234);
+
+$resp = $client->call($request, 'GetThing');
+$thing = $resp->getResponse();
+echo $thing->id; // 1234
+echo $resp->getElapsed(); // 1.03ms
+echo $resp->getStatusDetails(); // OK
+``` 
 
 ## Authentication
 
-TBD
+Authentication is done via adapters, which are specified in the config. You can either pass
+in:
 
-### Basic Auth
+* The string "basic" for basic HTTP auth
+* A string class name
+* An instantiated object that extends `Grphp\Authentication\Base
 
-TBD
+### Basic Authentication
+
+grphp supports basic auth for requests that is sent through the metadata of the request. 
+
+```php
+$config = new Grphp\Client\Config([
+    'hostname' => 'IP_OF_SERVER:PORT',
+    'authentication' => 'basic',
+    'authenticationOptions' => [
+        'username' => 'foo',
+        'password' => 'bar', // optional
+    ]
+]);
+```
 
 ## Roadmap
 

@@ -42,7 +42,7 @@ class Client
     public function call($request, $method, array $metadata = [], array $options = [])
     {
         \PHP_Timer::start();
-        $metadata = array_merge($this->buildAuthorizationMetadata(), $metadata);
+        $metadata = array_merge($this->buildAuthenticationMetadata(), $metadata);
         list($resp, $status) = $this->client->$method($request, $metadata, $options)->wait();
 
         $time = \PHP_Timer::stop();
@@ -57,11 +57,11 @@ class Client
     /**
      * @return array
      */
-    public function buildAuthorizationMetadata()
+    public function buildAuthenticationMetadata()
     {
-        $authorization = Authorization\Builder::fromClientConfig($this->config);
-        if ($authorization) {
-            return $authorization->getMetadata();
+        $authentication = Authentication\Builder::fromClientConfig($this->config);
+        if ($authentication) {
+            return $authentication->getMetadata();
         } else {
             return [];
         }
