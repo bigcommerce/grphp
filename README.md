@@ -30,6 +30,11 @@ TBD
 
 TBD
 
+## Roadmap
+
+* Add instrumentor support for client requests (to enable statsd, zipkin, etc)
+* Add TLS configuration support
+
 ## License
 
 Copyright 2017, Bigcommerce Inc.

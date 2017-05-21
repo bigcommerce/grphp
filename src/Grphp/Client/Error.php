@@ -41,9 +41,19 @@ class Error extends \Exception
         $err = $this->getTrailingMetadataError();
         if ($err) {
             $serializer = $this->getErrorSerializer();
-            $trailer = $serializer->deserialize($err);
+            if ($serializer) {
+                $trailer = $serializer->deserialize($err);
+            }
         }
         return $trailer;
+    }
+
+    /**
+     * @return Config
+     */
+    public function getConfig()
+    {
+        return $this->config;
     }
 
     /**
@@ -54,8 +64,8 @@ class Error extends \Exception
         return $this->status
             && $this->status->metadata
             && array_key_exists(self::ERROR_METADATA_KEY, $this->status->metadata)
-            && count($this->status->metadata[self::ERROR_METADATA_KEY]) > 0
-                ? trim($this->status->metadata[self::ERROR_METADATA_KEY][0])
+            && is_array($this->status->metadata[self::ERROR_METADATA_KEY])
+                ? $this->status->metadata[self::ERROR_METADATA_KEY][0]
                 : null;
     }
 
@@ -64,6 +74,11 @@ class Error extends \Exception
      */
     private function getErrorSerializer()
     {
-        return new $this->config->errorSerializer($this->config->errorSerializerOptions);
+        $class = $this->config->errorSerializer;
+        if (class_exists($class)) {
+            return new $class($this->config->errorSerializerOptions);
+        } else {
+            return null;
+        }
     }
 }

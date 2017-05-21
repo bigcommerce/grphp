@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package grphp.test;
+
+service Things {
+    rpc GetThing(GetThingReq) returns (GetThingResp) {}
+}
+
+message Thing {
+    uint64 id = 1;
+    string name = 2;
+}
+
+message GetThingReq {
+    uint64 id = 1;
+}
+
+message GetThingResp {
+    Thing thing = 1;
+}
+
