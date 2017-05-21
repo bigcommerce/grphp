@@ -1,10 +1,22 @@
 <?php
 namespace Grphp\Client;
 
+/**
+ * Abstract a gRPC error, providing status codes, timings, and trailing metadata error
+ * deserialization.
+ *
+ * @package Grphp\Client
+ */
 class Error extends \Exception
 {
+    /** @const string */
+    const ERROR_METADATA_KEY = 'error-internal-bin';
+
+    /** @var \stdClass $status */
     protected $status;
+    /** @var float $elapsed */
     protected $elapsed;
+    /** @var Config $config */
     private $config;
 
     /**
@@ -20,6 +32,9 @@ class Error extends \Exception
         parent::__construct("Error: $status->details - ${elapsed}ms", $status->code);
     }
 
+    /**
+     * @return mixed
+     */
     public function getTrailer()
     {
         $trailer = null;
@@ -31,13 +46,16 @@ class Error extends \Exception
         return $trailer;
     }
 
+    /**
+     * @return null|string
+     */
     private function getTrailingMetadataError()
     {
         return $this->status
             && $this->status->metadata
-            && array_key_exists('error-internal-bin', $this->status->metadata)
-            && count($this->status->metadata['error-internal-bin']) > 0
-                ? trim($this->status->metadata['error-internal-bin'][0])
+            && array_key_exists(self::ERROR_METADATA_KEY, $this->status->metadata)
+            && count($this->status->metadata[self::ERROR_METADATA_KEY]) > 0
+                ? trim($this->status->metadata[self::ERROR_METADATA_KEY][0])
                 : null;
     }
 

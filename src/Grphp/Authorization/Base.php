@@ -1,18 +1,18 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: shaun.mccormick
- * Date: 5/19/17
- * Time: 10:30 AM
- */
-
 namespace Grphp\Authorization;
 
-
+/**
+ * Class Base
+ * @package Grphp\Authorization
+ */
 abstract class Base implements Iface
 {
+    /** @var array $options */
     protected $options = [];
 
+    /**
+     * @param array $options
+     */
     public function __construct($options = [])
     {
         $this->options = $options;

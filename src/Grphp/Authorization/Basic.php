@@ -1,8 +1,16 @@
 <?php
 namespace Grphp\Authorization;
 
+/**
+ * Basic HTTP Auth adapters for gRPC requests
+ *
+ * @package Grphp\Authorization
+ */
 class Basic extends Base
 {
+    /**
+     * @return array
+     */
     public function getMetadata()
     {
         if (empty($this->options['password'])) {

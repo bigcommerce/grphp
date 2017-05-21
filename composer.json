@@ -12,6 +12,9 @@
     "bigcommerce/bc-interfaces-php": "dev-master",
     "phpunit/php-timer": "1.0.9"
   },
+  "require-dev": {
+    "phpunit/phpunit": "6.1.*"
+  },
   "autoload": {
     "psr-4": { "": "src/"}
   }

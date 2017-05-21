@@ -1,22 +1,31 @@
 <?php
 namespace Grphp;
 
+use Grpc\ChannelCredentials;
 use Grphp\Client\Config;
 
+/**
+ * Layers over gRPC client communication to provide extra response, header, and timing
+ * information.
+ *
+ * @package Grphp
+ */
 class Client
 {
+    /** @var \Grpc\BaseStub $client */
     protected $client;
+    /** @var Config $config */
     protected $config;
 
     /**
      * @param string $clientClass
      * @param Client\Config|null $config
      */
-    public function __construct($clientClass, Config $config = null)
+    public function __construct($clientClass, Config $config)
     {
         $this->config = $config;
         $this->client = new $clientClass($config->hostname, [
-            'credentials' => \Grpc\ChannelCredentials::createInsecure(),
+            'credentials' => ChannelCredentials::createInsecure(),
         ]);
     }
 
@@ -45,6 +54,9 @@ class Client
         }
     }
 
+    /**
+     * @return array
+     */
     public function buildAuthorizationMetadata()
     {
         $authorization = Authorization\Builder::fromClientConfig($this->config);
