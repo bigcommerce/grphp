@@ -5,9 +5,9 @@ php:
 sudo: false
 dist: trusty
 before_script:
-  - composer install
+  - composer install --dev
   - pecl update-channels; pecl install grpc
 script:
-  - phpunit --configuration phpunit.xml.dist
+  - vendor/bin/phpunit --configuration phpunit.xml.dist
 matrix:
   fast_finish: true
