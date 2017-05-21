@@ -1,0 +1,191 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "411f2d73ea58af5f4a630cae6b334891",
+    "packages": [
+        {
+            "name": "bigcommerce/bc-interfaces-core-php",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "/Users/shaun.mccormick/www/idl/src/phpcore",
+                "reference": "29a112e4c83418919a926192a2060d102421c01b"
+            },
+            "require": {
+                "google/protobuf": "3.3.0",
+                "grpc/grpc": "1.3.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "": "src/"
+                }
+            },
+            "description": "BigCommerce Core Proto definitions and stubs",
+            "time": "2017-05-19 20:53:45"
+        },
+        {
+            "name": "bigcommerce/bc-interfaces-php",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "/Users/shaun.mccormick/www/idl/src/php",
+                "reference": "17ffc429c2837e19db8068ca9fc814ca56eafbb7"
+            },
+            "require": {
+                "google/protobuf": "3.3.0",
+                "grpc/grpc": "1.3.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "": "src/"
+                }
+            },
+            "description": "Service interface definitions",
+            "time": "2017-05-19 20:53:41"
+        },
+        {
+            "name": "google/protobuf",
+            "version": "v3.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/google/protobuf.git",
+                "reference": "a6189acd18b00611c1dc7042299ad75486f08a1a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/google/protobuf/zipball/a6189acd18b00611c1dc7042299ad75486f08a1a",
+                "reference": "a6189acd18b00611c1dc7042299ad75486f08a1a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": ">=4.8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Google\\Protobuf\\Internal\\": "php/src/Google/Protobuf/Internal",
+                    "GPBMetadata\\Google\\Protobuf\\Internal\\": "php/src/GPBMetadata/Google/Protobuf/Internal"
+                },
+                "files": [
+                    "php/src/Google/Protobuf/descriptor.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "proto library for PHP",
+            "homepage": "https://developers.google.com/protocol-buffers/",
+            "keywords": [
+                "proto"
+            ],
+            "time": "2017-04-26T23:32:21+00:00"
+        },
+        {
+            "name": "grpc/grpc",
+            "version": "v1.3.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/grpc/grpc.git",
+                "reference": "c80d3321d0f77bef8cfff8b32490a07c1e90a5ad"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/grpc/grpc/zipball/c80d3321d0f77bef8cfff8b32490a07c1e90a5ad",
+                "reference": "c80d3321d0f77bef8cfff8b32490a07c1e90a5ad",
+                "shasum": ""
+            },
+            "require": {
+                "google/protobuf": "^v3.1.0",
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "google/auth": "v0.9"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Grpc\\": "src/php/lib/Grpc/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "gRPC library for PHP",
+            "homepage": "http://grpc.io",
+            "keywords": [
+                "rpc"
+            ],
+            "time": "2017-05-11T17:18:56+00:00"
+        },
+        {
+            "name": "phpunit/php-timer",
+            "version": "1.0.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/php-timer.git",
+                "reference": "3dcf38ca72b158baf0bc245e9184d3fdffa9c46f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-timer/zipball/3dcf38ca72b158baf0bc245e9184d3fdffa9c46f",
+                "reference": "3dcf38ca72b158baf0bc245e9184d3fdffa9c46f",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.3.3 || ^7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Sebastian Bergmann",
+                    "email": "sb@sebastian-bergmann.de",
+                    "role": "lead"
+                }
+            ],
+            "description": "Utility class for timing",
+            "homepage": "https://github.com/sebastianbergmann/php-timer/",
+            "keywords": [
+                "timer"
+            ],
+            "time": "2017-02-26T11:10:40+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "bigcommerce/bc-interfaces-core-php": 20,
+        "bigcommerce/bc-interfaces-php": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}
