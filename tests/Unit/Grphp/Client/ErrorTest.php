@@ -31,7 +31,7 @@ final class ErrorTest extends BaseTest
     public function testConstructor()
     {
         $this->assertInstanceOf(\Grphp\Client\Error::class, $this->error);
-        $this->assertEquals("Error: {$this->status->details} - {$this->elapsed}ms", $this->error->getMessage());
+        $this->assertEquals("Error: {$this->status->details}", $this->error->getMessage());
         $this->assertInstanceOf(\Grphp\Client\Config::class, $this->error->getConfig());
         $this->assertEquals($this->status->code, $this->error->getCode());
     }

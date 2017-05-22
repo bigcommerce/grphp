@@ -14,8 +14,6 @@ class Error extends \Exception
 
     /** @var \stdClass $status */
     protected $status;
-    /** @var float $elapsed */
-    protected $elapsed;
     /** @var Config $config */
     private $config;
 
@@ -24,12 +22,11 @@ class Error extends \Exception
      * @param \stdClass $status
      * @param float $elapsed
      */
-    public function __construct(Config $config, $status, $elapsed)
+    public function __construct(Config $config, $status)
     {
         $this->status = $status;
-        $this->elapsed = $elapsed;
         $this->config = $config;
-        parent::__construct("Error: $status->details - ${elapsed}ms", $status->code);
+        parent::__construct("Error: $status->details", $status->code);
     }
 
     /**

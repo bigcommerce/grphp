@@ -30,7 +30,8 @@ final class ResponseTest extends BaseTest
         ];
 
         $this->elapsed = rand(0.0, 200.0);
-        $this->response = new Response($this->resp, $this->statusObj, $this->elapsed);
+        $this->response = new Response($this->resp, $this->statusObj);
+        $this->response->setElapsed($this->elapsed);
     }
 
     public function testGetResponse()
@@ -48,9 +49,9 @@ final class ResponseTest extends BaseTest
         $this->assertEquals($this->statusObj->details, $this->response->getStatusDetails());
     }
 
-    public function testGetStatusMetadata()
+    public function testGetMetadata()
     {
-        $this->assertEquals($this->statusObj->metadata, $this->response->getStatusMetadata());
+        $this->assertEquals($this->statusObj->metadata, $this->response->getMetadata());
     }
 
     public function testGetStatus()

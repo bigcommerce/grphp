@@ -38,18 +38,17 @@ $request->setId(1234);
 $resp = $client->call($request, 'GetThing');
 $thing = $resp->getResponse(); // Things\Thing
 echo $thing->id; // 1234
-echo $resp->getElapsed(); // 1.03ms
+echo $resp->getStatusCode(); // 0 (these are gRPC status codes)
 echo $resp->getStatusDetails(); // OK
 ``` 
 
 ## Authentication
 
-Authentication is done via adapters, which are specified in the config. You can either pass
-in:
+Authentication is done via adapters, which are specified in the config. You can either pass in:
 
 * The string "basic" for basic HTTP auth
-* A string class name
-* An instantiated object that extends `Grphp\Authentication\Base
+* A string class name for an existing class
+* An instantiated object that extends `Grphp\Authentication\Base`
 
 ### Basic Authentication
 
@@ -66,9 +65,55 @@ $config = new Grphp\Client\Config([
 ]);
 ```
 
+## Instrumentation
+
+grphp supports an instrumentation registry. To add an instrumentor, simply call `addInstrumentor` on the client:
+
+```php
+$client->addInstrumentor(new \Grphp\Instrumentation\Timer());
+```
+
+### Custom Instrumentors
+
+grphp comes with a base Instrumentation class that can be extended to provide your own custom instrumentors. This is an
+example instrumentor that adds a "X-Foo" header with a customizable value to all metadata:
+
+```php
+<?php
+use Grphp\Client\Response;
+use Grphp\Instrumentation\Base as BaseInstrumentor;
+
+class FooHeader extends BaseInstrumentor
+{
+    /**
+     * @param callable $callback
+     * @return Response
+     */
+    public function measure(callable $callback)
+    {
+        /** @var Response $response */
+        $response = $callback();
+        $response->setMetadata([
+            'X-Foo' => $this->options['foo_value'],
+        ]);
+        return $response;
+    }
+}
+```
+
+You'll note that you have to make sure to execute the callback that is called.
+
+Then you add it as normal:
+
+```php
+$i = new FooHeader(['foo_value' => 'bar']);
+$client->addInstrumentor($i);
+```
+
+Instrumentors run in the order that they are added, wrapping each as they go.
+
 ## Roadmap
 
-* Add instrumentor support for client requests (to enable statsd, zipkin, etc)
 * Add TLS configuration support
 
 ## License

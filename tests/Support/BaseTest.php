@@ -4,7 +4,9 @@ use PHPUnit\Framework\TestCase;
 
 class BaseTest extends TestCase
 {
+    /** @var \Grphp\Client\Config $clientConfig */
     protected $clientConfig;
+    /** @var \Grphp\Client $client */
     protected $client;
 
     protected function buildClient(array $options = [])

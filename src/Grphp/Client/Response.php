@@ -21,11 +21,10 @@ class Response
      * @param \stdClass $status
      * @param float $elapsed
      */
-    public function __construct($response, $status, $elapsed)
+    public function __construct($response, $status)
     {
         $this->response = $response;
         $this->status = $status;
-        $this->elapsed = $elapsed;
     }
 
     /**
@@ -55,7 +54,7 @@ class Response
     /**
      * @return array
      */
-    public function getStatusMetadata()
+    public function getMetadata()
     {
         return $this->status->metadata;
     }
@@ -74,6 +73,27 @@ class Response
     public function getElapsed()
     {
         return $this->elapsed;
+    }
+
+    /**
+     * @param float $time
+     */
+    public function setElapsed($time)
+    {
+        $this->elapsed = $time;
+    }
+
+    /**
+     * @param array $newMetadata
+     * @param bool $merge
+     */
+    public function setMetadata(array $newMetadata = [], $merge = true)
+    {
+        if ($merge) {
+            $this->status->metadata = array_merge($this->status->metadata, $newMetadata);
+        } else {
+            $this->status->metadata = $newMetadata;
+        }
     }
 
     /**
