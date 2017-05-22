@@ -61,7 +61,7 @@ grphp supports basic auth for requests that is sent through the metadata of the 
 $config = new Grphp\Client\Config([
     'hostname' => 'IP_OF_SERVER:PORT',
     'authentication' => 'basic',
-    'authenticationOptions' => [
+    'authentication_options' => [
         'username' => 'foo',
         'password' => 'bar', // optional
     ]
