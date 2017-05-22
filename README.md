@@ -24,6 +24,9 @@ grphp currently has active support for gRPC 1.3.x.
 }
 ```
 
+You'll need to make sure you fit [the requirements for the grpc/grpc PHP library](https://github.com/grpc/grpc/tree/master/src/php#environment),
+which does involve installing the gRPC PHP extension.
+
 ## Client
 
 ```php
@@ -111,6 +114,48 @@ $client->addInstrumentor($i);
 ```
 
 Instrumentors run in the order that they are added, wrapping each as they go.
+
+## Error Handling
+
+gRPC prefers handling errors through status (BadStatus) codes; however, these do not return much information as to 
+field specific errors, application codes, or debug information. grphp provides a way to read data from the response 
+metadata, which is stored in the `error-internal-bin` key (configurable through the `error_metadata_key` configuration 
+option).
+
+Assuming we have a service that has a method that appends that data, you can access it like so:
+
+```php
+try {
+    $resp = $client->call($request, 'GetErroringMethod');
+    
+} catch (\Grphp\Client\Error $e) {
+    $trailer = $e->getTrailer();
+    var_dump($trailer); // ['message' => 'Foo']
+}
+```
+
+By default the deserializer for the data is JSON; it's fairly simple to create your own, such as one that has the error 
+header serialized as a binary protobuf. From there, you can set it simply:
+
+```php
+class MyProtoSerializer extends Grphp\Serializers\Errors\Base
+{
+    public function deserialize($trailer)
+    {
+        $header = new \My\Proto\ErrorHeader();
+        $header->mergeFromString($trailer);
+        return $header;
+    }
+}
+
+$config = new Grphp\Client\Config([
+    'hostname' => 'IP_OF_SERVER:PORT',
+    'error_serializer' => new MyProtoSerializer(),
+]);
+```
+
+The serializer can be passed as a string name of the class or the instance of the class. If you pass the string name,
+you can pass in an associative array of `error_serializer_options` to the config to provide options for your serializer.
 
 ## Roadmap
 

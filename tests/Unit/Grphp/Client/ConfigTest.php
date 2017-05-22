@@ -18,5 +18,6 @@ final class ConfigTest extends BaseTest
         $this->assertEquals([], $config->authenticationOptions);
         $this->assertEquals(\Grphp\Serializers\Errors\Json::class, $config->errorSerializer);
         $this->assertEquals([], $config->errorSerializerOptions);
+        $this->assertEquals('error-internal-bin', $config->errorMetadataKey);
     }
 }

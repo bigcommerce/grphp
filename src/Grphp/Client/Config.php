@@ -17,6 +17,8 @@ class Config
     public $errorSerializer;
     /** @var array $errorSerializerOptions */
     public $errorSerializerOptions = [];
+    /** @var string $errorMetadataKey */
+    public $errorMetadataKey = 'error-internal-bin';
 
     /**
      * @param array $options
@@ -28,5 +30,6 @@ class Config
         $this->authenticationOptions = array_key_exists('authentication_options', $options) ? $options['authentication_options'] : [];
         $this->errorSerializer = array_key_exists('error_serializer', $options) ? $options['error_serializer'] : \Grphp\Serializers\Errors\Json::class;
         $this->errorSerializerOptions = array_key_exists('error_serializer_options', $options) ? $options['error_serializer_options'] : [];
+        $this->errorMetadataKey = array_key_exists('error_metadata_key', $options) ? $options['error_metadata_key'] : 'error-internal-bin';
     }
 }

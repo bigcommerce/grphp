@@ -1,6 +1,8 @@
 <?php
 namespace Grphp\Client;
 
+use Grphp\Serializers\Errors\Base as BaseSerializer;
+
 /**
  * Abstract a gRPC error, providing status codes, timings, and trailing metadata error
  * deserialization.
@@ -72,7 +74,9 @@ class Error extends \Exception
     private function getErrorSerializer()
     {
         $class = $this->config->errorSerializer;
-        if (class_exists($class)) {
+        if (is_object($class) && is_a($class, BaseSerializer::class)) {
+            return $class;
+        } elseif (is_string($class) && class_exists($class)) {
             return new $class($this->config->errorSerializerOptions);
         } else {
             return null;
