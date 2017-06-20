@@ -3,6 +3,7 @@
   "description": "gRPC PHP Framework",
   "type": "library",
   "minimum-stability": "dev",
+  "license": "MIT",
   "require": {
     "phpunit/php-timer": "1.0.9"
   },
