@@ -5,7 +5,7 @@
   "minimum-stability": "dev",
   "license": "MIT",
   "require": {
-    "phpunit/php-timer": "1.0.9"
+    "phpunit/php-timer": "1.0.*"
   },
   "require-dev": {
     "grpc/grpc": "1.3.*",
