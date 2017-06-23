@@ -12,7 +12,7 @@ up fast and efficiently at scale. Some of its features include:
 preserving gRPC BadStatus codes
 * Client execution timings in responses
 
-grphp currently has active support for gRPC 1.3.x, and requires PHP 5.5+ or 7.0+ to run.
+grphp currently has active support for gRPC 1.4.x, and requires PHP 5.5+ or 7.0+ to run.
 
 ## Installation
 

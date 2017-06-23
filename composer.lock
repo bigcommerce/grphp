@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "dbeb9e578fb71c415f4c308c599ae811",
+    "content-hash": "800494e779b64daf9c7180826799e851",
     "packages": [
         {
             "name": "phpunit/php-timer",
@@ -150,28 +150,31 @@
             "keywords": [
                 "proto"
             ],
-            "time": "2017-05-19T18:22:45+00:00"
+            "time": "2017-05-19 18:22:45"
         },
         {
             "name": "grpc/grpc",
-            "version": "v1.3.x-dev",
+            "version": "v1.4.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/grpc/grpc.git",
-                "reference": "a0396bd28e78f2227cfa66e618ee70de1364fafd"
+                "reference": "f8315e1bf066b04997a4d85c99d7a0df4de32271"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/grpc/grpc/zipball/a0396bd28e78f2227cfa66e618ee70de1364fafd",
-                "reference": "a0396bd28e78f2227cfa66e618ee70de1364fafd",
+                "url": "https://api.github.com/repos/grpc/grpc/zipball/f8315e1bf066b04997a4d85c99d7a0df4de32271",
+                "reference": "f8315e1bf066b04997a4d85c99d7a0df4de32271",
                 "shasum": ""
             },
             "require": {
-                "google/protobuf": "^v3.1.0",
                 "php": ">=5.5.0"
             },
             "require-dev": {
                 "google/auth": "v0.9"
+            },
+            "suggest": {
+                "ext-protobuf": "For better performance, install the protobuf C extension.",
+                "google/protobuf": "To get started using grpc quickly, install the native protobuf library."
             },
             "type": "library",
             "autoload": {
@@ -188,7 +191,7 @@
             "keywords": [
                 "rpc"
             ],
-            "time": "2017-05-19T16:06:48+00:00"
+            "time": "2017-06-21T21:43:48+00:00"
         },
         {
             "name": "myclabs/deep-copy",
