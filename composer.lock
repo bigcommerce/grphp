@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "800494e779b64daf9c7180826799e851",
+    "content-hash": "21b9646bcdf5622727c684f6dab84435",
     "packages": [
         {
             "name": "phpunit/php-timer",
@@ -154,27 +154,24 @@
         },
         {
             "name": "grpc/grpc",
-            "version": "v1.4.x-dev",
+            "version": "v1.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/grpc/grpc.git",
-                "reference": "f8315e1bf066b04997a4d85c99d7a0df4de32271"
+                "reference": "c80d3321d0f77bef8cfff8b32490a07c1e90a5ad"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/grpc/grpc/zipball/f8315e1bf066b04997a4d85c99d7a0df4de32271",
-                "reference": "f8315e1bf066b04997a4d85c99d7a0df4de32271",
+                "url": "https://api.github.com/repos/grpc/grpc/zipball/c80d3321d0f77bef8cfff8b32490a07c1e90a5ad",
+                "reference": "c80d3321d0f77bef8cfff8b32490a07c1e90a5ad",
                 "shasum": ""
             },
             "require": {
+                "google/protobuf": "^v3.1.0",
                 "php": ">=5.5.0"
             },
             "require-dev": {
                 "google/auth": "v0.9"
-            },
-            "suggest": {
-                "ext-protobuf": "For better performance, install the protobuf C extension.",
-                "google/protobuf": "To get started using grpc quickly, install the native protobuf library."
             },
             "type": "library",
             "autoload": {
@@ -191,7 +188,7 @@
             "keywords": [
                 "rpc"
             ],
-            "time": "2017-06-21T21:43:48+00:00"
+            "time": "2017-05-11T17:18:56+00:00"
         },
         {
             "name": "myclabs/deep-copy",
