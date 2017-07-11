@@ -12,14 +12,14 @@ up fast and efficiently at scale. Some of its features include:
 preserving gRPC BadStatus codes
 * Client execution timings in responses
 
-grphp currently has active support for gRPC 1.4.x, and requires PHP 5.5+ or 7.0+ to run.
+grphp currently has active support for gRPC 1.3.2, and requires PHP 5.5+ or 7.0+ to run. gRPC 1.4 is not yet supported.
 
 ## Installation
 
 ```json
 {
   "require": {
-    "bigcommerce/grphp": "dev-master"
+    "bigcommerce/grphp": "0.0.3"
   }
 }
 ```
