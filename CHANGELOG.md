@@ -1,5 +1,9 @@
 Changelog for grphp.
 
+h3. 0.1.1
+
+* Fix channel issue for gRPC 1.3.2
+
 h3. 0.1.0
 
 * Rename instrumentors to interceptors

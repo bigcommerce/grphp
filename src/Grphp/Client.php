@@ -45,12 +45,9 @@ class Client
     {
         $this->config = $config;
         $credentials = ChannelCredentials::createInsecure();
-        $this->channel = new ClientChannel($config->hostname, [
-            'credentials' => $credentials,
-        ]);
         $this->client = new $clientClass($config->hostname, [
             'credentials' => $credentials,
-        ], $this->channel);
+        ]);
     }
 
     /**
