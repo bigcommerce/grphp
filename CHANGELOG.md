@@ -1,6 +1,6 @@
 Changelog for grphp.
 
-h3. 0.0.4
+h3. 0.1.0
 
 * Rename instrumentors to interceptors
 
