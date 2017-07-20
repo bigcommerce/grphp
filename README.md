@@ -19,7 +19,7 @@ grphp currently has active support for gRPC 1.3.2, and requires PHP 5.5+ or 7.0+
 ```json
 {
   "require": {
-    "bigcommerce/grphp": "0.0.3"
+    "bigcommerce/grphp": "^0.1"
   }
 }
 ```
@@ -68,31 +68,23 @@ $config = new Grphp\Client\Config([
 ]);
 ```
 
-## Instrumentation
+### Custom Client Interceptors
 
-grphp supports an instrumentation registry. To add an instrumentor, simply call `addInstrumentor` on the client:
-
-```php
-$client->addInstrumentor(new \Grphp\Instrumentation\Timer());
-```
-
-### Custom Instrumentors
-
-grphp comes with a base Instrumentation class that can be extended to provide your own custom instrumentors. This is an
-example instrumentor that adds a "X-Foo" header with a customizable value to all metadata:
+grphp comes with a base Client Interceptor class that can be extended to provide your own custom interceptors. 
+This is an example interceptor that adds a "X-Foo" header with a customizable value to all metadata:
 
 ```php
 <?php
 use Grphp\Client\Response;
-use Grphp\Instrumentation\Base as BaseInstrumentor;
+use Grphp\Client\Interceptors\Base as BaseInterceptor;
 
-class FooHeader extends BaseInstrumentor
+class FooHeader extends BaseInterceptor
 {
     /**
      * @param callable $callback
      * @return Response
      */
-    public function measure(callable $callback)
+    public function call(callable $callback)
     {
         /** @var Response $response */
         $response = $callback();
@@ -110,10 +102,18 @@ Then you add it as normal:
 
 ```php
 $i = new FooHeader(['foo_value' => 'bar']);
-$client->addInstrumentor($i);
+$client->addInterceptor($i);
 ```
 
-Instrumentors run in the order that they are added, wrapping each as they go.
+Interceptors run in the order that they are added, wrapping each as they go.
+
+### Timers
+
+grphp has a timer interceptor out of the box. To add it, simply call `addInterceptor` on the client:
+
+```php
+$client->addInterceptor(new \Grphp\Client\Interceptors\Timer());
+```
 
 ## Error Handling
 

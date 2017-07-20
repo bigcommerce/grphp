@@ -15,12 +15,12 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-namespace Grphp\Instrumentation;
+namespace Grphp\Client\Interceptors;
 
 /**
- * Base instrumentation class that can be extended to provide instrumentation of client requests
+ * Base interceptor class that can be extended to provide interception of client requests
  *
- * @package Grphp\Instrumentation
+ * @package Grphp\Interceptors
  */
 abstract class Base
 {
@@ -31,5 +31,5 @@ abstract class Base
         $this->options = array_merge($this->options, $options);
     }
 
-    abstract public function measure(callable $callback);
+    abstract public function call(callable $callback);
 }

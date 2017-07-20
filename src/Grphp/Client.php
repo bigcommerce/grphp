@@ -18,8 +18,9 @@
 namespace Grphp;
 
 use Grpc\ChannelCredentials;
+use Grphp\Client\Channel as ClientChannel;
 use Grphp\Client\Config;
-use Grphp\Instrumentation\Base as BaseInstrumentor;
+use Grphp\Client\Interceptors\Base as BaseInterceptor;
 
 /**
  * Layers over gRPC client communication to provide extra response, header, and timing
@@ -33,8 +34,8 @@ class Client
     protected $client;
     /** @var Config $config */
     protected $config;
-    /** @var array<BaseInstrumentor> $instrumentors */
-    protected $instrumentors = [];
+    /** @var array<BaseInterceptor> $interceptors */
+    protected $interceptors = [];
 
     /**
      * @param string $clientClass
@@ -43,13 +44,17 @@ class Client
     public function __construct($clientClass, Config $config)
     {
         $this->config = $config;
-        $this->client = new $clientClass($config->hostname, [
-            'credentials' => ChannelCredentials::createInsecure(),
+        $credentials = ChannelCredentials::createInsecure();
+        $this->channel = new ClientChannel($config->hostname, [
+            'credentials' => $credentials,
         ]);
+        $this->client = new $clientClass($config->hostname, [
+            'credentials' => $credentials,
+        ], $this->channel);
     }
 
     /**
-     * Issue the call to the server, wrapping with the given instrumentors
+     * Issue the call to the server, wrapping with the given interceptors
      *
      * @param \Google\Protobuf\Internal\Message $request
      * @param string $method
@@ -61,8 +66,9 @@ class Client
     public function call($request, $method, array $metadata = [], array $options = [])
     {
         $metadata = array_merge($this->buildAuthenticationMetadata(), $metadata);
-        $instrumentors = $this->instrumentors;
-        return $this->instrument($instrumentors, $request, $method, $metadata, $options, function() use (&$instrumentors, &$request, &$method, &$metadata, &$options)
+
+        $interceptors = $this->interceptors;
+        return $this->intercept($interceptors, $request, $method, $metadata, $options, function() use (&$interceptors, &$request, &$method, &$metadata, &$options)
         {
             list($resp, $status) = $this->client->$method($request, $metadata, $options)->wait();
             if (!is_null($resp)) {
@@ -75,9 +81,37 @@ class Client
     }
 
     /**
-     * Instrument the call with the registered instrumentors for the client
+     * Add an interceptor to the client interceptor registry
      *
-     * @param array $instrumentors
+     * @param BaseInterceptor $interceptor
+     * @throws \InvalidArgumentException if the interceptor does not extend \Grphp\Interceptors\Base
+     */
+    public function addInterceptor(BaseInterceptor $interceptor)
+    {
+        if (is_a($interceptor, BaseInterceptor::class)) {
+            $this->interceptors[] = $interceptor;
+        } else {
+            throw new \InvalidArgumentException("Interceptor does not extend \\Grphp\\Client\\Interceptors\\Base");
+        }
+    }
+
+    /**
+     * @return array
+     */
+    private function buildAuthenticationMetadata()
+    {
+        $authentication = Authentication\Builder::fromClientConfig($this->config);
+        if ($authentication) {
+            return $authentication->getMetadata();
+        } else {
+            return [];
+        }
+    }
+
+    /**
+     * Intercept the call with the registered interceptors for the client
+     *
+     * @param array $interceptors
      * @param \Google\Protobuf\Internal\Message $request
      * @param string $method
      * @param array $metadata
@@ -85,47 +119,19 @@ class Client
      * @param callable $callback
      * @return mixed
      */
-    public function instrument(array $instrumentors, $request, $method, $metadata, $options, callable $callback)
+    private function intercept(array $interceptors, $request, $method, $metadata, $options, callable $callback)
     {
-        $i = array_shift($instrumentors);
+        $i = array_shift($interceptors);
         if ($i) {
-            return $i->measure(function () use (&$instrumentors, &$method, &$request, &$metadata, &$options, &$callback) {
-                if (count($instrumentors) > 0) {
-                    return $this->instrument($instrumentors, $request, $method, $metadata, $options, $callback);
+            return $i->call(function () use (&$interceptors, &$method, &$request, &$metadata, &$options, &$callback) {
+                if (count($interceptors) > 0) {
+                    return $this->intercept($interceptors, $request, $method, $metadata, $options, $callback);
                 } else {
                     return $callback();
                 }
             });
         } else {
             return $callback();
-        }
-    }
-
-    /**
-     * Add an instrumentor to the client instrumentation registry
-     *
-     * @param BaseInstrumentor $instrumentor
-     * @throws \InvalidArgumentException if the instrumentor does not extend \Grphp\Instrumentation\Base
-     */
-    public function addInstrumentor(BaseInstrumentor $instrumentor)
-    {
-        if (is_a($instrumentor, BaseInstrumentor::class)) {
-            $this->instrumentors[] = $instrumentor;
-        } else {
-            throw new \InvalidArgumentException("Instrumentor does not extend \\Grphp\\Instrumentation\\Base");
-        }
-    }
-
-    /**
-     * @return array
-     */
-    public function buildAuthenticationMetadata()
-    {
-        $authentication = Authentication\Builder::fromClientConfig($this->config);
-        if ($authentication) {
-            return $authentication->getMetadata();
-        } else {
-            return [];
         }
     }
 }

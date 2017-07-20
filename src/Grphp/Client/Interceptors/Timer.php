@@ -15,12 +15,12 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-namespace Grphp\Instrumentation;
+namespace Grphp\Client\Interceptors;
 
 use Grphp\Client\Response;
 
 /**
- * @package Grphp\Instrumentation
+ * @package Grphp\Interceptors
  */
 class Timer extends Base
 {
@@ -28,13 +28,13 @@ class Timer extends Base
      * @param callable $callback
      * @return Response
      */
-    public function measure(callable $callback)
+    public function call(callable $callback)
     {
         \PHP_Timer::start();
         /** @var Response $response */
         $response = $callback();
         $time = \PHP_Timer::stop();
-        $response->setElapsed($time);
+        $response->setElapsed(round($time, 4));
         return $response;
     }
 }
