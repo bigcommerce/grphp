@@ -1,5 +1,7 @@
 # grphp - gRPC PHP Framework
 
+[![Build Status](https://travis-ci.com/bigcommerce/grphp.svg?token=D3Cc4LCF9BgpUx4dpPpv&branch=master)](https://travis-ci.com/bigcommerce/grphp)
+
 grphp is a PHP framework that wraps the [gRPC PHP library](https://github.com/grpc/grpc/tree/master/src/php) to
 provide a more streamlined integration into PHP applications.
 
