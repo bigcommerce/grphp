@@ -37,8 +37,8 @@ class Config
     public $errorMetadataKey = 'error-internal-bin';
     /** @var array $interceptorOptions */
     public $interceptorOptions = [];
-    /** @var bool $useDefaultHooks */
-    public $useDefaultHooks = true;
+    /** @var bool $useDefaultInterceptors */
+    public $useDefaultInterceptors = true;
 
     /**
      * @param array $options
@@ -52,6 +52,6 @@ class Config
         $this->errorSerializerOptions = array_key_exists('error_serializer_options', $options) ? $options['error_serializer_options'] : [];
         $this->errorMetadataKey = array_key_exists('error_metadata_key', $options) ? $options['error_metadata_key'] : 'error-internal-bin';
         $this->interceptorOptions = array_key_exists('interceptor_options', $options) ? $options['interceptor_options'] : [];
-        $this->useDefaultHooks = array_key_exists('use_default_hooks', $options) ? $options['use_default_hooks'] : true;
+        $this->useDefaultInterceptors = array_key_exists('use_default_interceptors', $options) ? $options['use_default_interceptors'] : true;
     }
 }

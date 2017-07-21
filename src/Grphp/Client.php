@@ -49,9 +49,9 @@ class Client
         $this->client = new $clientClass($config->hostname, [
             'credentials' => $credentials,
         ]);
-        if ($this->config->useDefaultHooks) {
-            $this->addInterceptor(new TimerInterceptor($this->config->interceptorOptions));
-            $this->addInterceptor(new LinkerDContextInterceptor($this->config->interceptorOptions));
+        if ($this->config->useDefaultInterceptors) {
+            $this->addInterceptor(new TimerInterceptor());
+            $this->addInterceptor(new LinkerDContextInterceptor());
         }
     }
 

@@ -1,5 +1,9 @@
 Changelog for grphp.
 
+h3. 0.3.0
+
+* Improved interceptor config support, useDefaultInterceptors config option
+
 h3. 0.2.1
 
 * Allow client stub to be accessible to interceptors
