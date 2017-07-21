@@ -18,9 +18,10 @@
 namespace Grphp;
 
 use Grpc\ChannelCredentials;
-use Grphp\Client\Channel as ClientChannel;
 use Grphp\Client\Config;
 use Grphp\Client\Interceptors\Base as BaseInterceptor;
+use Grphp\Client\Interceptors\Timer as TimerInterceptor;
+use Grphp\Client\Interceptors\LinkerD\ContextPropagation as LinkerDContextInterceptor;
 
 /**
  * Layers over gRPC client communication to provide extra response, header, and timing
@@ -48,6 +49,10 @@ class Client
         $this->client = new $clientClass($config->hostname, [
             'credentials' => $credentials,
         ]);
+        if ($this->config->useDefaultHooks) {
+            $this->addInterceptor(new TimerInterceptor($this->config->hookOptions));
+            $this->addInterceptor(new LinkerDContextInterceptor($this->config->hookOptions));
+        }
     }
 
     /**
@@ -116,11 +121,17 @@ class Client
      * @param callable $callback
      * @return mixed
      */
-    private function intercept(array $interceptors, $request, $method, $metadata, $options, callable $callback)
+    private function intercept(array &$interceptors, &$request, &$method, &$metadata, &$options, callable $callback)
     {
         $i = array_shift($interceptors);
         if ($i) {
-            return $i->call(function () use (&$interceptors, &$method, &$request, &$metadata, &$options, &$callback) {
+            $i->setRequest($request);
+            $i->setMethod($method);
+            $i->setMetadata($metadata);
+            $i->setOptions($options);
+            return $i->call(function() use (&$i, &$interceptors, &$method, &$request, &$metadata, &$options, &$callback) {
+                $metadata = $i->getMetadata();
+                $request = $i->getRequest();
                 if (count($interceptors) > 0) {
                     return $this->intercept($interceptors, $request, $method, $metadata, $options, $callback);
                 } else {

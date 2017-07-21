@@ -25,6 +25,9 @@ namespace Grphp\Client\Interceptors;
 abstract class Base
 {
     protected $options = [];
+    protected $request;
+    protected $method;
+    protected $metadata;
 
     public function __construct(array $options = [])
     {
@@ -32,4 +35,44 @@ abstract class Base
     }
 
     abstract public function call(callable $callback);
+
+    public function getRequest()
+    {
+        return $this->request;
+    }
+
+    public function setRequest(&$request)
+    {
+        $this->request = $request;
+    }
+
+    public function getMethod()
+    {
+        return $this->method;
+    }
+
+    public function setMethod(&$method)
+    {
+        $this->method = $method;
+    }
+
+    public function getMetadata()
+    {
+        return $this->metadata;
+    }
+
+    public function setMetadata(&$metadata = [])
+    {
+        $this->metadata = $metadata;
+    }
+
+    public function setOptions(&$options = [])
+    {
+        $this->options = $options;
+    }
+
+    public function getOptions()
+    {
+        return $this->options;
+    }
 }
