@@ -28,6 +28,7 @@ abstract class Base
     protected $request;
     protected $method;
     protected $metadata;
+    protected $stub;
 
     public function __construct(array $options = [])
     {
@@ -74,5 +75,15 @@ abstract class Base
     public function getOptions()
     {
         return $this->options;
+    }
+
+    public function setStub(&$stub)
+    {
+        $this->stub;
+    }
+
+    public function getStub()
+    {
+        return $this->stub;
     }
 }

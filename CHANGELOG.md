@@ -1,5 +1,10 @@
 Changelog for grphp.
 
+h3. 0.2.1
+
+* Allow client stub to be accessible to interceptors
+* Add isSuccess to \Grphp\Client\Response
+ 
 h3. 0.2.0
 
 * Add LinkerD context propagation interceptor

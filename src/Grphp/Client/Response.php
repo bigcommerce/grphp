@@ -100,6 +100,14 @@ class Response
     }
 
     /**
+     * @return bool
+     */
+    public function isSuccess()
+    {
+        return $this->getStatusCode() == 0;
+    }
+
+    /**
      * @param array $newMetadata
      * @param bool $merge
      */
