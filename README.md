@@ -84,8 +84,11 @@ class FooHeader extends BaseInterceptor
      */
     public function call(callable $callback)
     {
-        /** @var Response $response */
-        $response = $callback();
+        // set outgoing metadata
+        $this->metadata['stuff'] = ['my_thing'];
+        // make the outbound call
+        $response = $callback();  
+        // adjust incoming metadata        
         $response->setMetadata([
             'X-Foo' => $this->options['foo_value'],
         ]);
