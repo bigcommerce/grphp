@@ -100,6 +100,14 @@ class Client
     /**
      * @return array
      */
+    public function getInterceptors()
+    {
+        return $this->interceptors;
+    }
+
+    /**
+     * @return array
+     */
     private function buildAuthenticationMetadata()
     {
         $authentication = Authentication\Builder::fromClientConfig($this->config);

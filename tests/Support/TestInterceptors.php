@@ -15,8 +15,15 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-require_once __DIR__ . '/Compiled/Things.php';
-require_once __DIR__ . '/Compiled/ThingsClient.php';
-require_once __DIR__ . '/Compiled/Thing.php';
-require_once __DIR__ . '/Compiled/GetThingReq.php';
-require_once __DIR__ . '/Compiled/GetThingResp.php';
+namespace Grphp\Test;
+
+use Grphp\Client\Interceptors\Base;
+
+class TestInterceptor extends Base
+{
+    public function call(callable $callback)
+    {
+        $response = $callback();
+        return $response;
+    }
+}
