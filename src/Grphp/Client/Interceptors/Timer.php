@@ -34,7 +34,7 @@ class Timer extends Base
         /** @var Response $response */
         $response = $callback();
         $time = \PHP_Timer::stop();
-        $response->setElapsed(round($time, 4));
+        $response->setElapsed(round($time * 1000.00, 4));
         return $response;
     }
 }

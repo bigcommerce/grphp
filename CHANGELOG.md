@@ -1,5 +1,9 @@
 Changelog for grphp.
 
+h3. 0.3.1
+
+* Fix timer interceptor to properly report in ms
+
 h3. 0.3.0
 
 * Improved interceptor config support, useDefaultInterceptors config option
