@@ -18,12 +18,8 @@ grphp currently has active support for gRPC 1.3.2, and requires PHP 5.5+ or 7.0+
 
 ## Installation
 
-```json
-{
-  "require": {
-    "bigcommerce/grphp": "^0.1"
-  }
-}
+```bash
+composer require bigcommerce/grphp
 ```
 
 You'll need to make sure you fit [the requirements for the grpc/grpc PHP library](https://github.com/grpc/grpc/tree/master/src/php#environment),
@@ -108,14 +104,6 @@ $client->addInterceptor($i);
 ```
 
 Interceptors run in the order that they are added, wrapping each as they go.
-
-### Timers
-
-grphp has a timer interceptor out of the box. To add it, simply call `addInterceptor` on the client:
-
-```php
-$client->addInterceptor(new \Grphp\Client\Interceptors\Timer());
-```
 
 ## Error Handling
 
