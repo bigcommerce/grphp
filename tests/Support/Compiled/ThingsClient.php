@@ -15,34 +15,45 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-// GENERATED CODE -- DO NOT EDIT!
+namespace Grphp\Test;
 
-namespace Grphp\Test {
+use Grpc\AbstractCall;
 
-    class ThingsClient extends \Grpc\BaseStub {
+class ThingsClient extends \Grpc\BaseStub
+{
 
-        /**
-         * @param string $hostname hostname
-         * @param array $opts channel options
-         * @param \Grpc\Channel $channel (optional) re-use channel object
-         */
-        public function __construct($hostname, $opts, $channel = null) {
-            parent::__construct($hostname, $opts, $channel);
-        }
+    protected $channel;
 
-        /**
-         * @param \Grphp\Test\GetThingReq $argument input argument
-         * @param array $metadata metadata
-         * @param array $options call options
-         */
-        public function GetThing(\Grphp\Test\GetThingReq $argument,
-                                 $metadata = [], $options = []) {
-            return $this->_simpleRequest('/grphp.test.Things/GetThing',
-                $argument,
-                ['\Grphp\Test\GetThingResp', 'decode'],
-                $metadata, $options);
-        }
-
+    /**
+     * @param string $hostname hostname
+     * @param array $opts channel options
+     * @param \Grpc\Channel $channel (optional) re-use channel object
+     */
+    public function __construct($hostname, $opts, $channel = null) {
+        parent::__construct($hostname, $opts, $channel);
+        $this->channel = new \Grpc\Channel($hostname, $opts);;
     }
 
+    /**
+     * @param \Grphp\Test\GetThingReq $argument input argument
+     * @param array $metadata metadata
+     * @param array $options call options
+     * @return AbstractCall
+     */
+    public function GetThing(\Grphp\Test\GetThingReq $argument,
+                             $metadata = [], $options = []) {
+
+        $thing = new Thing();
+        $thing->setId($argument->getId());
+        $thing->setName('Foo');
+        $resp = new GetThingResp();
+        $resp->setThing($thing);
+        return new StubbedCall(
+            $resp,
+            $this->channel,
+            '/grphp.test.Things/GetThing',
+            ['\Grphp\Test\GetThingResp', 'decode'],
+            $options
+        );
+    }
 }

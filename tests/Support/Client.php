@@ -15,8 +15,62 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+namespace Grphp\Test;
+
 require_once __DIR__ . '/Compiled/Things.php';
 require_once __DIR__ . '/Compiled/ThingsClient.php';
 require_once __DIR__ . '/Compiled/Thing.php';
 require_once __DIR__ . '/Compiled/GetThingReq.php';
 require_once __DIR__ . '/Compiled/GetThingResp.php';
+
+use Grpc\AbstractCall;
+use Grpc\Channel;
+use Grpc\UnaryCall;
+
+class StubbedCall extends AbstractCall
+{
+    private $response;
+    private $options = [];
+
+    public function __construct($response,
+                                Channel $channel,
+                                $method,
+                                $deserialize,
+                                array $options = [])
+    {
+        parent::__construct($channel, $method, $deserialize, $options);
+        $this->response = $response;
+        $this->options = array_merge($this->options, $options);
+    }
+
+    public function wait()
+    {
+        $code = $this->option('response_code', 200);
+        $details = $this->option('response_details', '');
+        $metadata = $this->option('response_metadata', []);
+
+        $status = new CallStatus($code, $details, $metadata);
+
+        $this->trailing_metadata = $status->metadata;
+        return [$this->response, $status];
+    }
+
+    private function option($k, $default = null)
+    {
+        return array_key_exists($k, $this->options) ? $this->options[$k] : $default;
+    }
+}
+
+class CallStatus
+{
+    public $code = 0;
+    public $details = '';
+    public $metadata = [];
+
+    public function __construct($code = 0, $details = '', $metadata = [])
+    {
+        $this->code = $code;
+        $this->details = $details;
+        $this->metadata = $metadata;
+    }
+}

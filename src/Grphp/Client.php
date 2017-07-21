@@ -98,11 +98,19 @@ class Client
     }
 
     /**
-     * @return array
+     * @return array<BaseInterceptor> An array of all interceptor objects assigned to this client
      */
     public function getInterceptors()
     {
         return $this->interceptors;
+    }
+
+    /**
+     * Clears all interceptors on the client
+     */
+    public function clearInterceptors()
+    {
+        $this->interceptors = [];
     }
 
     /**

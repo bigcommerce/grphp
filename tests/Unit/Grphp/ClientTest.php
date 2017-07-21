@@ -18,6 +18,8 @@
 namespace Grphp;
 
 use Grphp\Test\BaseTest;
+use Grphp\Test\GetThingReq;
+use Grphp\Test\GetThingResp;
 use Grphp\Test\TestInterceptor;
 
 final class ClientTest extends BaseTest
@@ -32,10 +34,81 @@ final class ClientTest extends BaseTest
         $this->assertInstanceOf(Client::class, $this->client);
     }
 
+    /**
+     *
+     */
+    public function testClearInterceptors()
+    {
+        $i = new TestInterceptor();
+        $this->client->addInterceptor($i);
+        $this->client->clearInterceptors();
+        $this->assertCount(0, $this->client->getInterceptors());
+    }
+
+    /**
+     * @depends testConstructor
+     */
     public function testAddInterceptor()
     {
         $i = new TestInterceptor();
         $this->client->addInterceptor($i);
         $this->assertContains($i, $this->client->getInterceptors());
+    }
+
+    /**
+     * @depends testClearInterceptors
+     * @depends testAddInterceptor
+     */
+    public function testGetInterceptors()
+    {
+        $this->client->clearInterceptors();
+        $i1 = new TestInterceptor();
+        $this->client->addInterceptor($i1);
+        $i1 = new TestInterceptor();
+        $this->client->addInterceptor($i1);
+
+        $interceptors = $this->client->getInterceptors();
+        $this->assertCount(2, $interceptors);
+    }
+
+    /**
+     * Test the call method
+     *
+     * @dataProvider providerCall
+     */
+    public function testCall($id, $isSuccess = true, $responseCode = 0, $responseDetails = '', $responseMetadata = [])
+    {
+        $opts = [
+            'response_code' => $responseCode,
+            'response_details' => $responseDetails,
+            'response_metadata' => $responseMetadata,
+        ];
+        $req = new GetThingReq();
+        $req->setId($id);
+        $resp = $this->client->call($req, 'GetThing', [], $opts);
+        $this->assertInstanceOf(\Grphp\Client\Response::class, $resp);
+        $this->assertEquals($isSuccess, $resp->isSuccess());
+        $this->assertEquals($opts['response_code'], $resp->getStatusCode());
+        $this->assertEquals($opts['response_details'], $resp->getStatusDetails());
+        $this->assertEquals($opts['response_metadata'], $resp->getStatus()->metadata);
+
+        /** @var \Grphp\Test\GetThingResp $message */
+        $message = $resp->getResponse();
+        $this->assertInstanceOf(\Grphp\Test\GetThingResp::class, $message);
+
+        /** @var \Grphp\Test\Thing $thing */
+        $thing = $message->getThing();
+        $this->assertInstanceOf(\Grphp\Test\Thing::class, $thing);
+        $this->assertEquals($id, $thing->getId());
+        $this->assertEquals('Foo', $thing->getName());
+
+        $ref = new \ReflectionClass($message);
+    }
+    public function providerCall()
+    {
+        return [
+            [123, true, 0, 'Whoa now', ['one' => 'two']],
+            [123, false, 8, 'Whoa now', ['one' => 'two']],
+        ];
     }
 }
