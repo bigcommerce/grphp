@@ -50,8 +50,8 @@ class Client
             'credentials' => $credentials,
         ]);
         if ($this->config->useDefaultHooks) {
-            $this->addInterceptor(new TimerInterceptor($this->config->hookOptions));
-            $this->addInterceptor(new LinkerDContextInterceptor($this->config->hookOptions));
+            $this->addInterceptor(new TimerInterceptor($this->config->interceptorOptions));
+            $this->addInterceptor(new LinkerDContextInterceptor($this->config->interceptorOptions));
         }
     }
 

@@ -35,8 +35,8 @@ class Config
     public $errorSerializerOptions = [];
     /** @var string $errorMetadataKey */
     public $errorMetadataKey = 'error-internal-bin';
-    /** @var array $hookOptions */
-    public $hookOptions = [];
+    /** @var array $interceptorOptions */
+    public $interceptorOptions = [];
     /** @var bool $useDefaultHooks */
     public $useDefaultHooks = true;
 
@@ -51,7 +51,7 @@ class Config
         $this->errorSerializer = array_key_exists('error_serializer', $options) ? $options['error_serializer'] : \Grphp\Serializers\Errors\Json::class;
         $this->errorSerializerOptions = array_key_exists('error_serializer_options', $options) ? $options['error_serializer_options'] : [];
         $this->errorMetadataKey = array_key_exists('error_metadata_key', $options) ? $options['error_metadata_key'] : 'error-internal-bin';
-        $this->hookOptions = array_key_exists('hook_options', $options) ? $options['hook_options'] : [];
+        $this->interceptorOptions = array_key_exists('interceptor_options', $options) ? $options['interceptor_options'] : [];
         $this->useDefaultHooks = array_key_exists('use_default_hooks', $options) ? $options['use_default_hooks'] : true;
     }
 }

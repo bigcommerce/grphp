@@ -1,8 +1,10 @@
 Changelog for grphp.
 
-h3. 0.1.2
+h3. 0.2.0
 
 * Add LinkerD context propagation interceptor
+* Add interceptor options
+* Set l5d + timer interceptors to be default
 
 h3. 0.1.1
 
