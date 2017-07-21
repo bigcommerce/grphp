@@ -123,6 +123,7 @@ class Client
      */
     private function intercept(array &$interceptors, &$request, &$method, &$metadata, &$options, callable $callback)
     {
+        /** @var Client\Interceptors\Base $i */
         $i = array_shift($interceptors);
         if ($i) {
             $i->setRequest($request);

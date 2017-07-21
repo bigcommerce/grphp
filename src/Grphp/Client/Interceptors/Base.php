@@ -67,23 +67,23 @@ abstract class Base
         $this->metadata = $metadata;
     }
 
-    public function setOptions(&$options = [])
-    {
-        $this->options = $options;
-    }
-
     public function getOptions()
     {
         return $this->options;
     }
 
-    public function setStub(&$stub)
+    public function setOptions(&$options = [])
     {
-        $this->stub;
+        $this->options = $options;
     }
 
     public function getStub()
     {
         return $this->stub;
+    }
+
+    public function setStub(&$stub)
+    {
+        $this->stub = $stub;
     }
 }
