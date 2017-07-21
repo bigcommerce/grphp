@@ -3,6 +3,7 @@ Changelog for grphp.
 h3. 0.3.1
 
 * Fix timer interceptor to properly report in ms
+* Add more unit tests
 
 h3. 0.3.0
 
