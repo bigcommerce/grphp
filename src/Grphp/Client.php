@@ -129,7 +129,6 @@ class Client
             $i->setRequest($request);
             $i->setMethod($method);
             $i->setMetadata($metadata);
-            $i->setOptions($options);
             $i->setStub($this->client);
             return $i->call(function() use (&$i, &$interceptors, &$method, &$request, &$metadata, &$options, &$callback) {
                 $metadata = $i->getMetadata();
