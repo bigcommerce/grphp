@@ -32,7 +32,7 @@ class Basic extends Base
         if (empty($this->options['password'])) {
             return [];
         } else {
-            $username = trim($this->options['username']);
+            $username = array_key_exists('username', $this->options) ? trim($this->options['username']) : '';
             $password = trim($this->options['password']);
             $username = empty($username) ? '' : "$username:";
             $authString = base64_encode("$username$password");

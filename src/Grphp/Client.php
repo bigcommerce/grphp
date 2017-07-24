@@ -90,11 +90,7 @@ class Client
      */
     public function addInterceptor(BaseInterceptor $interceptor)
     {
-        if (is_a($interceptor, BaseInterceptor::class)) {
-            $this->interceptors[] = $interceptor;
-        } else {
-            throw new \InvalidArgumentException("Interceptor does not extend \\Grphp\\Client\\Interceptors\\Base");
-        }
+        $this->interceptors[] = $interceptor;
     }
 
     /**

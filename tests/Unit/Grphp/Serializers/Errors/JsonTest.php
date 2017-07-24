@@ -15,14 +15,35 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-namespace Grphp\Test;
+namespace Grphp\Serializers\Errors;
 
-use Grphp\Client\Interceptors\Base;
+use Grphp\Test\BaseTest;
 
-class TestInterceptor extends Base
+final class JsonTest extends BaseTest
 {
-    public function call(callable $callback)
+    /** @var Json $serializer */
+    protected $serializer;
+
+    public function setUp()
     {
-        return $callback();
+        $this->serializer = new Json();
+    }
+
+    /**
+     * @dataProvider providerDeserialize
+     * @param string $input
+     * @param array $output
+     */
+    public function testDeserialize(string $input, array $output = [])
+    {
+        $o = $this->serializer->deserialize($input);
+        $this->assertEquals($output, $o);
+    }
+    public function providerDeserialize()
+    {
+        return [
+            ['{"foo":123,"bar":"go!"}',['foo' => 123,'bar' => 'go!']],
+            ['', []],
+        ];
     }
 }

@@ -45,14 +45,18 @@ class StubbedCall extends AbstractCall
 
     public function wait()
     {
-        $code = $this->option('response_code', 200);
+        $code = $this->option('response_code', 0);
         $details = $this->option('response_details', '');
         $metadata = $this->option('response_metadata', []);
 
         $status = new CallStatus($code, $details, $metadata);
 
         $this->trailing_metadata = $status->metadata;
-        return [$this->response, $status];
+        if ($this->option('response_null', false)) {
+            return [null, $status];
+        } else {
+            return [$this->response, $status];
+        }
     }
 
     private function option($k, $default = null)

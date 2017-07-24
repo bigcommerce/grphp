@@ -48,6 +48,22 @@ class Error extends \Exception
     }
 
     /**
+     * @return string
+     */
+    public function getDetails()
+    {
+        return $this->status ? $this->status->details : '';
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatusCode()
+    {
+        return $this->status ? intval($this->status->code) : 0;
+    }
+
+    /**
      * @return mixed
      */
     public function getTrailer()

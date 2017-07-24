@@ -29,6 +29,7 @@ class Json extends Base
      */
     public function deserialize($trailer)
     {
-        return json_decode($trailer, true);
+        $result = json_decode($trailer, true);
+        return $result ? $result : [];
     }
 }
