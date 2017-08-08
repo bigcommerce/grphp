@@ -27,10 +27,10 @@ use Grphp\Client\Interceptors\Base;
 class ContextPropagation extends Base
 {
     const METADATA_KEYS = [
-        'l5d-dtab',
-        'l5d-ctx-dtab',
-        'l5d-ctx-deadline',
-        'l5d-ctx-trace'
+        'HTTP_L5D_DTAB' => 'l5d-dtab',
+        'HTTP_L5D_CTX_DTAB' => 'l5d-ctx-dtab',
+        'HTTP_L5D_CTX_DEADLINE' => 'l5d-ctx-deadline',
+        'HTTP_L5D_CTX_TRACE' => 'l5d-ctx-trace'
     ];
 
     /**
@@ -40,9 +40,12 @@ class ContextPropagation extends Base
      */
     public function call(callable $callback)
     {
-        foreach (self::METADATA_KEYS as $k) {
-            if (array_key_exists($k, $_REQUEST)) {
-                $this->metadata[$k] = ['' . $_REQUEST[$k]];
+        foreach (self::METADATA_KEYS as $incomingKey => $metadataKey) {
+            if (array_key_exists($incomingKey, $_SERVER)) {
+                $this->metadata[$metadataKey] = ['' . $_SERVER[$incomingKey]];
+            }
+            if (array_key_exists($incomingKey, $_REQUEST)) {
+                $this->metadata[$metadataKey] = ['' . $_REQUEST[$incomingKey]];
             }
         }
         $response = $callback();

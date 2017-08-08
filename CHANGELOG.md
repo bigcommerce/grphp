@@ -1,5 +1,10 @@
 Changelog for grphp.
 
+h3. 0.3.2
+
+* Ensure LinkerD interceptor pulls from SERVER and REQUEST
+* Ensure LinkerD interceptor handles transformation of context keys
+
 h3. 0.3.1
 
 * Fix timer interceptor to properly report in ms
