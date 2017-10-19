@@ -2,7 +2,6 @@
   "name": "bigcommerce/grphp",
   "description": "gRPC PHP Framework",
   "type": "library",
-  "minimum-stability": "dev",
   "license": "MIT",
   "repositories": [
     { "type": "vcs", "url": "https://github.com/bigcommerce/grpc-php" }
@@ -17,5 +16,7 @@
   },
   "autoload": {
     "psr-4": { "": "src/"}
-  }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }
