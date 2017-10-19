@@ -4,8 +4,10 @@ php:
   - 7.1
 sudo: false
 dist: trusty
+before_install:
+  - composer self-update --no-interaction || true
 before_script:
-  - composer install
+  - composer install --no-interaction
   - pecl update-channels; pecl install grpc-1.3.2
 script:
   - vendor/bin/phpunit --configuration phpunit.xml.dist
