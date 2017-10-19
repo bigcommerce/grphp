@@ -4,89 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "1f87fcc6a0001867a53f83d9af840e46",
+    "content-hash": "ff7937423bae95973c8cc06b853bc0ac",
     "packages": [
-        {
-            "name": "bigcommerce/grpc-php",
-            "version": "1.3.2-p1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/bigcommerce/grpc-php.git",
-                "reference": "0bba049900be583718ce87e4bff5997268b3b533"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/bigcommerce/grpc-php/zipball/0bba049900be583718ce87e4bff5997268b3b533",
-                "reference": "0bba049900be583718ce87e4bff5997268b3b533",
-                "shasum": ""
-            },
-            "require": {
-                "google/protobuf": "^v3.1.0",
-                "php": ">=5.5.0"
-            },
-            "require-dev": {
-                "google/auth": "v0.9"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Grpc\\": "src/lib/"
-                }
-            },
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "description": "gRPC library for PHP",
-            "homepage": "http://grpc.io",
-            "keywords": [
-                "rpc"
-            ],
-            "support": {
-                "source": "https://github.com/bigcommerce/grpc-php/tree/v1.3.2-p1"
-            },
-            "time": "2017-10-19T09:52:09+00:00"
-        },
-        {
-            "name": "google/protobuf",
-            "version": "v3.4.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/google/protobuf.git",
-                "reference": "b04e5cba356212e4e8c66c61bbe0c3a20537c5b9"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/google/protobuf/zipball/b04e5cba356212e4e8c66c61bbe0c3a20537c5b9",
-                "reference": "b04e5cba356212e4e8c66c61bbe0c3a20537c5b9",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.5.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": ">=4.8.0"
-            },
-            "suggest": {
-                "ext-bcmath": "Need to support JSON deserialization"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Google\\Protobuf\\": "php/src/Google/Protobuf",
-                    "GPBMetadata\\Google\\Protobuf\\": "php/src/GPBMetadata/Google/Protobuf"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "description": "proto library for PHP",
-            "homepage": "https://developers.google.com/protocol-buffers/",
-            "keywords": [
-                "proto"
-            ],
-            "time": "2017-09-14T19:24:28+00:00"
-        },
         {
             "name": "phpunit/php-timer",
             "version": "1.0.9",
@@ -138,6 +57,46 @@
         }
     ],
     "packages-dev": [
+        {
+            "name": "bigcommerce/grpc-php",
+            "version": "1.3.2-p1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bigcommerce/grpc-php.git",
+                "reference": "0bba049900be583718ce87e4bff5997268b3b533"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bigcommerce/grpc-php/zipball/0bba049900be583718ce87e4bff5997268b3b533",
+                "reference": "0bba049900be583718ce87e4bff5997268b3b533",
+                "shasum": ""
+            },
+            "require": {
+                "google/protobuf": "^v3.1.0",
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "google/auth": "v0.9"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Grpc\\": "src/lib/"
+                }
+            },
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "gRPC library for PHP",
+            "homepage": "http://grpc.io",
+            "keywords": [
+                "rpc"
+            ],
+            "support": {
+                "source": "https://github.com/bigcommerce/grpc-php/tree/v1.3.2-p1"
+            },
+            "time": "2017-10-19T09:52:09+00:00"
+        },
         {
             "name": "doctrine/instantiator",
             "version": "1.0.5",
@@ -191,6 +150,47 @@
                 "instantiate"
             ],
             "time": "2015-06-14T21:17:01+00:00"
+        },
+        {
+            "name": "google/protobuf",
+            "version": "v3.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/google/protobuf.git",
+                "reference": "b04e5cba356212e4e8c66c61bbe0c3a20537c5b9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/google/protobuf/zipball/b04e5cba356212e4e8c66c61bbe0c3a20537c5b9",
+                "reference": "b04e5cba356212e4e8c66c61bbe0c3a20537c5b9",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": ">=4.8.0"
+            },
+            "suggest": {
+                "ext-bcmath": "Need to support JSON deserialization"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Google\\Protobuf\\": "php/src/Google/Protobuf",
+                    "GPBMetadata\\Google\\Protobuf\\": "php/src/GPBMetadata/Google/Protobuf"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "proto library for PHP",
+            "homepage": "https://developers.google.com/protocol-buffers/",
+            "keywords": [
+                "proto"
+            ],
+            "time": "2017-09-14T19:24:28+00:00"
         },
         {
             "name": "myclabs/deep-copy",
