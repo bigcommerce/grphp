@@ -63,12 +63,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/bigcommerce/grpc-php.git",
-                "reference": "d74da06c7bc06c743169bfc394ec347fd9e85c26"
+                "reference": "19003eafaef5428b3119de219b53bf66658a6c87"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bigcommerce/grpc-php/zipball/d74da06c7bc06c743169bfc394ec347fd9e85c26",
-                "reference": "d74da06c7bc06c743169bfc394ec347fd9e85c26",
+                "url": "https://api.github.com/repos/bigcommerce/grpc-php/zipball/19003eafaef5428b3119de219b53bf66658a6c87",
+                "reference": "19003eafaef5428b3119de219b53bf66658a6c87",
                 "shasum": ""
             },
             "require": {
@@ -95,7 +95,7 @@
             "support": {
                 "source": "https://github.com/bigcommerce/grpc-php/tree/bc-1.3.2"
             },
-            "time": "2017-09-14T18:06:44+00:00"
+            "time": "2017-10-19T08:20:04+00:00"
         },
         {
             "name": "doctrine/instantiator",
