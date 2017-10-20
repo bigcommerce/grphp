@@ -15,6 +15,8 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+declare(strict_types = 1);
+
 namespace Grphp\Serializers\Errors;
 
 /**
@@ -27,7 +29,7 @@ class Json extends Base
      * @param string $trailer
      * @return array
      */
-    public function deserialize($trailer)
+    public function deserialize($trailer): array
     {
         $result = json_decode($trailer, true);
         return $result ? $result : [];

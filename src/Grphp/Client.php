@@ -15,13 +15,21 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+declare(strict_types = 1);
+
 namespace Grphp;
 
-use Grpc\ChannelCredentials;
+use Google\Protobuf\Internal\Message;
+use Grpc\BaseStub;
+use Grphp\Client\Channel;
+use Grphp\Client\ClientFactory;
 use Grphp\Client\Config;
+use Grphp\Client\Error;
 use Grphp\Client\Interceptors\Base as BaseInterceptor;
+use Grphp\Client\Interceptors\Registry;
 use Grphp\Client\Interceptors\Timer as TimerInterceptor;
 use Grphp\Client\Interceptors\LinkerD\ContextPropagation as LinkerDContextInterceptor;
+use Grphp\Client\Response;
 
 /**
  * Layers over gRPC client communication to provide extra response, header, and timing
@@ -31,110 +39,89 @@ use Grphp\Client\Interceptors\LinkerD\ContextPropagation as LinkerDContextInterc
  */
 class Client
 {
-    /** @var \Grpc\BaseStub $client */
-    protected $client;
+    /** @var Registry $interceptors */
+    public $interceptors;
+
+    /** @var BaseStub $client */
+    private $client;
     /** @var Config $config */
-    protected $config;
-    /** @var array<BaseInterceptor> $interceptors */
-    protected $interceptors = [];
+    private $config;
+    /** @var ClientFactory $clientFactory */
+    private $clientFactory;
 
     /**
      * @param string $clientClass
-     * @param Client\Config|null $config
+     * @param Config $config
+     * @param Channel $channel
      */
-    public function __construct($clientClass, Config $config)
+    public function __construct(string $clientClass, Config $config, Channel $channel = null)
     {
         $this->config = $config;
-        $credentials = ChannelCredentials::createInsecure();
-        $this->client = new $clientClass($config->hostname, [
-            'credentials' => $credentials,
-        ]);
-        if ($this->config->useDefaultInterceptors) {
-            $this->addInterceptor(new TimerInterceptor());
-            $this->addInterceptor(new LinkerDContextInterceptor());
+        $this->interceptors = new Registry();
+        $this->clientFactory = new ClientFactory(
+            $clientClass,
+            $config->getHostname(),
+            $channel,
+            $config->getClientOptions()
+        );
+        if ($this->config->useDefaultInterceptors()) {
+            $this->interceptors->add(new TimerInterceptor());
+            $this->interceptors->add(new LinkerDContextInterceptor());
         }
     }
 
     /**
      * Issue the call to the server, wrapping with the given interceptors
      *
-     * @param \Google\Protobuf\Internal\Message $request
+     * @param Message $request
      * @param string $method
      * @param array $metadata
      * @param array $options
-     * @return Client\Response
-     * @throws Client\Error
+     * @return Response
+     * @throws Error
      */
-    public function call($request, $method, array $metadata = [], array $options = [])
+    public function call(Message $request, string $method, array $metadata = [], array $options = []): Response
     {
-        $metadata = array_merge($this->buildAuthenticationMetadata(), $metadata);
+        $client = $this->getClient();
 
-        $interceptors = $this->interceptors;
-        return $this->intercept($interceptors, $request, $method, $metadata, $options, function() use (&$interceptors, &$request, &$method, &$metadata, &$options)
-        {
-            list($resp, $status) = $this->client->$method($request, $metadata, $options)->wait();
+        $interceptors = $this->interceptors->getAll();
+        return $this->intercept($interceptors, $request, $method, $metadata, $options, function () use (
+            &$client,
+            &$interceptors,
+            &$request,
+            &$method,
+            &$metadata,
+            &$options
+        ) {
+            list($resp, $status) = $client->$method($request, $metadata, $options)->wait();
             if (!is_null($resp)) {
-                $response = new Client\Response($resp, $status);
+                $response = new Response($resp, $status);
             } else {
-                throw new Client\Error($this->config, $status);
+                throw new Error($this->config, $status);
             }
             return $response;
         });
     }
 
     /**
-     * Add an interceptor to the client interceptor registry
-     *
-     * @param BaseInterceptor $interceptor
-     * @throws \InvalidArgumentException if the interceptor does not extend \Grphp\Interceptors\Base
-     */
-    public function addInterceptor(BaseInterceptor $interceptor)
-    {
-        $this->interceptors[] = $interceptor;
-    }
-
-    /**
-     * @return array<BaseInterceptor> An array of all interceptor objects assigned to this client
-     */
-    public function getInterceptors()
-    {
-        return $this->interceptors;
-    }
-
-    /**
-     * Clears all interceptors on the client
-     */
-    public function clearInterceptors()
-    {
-        $this->interceptors = [];
-    }
-
-    /**
-     * @return array
-     */
-    private function buildAuthenticationMetadata()
-    {
-        $authentication = Authentication\Builder::fromClientConfig($this->config);
-        if ($authentication) {
-            return $authentication->getMetadata();
-        } else {
-            return [];
-        }
-    }
-
-    /**
      * Intercept the call with the registered interceptors for the client
      *
-     * @param array $interceptors
-     * @param \Google\Protobuf\Internal\Message $request
+     * @param BaseInterceptor[] $interceptors
+     * @param Message $request
      * @param string $method
      * @param array $metadata
      * @param array $options
      * @param callable $callback
      * @return mixed
      */
-    private function intercept(array &$interceptors, &$request, &$method, &$metadata, &$options, callable $callback)
-    {
+    private function intercept(
+        array &$interceptors,
+        Message &$request,
+        string &$method,
+        array &$metadata,
+        array &$options,
+        callable $callback
+    ) {
         /** @var Client\Interceptors\Base $i */
         $i = array_shift($interceptors);
         if ($i) {
@@ -142,7 +129,15 @@ class Client
             $i->setMethod($method);
             $i->setMetadata($metadata);
             $i->setStub($this->client);
-            return $i->call(function() use (&$i, &$interceptors, &$method, &$request, &$metadata, &$options, &$callback) {
+            return $i->call(function () use (
+                &$i,
+                &$interceptors,
+                &$method,
+                &$request,
+                &$metadata,
+                &$options,
+                &$callback
+            ) {
                 $metadata = $i->getMetadata();
                 $request = $i->getRequest();
                 if (count($interceptors) > 0) {
@@ -154,5 +149,17 @@ class Client
         } else {
             return $callback();
         }
+    }
+
+    /**
+     * Lazily create the client on the first initialized call
+     * @return BaseStub
+     */
+    private function getClient(): BaseStub
+    {
+        if (!$this->client) {
+            $this->client = $this->clientFactory->build();
+        }
+        return $this->client;
     }
 }

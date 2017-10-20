@@ -84,4 +84,22 @@ final class ResponseTest extends BaseTest
     {
         $this->assertEquals($this->statusObj->metadata['timer'][0], $this->response->getInternalExecutionTime());
     }
+
+    public function testIsSuccess()
+    {
+        $this->assertTrue($this->response->isSuccess());
+    }
+
+    public function testIsFailure()
+    {
+        $status = new \stdClass();
+        $status->code = 42;
+        $status->details = 'Oh noes';
+        $status->metadata = [
+            'timer' => [rand(0.0, 200.0)],
+        ];
+
+        $response = new Response($this->resp, $status);
+        $this->assertFalse($response->isSuccess());
+    }
 }

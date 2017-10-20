@@ -15,40 +15,47 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-namespace Grphp\Authentication;
+declare(strict_types = 1);
 
-/**
- * Basic HTTP Auth adapters for gRPC requests
- *
- * @package Grphp\Authentication
- */
-class Basic extends Base
+namespace Grphp\Client;
+
+use Grpc\BaseStub;
+use Grpc\ChannelCredentials;
+
+class ClientFactory
 {
+    /** @var string $className */
+    private $className;
+    /** @var string $hostname */
+    private $hostname;
+    /** @var Channel $channel */
+    private $channel;
+    /** @var array $options */
+    private $options;
+
     /**
-     * @return array
+     * @param string $className Name of the client class to construct
+     * @param string $hostname
+     * @param Channel $channel
+     * @param array $options
      */
-    public function getMetadata()
+    public function __construct(string $className, string $hostname, Channel $channel = null, array $options = [])
     {
-        if (empty($this->options['password'])) {
-            return [];
-        } else {
-            $username = array_key_exists('username', $this->options) ? trim($this->options['username']) : '';
-            $password = trim($this->options['password']);
-            $username = empty($username) ? '' : "$username:";
-            $authString = base64_encode("$username$password");
-            return [
-                $this->getAuthenticationMetadataKey() => [trim("Basic $authString")],
-            ];
-        }
+        $this->className = $className;
+        $this->hostname = $hostname;
+        $this->channel = $channel;
+        $this->options = $options;
     }
 
     /**
-     * @return string
+     * @return BaseStub
      */
-    private function getAuthenticationMetadataKey()
+    public function build(): BaseStub
     {
-        return array_key_exists('metadata_key', $this->options) ?
-            $this->options['metadata_key']
-            : 'authorization';
+        if (!array_key_exists('credentials', $this->options)) {
+            $this->options['credentials'] = ChannelCredentials::createInsecure();
+        }
+        $class = $this->className;
+        return new $class($this->hostname, $this->options, $this->channel);
     }
 }

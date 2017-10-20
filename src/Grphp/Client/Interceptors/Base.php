@@ -15,7 +15,13 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+declare(strict_types = 1);
+
 namespace Grphp\Client\Interceptors;
+
+use Google\Protobuf\Internal\Message;
+use Grpc\BaseStub;
+use Grphp\Client\Response;
 
 /**
  * Base interceptor class that can be extended to provide interception of client requests
@@ -24,65 +30,125 @@ namespace Grphp\Client\Interceptors;
  */
 abstract class Base
 {
+    /** @var array $options */
     protected $options = [];
+
+    /** @var Message $request */
     protected $request;
+
+    /** @var string $method */
     protected $method;
+
+    /** @var array $metadata */
     protected $metadata;
+
+    /** @var BaseStub $stub */
     protected $stub;
 
+    /**
+     * @param array $options
+     */
     public function __construct(array $options = [])
     {
         $this->options = array_merge($this->options, $options);
     }
 
+    /**
+     * @param callable $callback
+     * @return Response
+     */
     abstract public function call(callable $callback);
 
-    public function getRequest()
+    /**
+     * @return Message
+     */
+    public function getRequest(): Message
     {
         return $this->request;
     }
 
-    public function setRequest(&$request)
+    /**
+     * @param Message $request
+     * @return void
+     */
+    public function setRequest(Message &$request)
     {
         $this->request = $request;
     }
 
-    public function getMethod()
+    /**
+     * @return string
+     */
+    public function getMethod(): string
     {
         return $this->method;
     }
 
-    public function setMethod(&$method)
+    /**
+     * @param string $method
+     * @return void
+     */
+    public function setMethod(string &$method)
     {
         $this->method = $method;
     }
 
-    public function getMetadata()
+    /**
+     * @return array
+     */
+    public function getMetadata(): array
     {
-        return $this->metadata;
+        return $this->metadata ?? [];
     }
 
-    public function setMetadata(&$metadata = [])
+    /**
+     * @param array $metadata
+     * @return void
+     */
+    public function setMetadata(array &$metadata = [])
     {
         $this->metadata = $metadata;
     }
 
-    public function getOptions()
+    /**
+     * @return array
+     */
+    public function getOptions(): array
     {
         return $this->options;
     }
 
-    public function setOptions(&$options = [])
+    /**
+     * @param array $options
+     */
+    public function setOptions(array &$options = [])
     {
         $this->options = $options;
     }
 
+    /**
+     * @param string $k
+     * @param mixed $default
+     * @return mixed
+     */
+    public function getOption(string $k, $default = null)
+    {
+        return array_key_exists($k, $this->options) ? $this->options[$k] : $default;
+    }
+
+    /**
+     * @return BaseStub
+     */
     public function getStub()
     {
         return $this->stub;
     }
 
-    public function setStub(&$stub)
+    /**
+     * @param BaseStub $stub
+     * @return void
+     */
+    public function setStub(BaseStub &$stub)
     {
         $this->stub = $stub;
     }

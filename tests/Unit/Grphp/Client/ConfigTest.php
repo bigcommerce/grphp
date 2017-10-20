@@ -15,22 +15,55 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+declare(strict_types = 1);
+
 namespace Grphp\Client;
 
 use Grphp\Test\BaseTest;
+use \Grphp\Serializers\Errors\Json as JsonErrorSerializer;
+use Grphp\Test\TestSerializer;
 
 final class ConfigTest extends BaseTest
 {
     public function testDefaults()
     {
         $config = new Config();
-        $this->assertEquals('', $config->hostname);
-        $this->assertEquals(null, $config->authentication);
-        $this->assertEquals([], $config->authenticationOptions);
-        $this->assertEquals(\Grphp\Serializers\Errors\Json::class, $config->errorSerializer);
-        $this->assertEquals([], $config->errorSerializerOptions);
-        $this->assertEquals('error-internal-bin', $config->errorMetadataKey);
-        $this->assertEquals([], $config->interceptorOptions);
-        $this->assertEquals(true, $config->useDefaultInterceptors);
+        $this->assertEquals('', $config->getHostname());
+        $this->assertInstanceOf(JsonErrorSerializer::class, $config->getErrorSerializer());
+        $this->assertEquals(true, $config->useDefaultInterceptors());
+        $this->assertEquals([], $config->getClientOptions());
+    }
+
+    public function testSetHostname()
+    {
+        $hostname = 'mesh:1234';
+        $config = new Config();
+        $config->setHostname($hostname);
+        $this->assertEquals($hostname, $config->getHostname());
+    }
+
+    public function testSetErrorSerializer()
+    {
+        $serializer = new TestSerializer();
+        $config = new Config();
+        $config->setErrorSerializer($serializer);
+        $this->assertEquals($serializer, $config->getErrorSerializer());
+    }
+
+    public function testSetUseDefaultInterceptors()
+    {
+        $config = new Config();
+        $config->setUseDefaultInterceptors(false);
+        $this->assertFalse($config->useDefaultInterceptors());
+    }
+
+    public function testSetClientOptions()
+    {
+        $opts = [
+            'foo' => 'bar',
+        ];
+        $config = new Config();
+        $config->setClientOptions($opts);
+        $this->assertEquals($opts, $config->getClientOptions());
     }
 }

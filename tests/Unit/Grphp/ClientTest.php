@@ -15,10 +15,15 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+declare(strict_types = 1);
+
 namespace Grphp\Test;
 
 use Grphp\Authentication\Basic;
 use Grphp\Client;
+use Grphp\Client\Error;
+use Grphp\Client\Response;
+use Grphp\Test\Thing;
 
 final class ClientTest extends BaseTest
 {
@@ -33,48 +38,16 @@ final class ClientTest extends BaseTest
     }
 
     /**
-     *
-     */
-    public function testClearInterceptors()
-    {
-        $i = new TestInterceptor();
-        $this->client->addInterceptor($i);
-        $this->client->clearInterceptors();
-        $this->assertCount(0, $this->client->getInterceptors());
-    }
-
-    /**
-     * @depends testConstructor
-     */
-    public function testAddInterceptor()
-    {
-        $i = new TestInterceptor();
-        $this->client->addInterceptor($i);
-        $this->assertContains($i, $this->client->getInterceptors());
-    }
-
-    /**
-     * @depends testClearInterceptors
-     * @depends testAddInterceptor
-     */
-    public function testGetInterceptors()
-    {
-        $this->client->clearInterceptors();
-        $i1 = new TestInterceptor();
-        $this->client->addInterceptor($i1);
-        $i1 = new TestInterceptor();
-        $this->client->addInterceptor($i1);
-
-        $interceptors = $this->client->getInterceptors();
-        $this->assertCount(2, $interceptors);
-    }
-
-    /**
      * Test the call method
      *
      * @dataProvider providerCall
+     * @param int $id
+     * @param bool $isSuccess
+     * @param int $responseCode
+     * @param string $responseDetails
+     * @param array $responseMetadata
      */
-    public function testCall($id, $isSuccess = true, $responseCode = 0, $responseDetails = '', $responseMetadata = [])
+    public function testCall(int $id, bool $isSuccess = true, int $responseCode = 0, string $responseDetails = '', array $responseMetadata = [])
     {
         $opts = [
             'response_code' => $responseCode,
@@ -84,7 +57,7 @@ final class ClientTest extends BaseTest
         $req = new GetThingReq();
         $req->setId($id);
         $resp = $this->client->call($req, 'GetThing', [], $opts);
-        $this->assertInstanceOf(\Grphp\Client\Response::class, $resp);
+        $this->assertInstanceOf(Response::class, $resp);
         $this->assertEquals($isSuccess, $resp->isSuccess());
         $this->assertEquals($opts['response_code'], $resp->getStatusCode());
         $this->assertEquals($opts['response_details'], $resp->getStatusDetails());
@@ -94,13 +67,17 @@ final class ClientTest extends BaseTest
         $message = $resp->getResponse();
         $this->assertInstanceOf(GetThingResp::class, $message);
 
-        /** @var \Grphp\Test\Thing $thing */
+        /** @var Thing $thing */
         $thing = $message->getThing();
-        $this->assertInstanceOf(\Grphp\Test\Thing::class, $thing);
+        $this->assertInstanceOf(Thing::class, $thing);
         $this->assertEquals($id, $thing->getId());
         $this->assertEquals('Foo', $thing->getName());
     }
-    public function providerCall()
+
+    /**
+     * @return array
+     */
+    public function providerCall(): array
     {
         return [
             [123, true, 0, 'Whoa now', ['one' => 'two']],
@@ -121,7 +98,7 @@ final class ClientTest extends BaseTest
                 'response_code' => 9,
                 'response_details' => 'foo',
             ]);
-        } catch (\Grphp\Client\Error $e) {
+        } catch (Error $e) {
             $this->assertEquals($this->clientConfig, $e->getConfig());
             $this->assertEquals('foo', $e->getDetails());
             $this->assertEquals(9, $e->getStatusCode());
@@ -136,25 +113,26 @@ final class ClientTest extends BaseTest
      */
     public function testCallWithAuth()
     {
-        $this->cient = $this->buildClient([
-            'authentication' => new Basic([
+        $client = $this->buildClient([
+            'authentication' => 'basic',
+            'authenticationOptions' => [
                 'username' => 'foo',
                 'password' => 'bar',
-            ]),
+            ],
         ]);
 
         $req = new GetThingReq();
         $req->setId(123);
-        $resp = $this->client->call($req, 'GetThing', [], []);
-        $this->assertInstanceOf(\Grphp\Client\Response::class, $resp);
+        $resp = $client->call($req, 'GetThing', [], []);
+        $this->assertInstanceOf(Response::class, $resp);
         $this->assertEquals(true, $resp->isSuccess());
 
         /** @var \Grphp\Test\GetThingResp $message */
         $message = $resp->getResponse();
         $this->assertInstanceOf(GetThingResp::class, $message);
 
-        /** @var \Grphp\Test\Thing $thing */
+        /** @var Thing $thing */
         $thing = $message->getThing();
-        $this->assertInstanceOf(\Grphp\Test\Thing::class, $thing);
+        $this->assertInstanceOf(Thing::class, $thing);
     }
 }

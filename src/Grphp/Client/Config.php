@@ -15,7 +15,12 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+declare(strict_types = 1);
+
 namespace Grphp\Client;
+
+use Grphp\Serializers\Errors\Base as BaseErrorSerializer;
+use Grphp\Serializers\Errors\Json as JsonErrorSerializer;
 
 /**
  * Configuration object for Grphp Client
@@ -24,34 +29,82 @@ namespace Grphp\Client;
 class Config
 {
     /** @var string $hostname */
-    public $hostname = '';
-    /** @var string $authentication */
-    public $authentication;
-    /** @var array $authenticationOptions */
-    public $authenticationOptions = [];
-    /** @var string $errorSerializer */
-    public $errorSerializer;
-    /** @var array $errorSerializerOptions */
-    public $errorSerializerOptions = [];
-    /** @var string $errorMetadataKey */
-    public $errorMetadataKey = 'error-internal-bin';
-    /** @var array $interceptorOptions */
-    public $interceptorOptions = [];
+    private $hostname = '';
+    /** @var BaseErrorSerializer $errorSerializer */
+    private $errorSerializer;
     /** @var bool $useDefaultInterceptors */
-    public $useDefaultInterceptors = true;
+    private $useDefaultInterceptors = true;
+    /** @var array $clientOptions */
+    private $clientOptions = [];
+
+    /**
+     * @return string
+     */
+    public function getHostname(): string
+    {
+        return $this->hostname;
+    }
+
+    /**
+     * @param string $hostname
+     * @return void
+     */
+    public function setHostname(string $hostname)
+    {
+        $this->hostname = $hostname;
+    }
+
+    /**
+     * @return BaseErrorSerializer
+     */
+    public function getErrorSerializer(): BaseErrorSerializer
+    {
+        if (empty($this->errorSerializer)) {
+            $this->errorSerializer = new JsonErrorSerializer();
+        }
+        return $this->errorSerializer;
+    }
+
+    /**
+     * @param BaseErrorSerializer $serializer
+     * @return void
+     */
+    public function setErrorSerializer(BaseErrorSerializer $serializer)
+    {
+        $this->errorSerializer = $serializer;
+    }
+
+    /**
+     * @return bool
+     */
+    public function useDefaultInterceptors(): bool
+    {
+        return $this->useDefaultInterceptors;
+    }
+
+    /**
+     * @param bool $use
+     * @return void
+     */
+    public function setUseDefaultInterceptors(bool $use)
+    {
+        $this->useDefaultInterceptors = $use;
+    }
+
+    /**
+     * @return array
+     */
+    public function getClientOptions(): array
+    {
+        return $this->clientOptions;
+    }
 
     /**
      * @param array $options
+     * @return void
      */
-    public function __construct($options = [])
+    public function setClientOptions(array $options)
     {
-        $this->hostname = array_key_exists('hostname', $options) ? $options['hostname'] : '';
-        $this->authentication = array_key_exists('authentication', $options) ? $options['authentication'] : null;
-        $this->authenticationOptions = array_key_exists('authentication_options', $options) ? $options['authentication_options'] : [];
-        $this->errorSerializer = array_key_exists('error_serializer', $options) ? $options['error_serializer'] : \Grphp\Serializers\Errors\Json::class;
-        $this->errorSerializerOptions = array_key_exists('error_serializer_options', $options) ? $options['error_serializer_options'] : [];
-        $this->errorMetadataKey = array_key_exists('error_metadata_key', $options) ? $options['error_metadata_key'] : 'error-internal-bin';
-        $this->interceptorOptions = array_key_exists('interceptor_options', $options) ? $options['interceptor_options'] : [];
-        $this->useDefaultInterceptors = array_key_exists('use_default_interceptors', $options) ? $options['use_default_interceptors'] : true;
+        $this->clientOptions = $options;
     }
 }

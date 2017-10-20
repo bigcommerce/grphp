@@ -15,22 +15,46 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-namespace Grphp\Authentication;
+namespace Grphp\Client\Interceptors;
 
-/**
- * Class Base
- * @package Grphp\Authentication
- */
-abstract class Base implements Iface
+use Grphp\Test\BaseTest;
+use Grphp\Test\TestInterceptor;
+
+final class RegistryTest extends BaseTest
 {
-    /** @var array $options */
-    protected $options = [];
+    public function setUp()
+    {
+        parent::setUp();
+        $this->buildClient();
+    }
+
+    public function testClearInterceptors()
+    {
+        $i = new TestInterceptor();
+        $this->client->interceptors->add($i);
+        $this->client->interceptors->clear();
+        $this->assertEquals(0, $this->client->interceptors->count());
+    }
+
+    public function testAddInterceptor()
+    {
+        $i = new TestInterceptor();
+        $this->client->interceptors->add($i);
+        $this->assertContains($i, $this->client->interceptors->getAll());
+    }
 
     /**
-     * @param array $options
+     * @depends testClearInterceptors
+     * @depends testAddInterceptor
      */
-    public function __construct($options = [])
+    public function testCountInterceptors()
     {
-        $this->options = $options;
+        $this->client->interceptors->clear();
+        $i1 = new TestInterceptor();
+        $this->client->interceptors->add($i1);
+        $i1 = new TestInterceptor();
+        $this->client->interceptors->add($i1);
+
+        $this->assertEquals(2, $this->client->interceptors->count());
     }
 }
