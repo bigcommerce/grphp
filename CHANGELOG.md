@@ -1,5 +1,13 @@
 Changelog for grphp.
 
+h3. 1.0.0
+
+* Support for PHP7.0+ only
+* Move authentication into interceptors to allow control of authentication timings
+* Simplify configuration and add type checking
+* Add channel configuration support
+* Add interceptor registry for future insertion order support
+
 h3. 0.3.2
 
 * Ensure LinkerD interceptor pulls from SERVER and REQUEST

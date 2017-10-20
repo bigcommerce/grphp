@@ -17,6 +17,7 @@
  */
 namespace Grphp\Client\Interceptors\LinkerD;
 
+use Grphp\Client\Interceptors\Base;
 use Grphp\Test\BaseTest;
 
 final class ContextPropagationTest extends BaseTest
@@ -30,6 +31,18 @@ final class ContextPropagationTest extends BaseTest
     }
 
     /**
+     * @param Base $interceptor
+     * @return \Grphp\Client\Response
+     */
+    private function callInterceptor(Base $interceptor)
+    {
+        $resp = $this->buildResponse();
+        return $interceptor->call(function() use (&$resp) {
+            return $resp;
+        });
+    }
+
+    /**
      * @param string $incomingKey
      * @param string $metadataKey
      * @param string $value
@@ -38,9 +51,7 @@ final class ContextPropagationTest extends BaseTest
     public function testMetadataInServer($incomingKey, $metadataKey, $value)
     {
         $_SERVER[$incomingKey] = $value;
-        $this->interceptor->call(function() {
-            return true;
-        });
+        $this->callInterceptor($this->interceptor);
         $interceptorMetadata = $this->interceptor->getMetadata();
         $this->assertEquals($value, $interceptorMetadata[$metadataKey][0]);
     }
@@ -62,9 +73,7 @@ final class ContextPropagationTest extends BaseTest
     public function testMetadataInRequest($incomingKey, $metadataKey, $value)
     {
         $_REQUEST[$incomingKey] = $value;
-        $this->interceptor->call(function() {
-            return true;
-        });
+        $this->callInterceptor($this->interceptor);
         $interceptorMetadata = $this->interceptor->getMetadata();
         $this->assertEquals($value, $interceptorMetadata[$metadataKey][0]);
     }
@@ -88,9 +97,7 @@ final class ContextPropagationTest extends BaseTest
     {
         $_SERVER[$incomingKey] = $serverValue;
         $_REQUEST[$incomingKey] = $requestValue;
-        $this->interceptor->call(function() {
-            return true;
-        });
+        $this->callInterceptor($this->interceptor);
         $interceptorMetadata = $this->interceptor->getMetadata();
         $this->assertEquals($requestValue, $interceptorMetadata[$metadataKey][0]);
     }

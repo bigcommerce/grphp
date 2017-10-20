@@ -15,6 +15,8 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+declare(strict_types = 1);
+
 namespace Grphp\Client;
 
 use Grphp\Serializers\Errors\Base as BaseSerializer;
@@ -38,7 +40,6 @@ class Error extends \Exception
     /**
      * @param \Grphp\Client\Config $config
      * @param \stdClass $status
-     * @param float $elapsed
      */
     public function __construct(Config $config, $status)
     {
@@ -50,7 +51,7 @@ class Error extends \Exception
     /**
      * @return string
      */
-    public function getDetails()
+    public function getDetails(): string
     {
         return $this->status ? $this->status->details : '';
     }
@@ -58,7 +59,7 @@ class Error extends \Exception
     /**
      * @return int
      */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return $this->status ? intval($this->status->code) : 0;
     }
@@ -82,7 +83,7 @@ class Error extends \Exception
     /**
      * @return Config
      */
-    public function getConfig()
+    public function getConfig(): Config
     {
         return $this->config;
     }
@@ -101,17 +102,10 @@ class Error extends \Exception
     }
 
     /**
-     * @return \Grphp\Serializers\Errors\Base
+     * @return BaseSerializer
      */
-    private function getErrorSerializer()
+    private function getErrorSerializer(): BaseSerializer
     {
-        $class = $this->config->errorSerializer;
-        if (is_object($class) && is_a($class, BaseSerializer::class)) {
-            return $class;
-        } elseif (is_string($class) && class_exists($class)) {
-            return new $class($this->config->errorSerializerOptions);
-        } else {
-            return null;
-        }
+        return $this->config->getErrorSerializer();
     }
 }

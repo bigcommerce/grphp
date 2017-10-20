@@ -15,23 +15,50 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+declare(strict_types = 1);
+
 namespace Grphp\Test;
+
+use Grphp\Client;
+use Grphp\Client\Config;
+use Grphp\Client\Response;
 use PHPUnit\Framework\TestCase;
+use \Grphp\Serializers\Errors\Json as JsonErrorSerializer;
 
 class BaseTest extends TestCase
 {
-    /** @var \Grphp\Client\Config $clientConfig */
+    /** @var Config $clientConfig */
     protected $clientConfig;
-    /** @var \Grphp\Client $client */
+    /** @var Client $client */
     protected $client;
-
-    protected function buildClient(array $options = [])
+    /**
+     * @param array $options
+     * @return Client
+     */
+    protected function buildClient(array $options = []): Client
     {
         $options = array_merge([
             'hostname' => '0.0.0.0:9000',
+            'error_serializer' => new JsonErrorSerializer()
         ], $options);
 
-        $this->clientConfig = new \Grphp\Client\Config($options);
-        $this->client = new \Grphp\Client(\Grphp\Test\ThingsClient::class, $this->clientConfig);
+        $this->clientConfig = new Config();
+        $this->clientConfig->setHostname($options['hostname']);
+        $this->clientConfig->setErrorSerializer($options['error_serializer']);
+        $this->client = new Client(ThingsClient::class, $this->clientConfig);
+        return $this->client;
+    }
+
+    protected function buildResponse()
+    {
+        $status = new \stdClass();
+        $status->code = 0;
+        $status->details = 'foo';
+        $status->code = 0;
+        $status->details = 'OK';
+        $status->metadata = [
+            'error-internal-bin' => ['{"message": "Test"}'],
+        ];
+        return new Response(new GetThingResp(), $status);
     }
 }

@@ -15,38 +15,49 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-namespace Grphp\Authentication;
+declare(strict_types = 1);
 
-use Grphp\Client\Config as ClientConfig;
+namespace Grphp\Client\Interceptors;
 
 /**
- * Builds Authentication metadata dependent on the authentication config option
- * @package Grphp\Authentication
+ * Maintains a registry of interceptors on a client
+ * @package Grphp\Client\Interceptors
  */
-class Builder
+class Registry
 {
+    /** @var Base[] $interceptors */
+    private $interceptors = [];
+
     /**
-     * @param ClientConfig $config
-     * @return mixed
+     * @return Base[]
      */
-    public static function fromClientConfig(ClientConfig $config)
+    public function getAll()
     {
-        $auth = null;
-        if (is_string($config->authentication)) {
-            switch (strtolower($config->authentication)) {
-                case 'basic':
-                    $auth = new Basic($config->authenticationOptions);
-                    break;
-                default:
-                    if (class_exists($config->authentication)) {
-                        $class = $config->authentication;
-                        $auth = new $class($config->authenticationOptions);
-                    }
-            }
-        } elseif (is_object($config->authentication)) {
-            return $config->authentication;
-        }
-        return $auth;
+        return $this->interceptors;
     }
 
+    /**
+     * @param Base $interceptor
+     * @return void
+     */
+    public function add(Base $interceptor)
+    {
+        $this->interceptors[] = $interceptor;
+    }
+
+    /**
+     * @return void
+     */
+    public function clear()
+    {
+        $this->interceptors = [];
+    }
+
+    /**
+     * @return int
+     */
+    public function count(): int
+    {
+        return count($this->interceptors);
+    }
 }

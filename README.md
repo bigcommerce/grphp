@@ -9,12 +9,13 @@ It provides an abstracted client for gRPC services, along with other tools to he
 up fast and efficiently at scale. Some of its features include:
 
 * Robust client error handling and metadata transport abilities
-* Server authentication strategy support, with basic auth with multiple key support built in
+* Interceptor support and insertion-order maintained registry
+* Server authentication support, with basic auth with multiple key support built in
 * Error data serialization in output metadata to allow fine-grained error handling in the transport while still 
 preserving gRPC BadStatus codes
 * Client execution timings in responses
 
-grphp currently has active support for gRPC 1.3.2, and requires PHP 5.5+ or 7.0+ to run. gRPC 1.4 is not yet supported.
+grphp currently has active support for gRPC 1.3-1.6, and requires 7.0+ to run.
 
 ## Installation
 
@@ -28,9 +29,8 @@ which does involve installing the gRPC PHP extension.
 ## Client
 
 ```php
-$config = new Grphp\Client\Config([
-    'hostname' => 'IP_OF_SERVER:PORT',
-]);
+$config = new Grphp\Client\Config();
+$config->setHostname('IP_OF_SERVER:PORT');
 $client = new Grphp\Client(Things\ThingsClient::class, $config);
 
 $request = new Things\GetThingReq();
@@ -42,29 +42,6 @@ echo $thing->id; // 1234
 echo $resp->getStatusCode(); // 0 (these are gRPC status codes)
 echo $resp->getStatusDetails(); // OK
 ``` 
-
-## Authentication
-
-Authentication is done via adapters, which are specified in the config. You can either pass in:
-
-* The string "basic" for basic HTTP auth
-* A string class name for an existing class
-* An instantiated object that extends `Grphp\Authentication\Base`
-
-### Basic Authentication
-
-grphp supports basic auth for requests that is sent through the metadata of the request. 
-
-```php
-$config = new Grphp\Client\Config([
-    'hostname' => 'IP_OF_SERVER:PORT',
-    'authentication' => 'basic',
-    'authentication_options' => [
-        'username' => 'foo',
-        'password' => 'bar', // optional
-    ]
-]);
-```
 
 ### Custom Client Interceptors
 
@@ -87,6 +64,7 @@ class FooHeader extends BaseInterceptor
         // set outgoing metadata
         $this->metadata['stuff'] = ['my_thing'];
         // make the outbound call
+        /** @var Response $response */
         $response = $callback();  
         // adjust incoming metadata        
         $response->setMetadata([
@@ -102,18 +80,33 @@ You'll note that you have to make sure to execute the callback that is called.
 Then you add it as normal:
 
 ```php
-$i = new FooHeader(['foo_value' => 'bar']);
-$client->addInterceptor($i);
+$i = new FooInterceptor(['foo_value' => 'bar']);
+$client->interceptors->add($i);
 ```
 
 Interceptors run in the order that they are added, wrapping each as they go.
+
+## Authentication
+
+Authentication is done via interceptors. Currently grphp has Basic auth out of the box.
+
+### Basic Authentication
+
+grphp supports basic auth for requests that is sent through the metadata of the request. 
+
+```php
+$client = new Grphp\Client(Things\ThingsClient::class, $config);
+$client->interceptors->add(Grphp\Client\Interceptors\Authentication\Basic([
+    'username' => 'foo',
+    'password' => 'bar', // optional
+]));
+```
 
 ## Error Handling
 
 gRPC prefers handling errors through status (BadStatus) codes; however, these do not return much information as to 
 field specific errors, application codes, or debug information. grphp provides a way to read data from the response 
-metadata, which is stored in the `error-internal-bin` key (configurable through the `error_metadata_key` configuration 
-option).
+metadata, which is stored in the `error-internal-bin` key.
 
 Assuming we have a service that has a method that appends that data, you can access it like so:
 
@@ -141,14 +134,10 @@ class MyProtoSerializer extends Grphp\Serializers\Errors\Base
     }
 }
 
-$config = new Grphp\Client\Config([
-    'hostname' => 'IP_OF_SERVER:PORT',
-    'error_serializer' => new MyProtoSerializer(),
-]);
+$config = new Grphp\Client\Config();
+$config->setHostname('IP_OF_SERVER:PORT');
+$config->setErrorSerializer(new MyProtoSerializer());
 ```
-
-The serializer can be passed as a string name of the class or the instance of the class. If you pass the string name,
-you can pass in an associative array of `error_serializer_options` to the config to provide options for your serializer.
 
 ## Roadmap
 

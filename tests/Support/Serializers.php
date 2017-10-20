@@ -15,19 +15,23 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-namespace Grphp\Authentication;
+declare(strict_types = 1);
+
+namespace Grphp\Test;
+
+use Grphp\Serializers\Errors\Base;
 
 /**
- * Interface for Authentication adapters for gRPC client requests
- *
- * @package Grphp\Authentication
+ * @package Grphp\Serializers\Errors
  */
-interface Iface
+class TestSerializer extends Base
 {
     /**
-     * Return authentication metadata that should be injected into the client request metadata
-     *
-     * @return array
+     * @param string $trailer
+     * @return string
      */
-    public function getMetadata();
+    public function deserialize($trailer): string
+    {
+        return $trailer;
+    }
 }

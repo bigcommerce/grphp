@@ -15,8 +15,12 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+declare(strict_types = 1);
+
 namespace Grphp\Client;
 
+use Grphp\Client\Config;
+use Grphp\Client\Error;
 use \Grphp\Test\BaseTest;
 
 final class ErrorTest extends BaseTest
@@ -30,10 +34,7 @@ final class ErrorTest extends BaseTest
 
     public function setUp()
     {
-        $this->buildClient([
-            'error_serializer' => \Grphp\Serializers\Errors\Json::class,
-        ]);
-        $this->elapsed = rand(0.0, 20.0);
+        $this->buildClient();
         $status = new \stdClass();
         $status->code = 0;
         $status->details = 'OK';
@@ -41,20 +42,20 @@ final class ErrorTest extends BaseTest
             Error::ERROR_METADATA_KEY => ['{"message": "Test"}'],
         ];
         $this->status = $status;
-        $this->error = new Error($this->clientConfig, $status, $this->elapsed);
+        $this->error = new Error($this->clientConfig, $status);
     }
 
     public function testConstructor()
     {
-        $this->assertInstanceOf(\Grphp\Client\Error::class, $this->error);
+        $this->assertInstanceOf(Error::class, $this->error);
         $this->assertEquals("Error: {$this->status->details}", $this->error->getMessage());
-        $this->assertInstanceOf(\Grphp\Client\Config::class, $this->error->getConfig());
+        $this->assertInstanceOf(Config::class, $this->error->getConfig());
         $this->assertEquals($this->status->code, $this->error->getCode());
     }
 
     public function testGetConfig()
     {
-        $this->assertInstanceOf(\Grphp\Client\Config::class, $this->error->getConfig());
+        $this->assertInstanceOf(Config::class, $this->error->getConfig());
         $this->assertEquals($this->clientConfig, $this->error->getConfig());
     }
 

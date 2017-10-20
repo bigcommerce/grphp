@@ -15,6 +15,8 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+declare(strict_types = 1);
+
 namespace Grphp\Serializers\Errors;
 
 /**
@@ -30,8 +32,26 @@ abstract class Base implements Iface
     /**
      * @param array $options
      */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
         $this->options = $options;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptions(): array
+    {
+        return $this->options;
+    }
+
+    /**
+     * @param string $k
+     * @param mixed $default
+     * @return mixed
+     */
+    public function getOption(string $k, $default = null)
+    {
+        return array_key_exists($k, $this->options) ? $this->options[$k] : $default;
     }
 }

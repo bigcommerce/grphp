@@ -17,14 +17,17 @@
  */
 declare(strict_types = 1);
 
-namespace Grphp\Client\Interceptors;
+namespace Grphp\Client\Interceptors\Authentication;
 
+use Grphp\Client\Interceptors\Base;
 use Grphp\Client\Response;
 
 /**
- * @package Grphp\Interceptors
+ * Adds Basic HTTP Auth adapters for gRPC requests
+ *
+ * @package Grphp\Client\Interceptors\Authentication
  */
-class Timer extends Base
+class Basic extends Base
 {
     /**
      * @param callable $callback
@@ -32,11 +35,53 @@ class Timer extends Base
      */
     public function call(callable $callback): Response
     {
-        \PHP_Timer::start();
-        /** @var Response $response */
-        $response = $callback();
-        $time = \PHP_Timer::stop();
-        $response->setElapsed(round($time * 1000.00, 4));
-        return $response;
+        if ($this->passwordConfigured()) {
+            $this->metadata[$this->getKey()] = $this->getValue();
+        }
+        return $callback();
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getValue(): array
+    {
+        $username = $this->getUsername();
+        $password = $this->getPassword();
+        $username = empty($username) ? '' : "$username:";
+        $authString = base64_encode("$username$password");
+        return [trim("Basic $authString")];
+    }
+
+    /**
+     * @return string
+     */
+    private function getKey(): string
+    {
+        return $this->getOption('metadata_key', 'authorization');
+    }
+
+    /**
+     * @return bool
+     */
+    private function passwordConfigured(): bool
+    {
+        return !empty($this->getPassword());
+    }
+
+    /**
+     * @return string
+     */
+    private function getPassword(): string
+    {
+        return trim($this->getOption('password', ''));
+    }
+
+    /**
+     * @return string
+     */
+    private function getUsername(): string
+    {
+        return trim($this->getOption('username', ''));
     }
 }

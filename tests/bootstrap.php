@@ -21,3 +21,4 @@ date_default_timezone_set('UTC');
 require dirname(__DIR__) . '/tests/Support/BaseTest.php';
 require dirname(__DIR__) . '/tests/Support/Client.php';
 require dirname(__DIR__) . '/tests/Support/TestInterceptors.php';
+require dirname(__DIR__) . '/tests/Support/Serializers.php';
