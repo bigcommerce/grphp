@@ -19,13 +19,21 @@ namespace Grphp\Test;
 
 use Grphp\Authentication\Basic;
 use Grphp\Client;
+use Grphp\Client\Config;
+use Grphp\Client\Error;
+use Grphp\Client\Response;
+use Grphp\Test\GetThingReq;
+use Grphp\Test\GetThingResp;
+use Grphp\Test\TestInterceptor;
+use Grphp\Test\Thing;
+use Grphp\Test\ThingsClient;
 use PHPUnit\Framework\TestCase;
 
 final class ClientTest extends TestCase
 {
-    /** @var \Grphp\Client\Config $clientConfig */
+    /** @var Config $clientConfig */
     protected $clientConfig;
-    /** @var \Grphp\Client $client */
+    /** @var Client $client */
     protected $client;
 
     private function buildClient(array $options = [])
@@ -34,8 +42,8 @@ final class ClientTest extends TestCase
             'hostname' => '0.0.0.0:9000',
         ], $options);
 
-        $this->clientConfig = new \Grphp\Client\Config($options);
-        $this->client = new \Grphp\Client(\Grphp\Test\ThingsClient::class, $this->clientConfig);
+        $this->clientConfig = new Config($options);
+        $this->client = new Client(ThingsClient::class, $this->clientConfig);
     }
 
     public function setUp()
@@ -97,19 +105,19 @@ final class ClientTest extends TestCase
         $req = new GetThingReq();
         $req->setId($id);
         $resp = $this->client->call($req, 'GetThing', [], $opts);
-        $this->assertInstanceOf(\Grphp\Client\Response::class, $resp);
+        $this->assertInstanceOf(Response::class, $resp);
         $this->assertEquals($isSuccess, $resp->isSuccess());
         $this->assertEquals($opts['response_code'], $resp->getStatusCode());
         $this->assertEquals($opts['response_details'], $resp->getStatusDetails());
         $this->assertEquals($opts['response_metadata'], $resp->getStatus()->metadata);
 
-        /** @var \Grphp\Test\GetThingResp $message */
+        /** @var GetThingResp $message */
         $message = $resp->getResponse();
         $this->assertInstanceOf(GetThingResp::class, $message);
 
-        /** @var \Grphp\Test\Thing $thing */
+        /** @var Thing $thing */
         $thing = $message->getThing();
-        $this->assertInstanceOf(\Grphp\Test\Thing::class, $thing);
+        $this->assertInstanceOf(Thing::class, $thing);
         $this->assertEquals($id, $thing->getId());
         $this->assertEquals('Foo', $thing->getName());
     }
@@ -135,7 +143,7 @@ final class ClientTest extends TestCase
                 'response_code' => 9,
                 'response_details' => 'foo',
             ]);
-        } catch (\Grphp\Client\Error $e) {
+        } catch (Error $e) {
             $this->assertEquals($this->clientConfig, $e->getConfig());
             $this->assertEquals('foo', $e->getDetails());
             $this->assertEquals(9, $e->getStatusCode());
@@ -158,16 +166,16 @@ final class ClientTest extends TestCase
         $req = new GetThingReq();
         $req->setId(123);
         $resp = $this->client->call($req, 'GetThing', [], []);
-        $this->assertInstanceOf(\Grphp\Client\Response::class, $resp);
+        $this->assertInstanceOf(Response::class, $resp);
         $this->assertEquals(true, $resp->isSuccess());
 
-        /** @var \Grphp\Test\GetThingResp $message */
+        /** @var GetThingResp $message */
         $message = $resp->getResponse();
         $this->assertInstanceOf(GetThingResp::class, $message);
 
-        /** @var \Grphp\Test\Thing $thing */
+        /** @var Thing $thing */
         $thing = $message->getThing();
-        $this->assertInstanceOf(\Grphp\Test\Thing::class, $thing);
+        $this->assertInstanceOf(Thing::class, $thing);
     }
 
     public function testClientIsNotInstantiatedOnConstruct()
