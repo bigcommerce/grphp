@@ -17,9 +17,9 @@
  */
 namespace Grphp\Client;
 
-use \Grphp\Test\BaseTest;
+use PHPUnit\Framework\TestCase;
 
-final class ErrorTest extends BaseTest
+final class ErrorTest extends TestCase
 {
     /** @var Error */
     protected $error;
@@ -27,6 +27,16 @@ final class ErrorTest extends BaseTest
     protected $status;
     /** @var float */
     protected $elapsed;
+
+    private function buildClient(array $options = [])
+    {
+        $options = array_merge([
+            'hostname' => '0.0.0.0:9000',
+        ], $options);
+
+        $this->clientConfig = new \Grphp\Client\Config($options);
+        $this->client = new \Grphp\Client(\Grphp\Test\ThingsClient::class, $this->clientConfig);
+    }
 
     public function setUp()
     {

@@ -17,9 +17,9 @@
  */
 namespace Grphp\Client;
 
-use Grphp\Test\BaseTest;
+use PHPUnit\Framework\TestCase;
 
-final class ConfigTest extends BaseTest
+final class ConfigTest extends TestCase
 {
     public function testDefaults()
     {

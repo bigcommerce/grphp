@@ -17,9 +17,9 @@
  */
 namespace Grphp\Client\Interceptors\LinkerD;
 
-use Grphp\Test\BaseTest;
+use PHPUnit\Framework\TestCase;
 
-final class ContextPropagationTest extends BaseTest
+final class ContextPropagationTest extends TestCase
 {
     /** @var ContextPropagation $interceptor */
     protected $interceptor;

@@ -18,9 +18,9 @@
 namespace Grphp\Authentication;
 
 use Grphp\Client\Config;
-use Grphp\Test\BaseTest;
+use PHPUnit\Framework\TestCase;
 
-final class BuilderTest extends BaseTest
+final class BuilderTest extends TestCase
 {
     public function testFromClientConfigBasicString()
     {

@@ -19,9 +19,25 @@ namespace Grphp\Test;
 
 use Grphp\Authentication\Basic;
 use Grphp\Client;
+use PHPUnit\Framework\TestCase;
 
-final class ClientTest extends BaseTest
+final class ClientTest extends TestCase
 {
+    /** @var \Grphp\Client\Config $clientConfig */
+    protected $clientConfig;
+    /** @var \Grphp\Client $client */
+    protected $client;
+
+    private function buildClient(array $options = [])
+    {
+        $options = array_merge([
+            'hostname' => '0.0.0.0:9000',
+        ], $options);
+
+        $this->clientConfig = new \Grphp\Client\Config($options);
+        $this->client = new \Grphp\Client(\Grphp\Test\ThingsClient::class, $this->clientConfig);
+    }
+
     public function setUp()
     {
         $this->buildClient();
@@ -152,5 +168,12 @@ final class ClientTest extends BaseTest
         /** @var \Grphp\Test\Thing $thing */
         $thing = $message->getThing();
         $this->assertInstanceOf(\Grphp\Test\Thing::class, $thing);
+    }
+
+    public function testClientIsNotInstantiatedOnConstruct()
+    {
+        $this->buildClient();
+
+        static::assertAttributeEmpty('client', $this->client);
     }
 }
