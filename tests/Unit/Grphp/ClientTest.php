@@ -32,9 +32,6 @@ final class ClientTest extends BaseTest
         $this->assertInstanceOf(Client::class, $this->client);
     }
 
-    /**
-     *
-     */
     public function testClearInterceptors()
     {
         $i = new TestInterceptor();
@@ -100,6 +97,7 @@ final class ClientTest extends BaseTest
         $this->assertEquals($id, $thing->getId());
         $this->assertEquals('Foo', $thing->getName());
     }
+
     public function providerCall()
     {
         return [
@@ -131,8 +129,6 @@ final class ClientTest extends BaseTest
 
     /**
      * Test the call method with auth provided
-     *
-     * @dataProvider providerCall
      */
     public function testCallWithAuth()
     {
