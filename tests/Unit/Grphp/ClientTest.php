@@ -177,4 +177,13 @@ final class ClientTest extends TestCase
     {
         static::assertAttributeEmpty('client', $this->client);
     }
+
+    public function testCallInstantiatesClient()
+    {
+        $getThingReq = new GetThingReq();
+        $getThingReq->setId(123);
+
+        $this->client->call($getThingReq, 'GetThing', [], []);
+        $this->assertAttributeInstanceOf(ThingsClient::class, 'client', $this->client);
+    }
 }
