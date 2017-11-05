@@ -36,24 +36,19 @@ final class ClientTest extends TestCase
     /** @var Client $client */
     protected $client;
 
-    private function buildClient(array $options = [])
+    private static function createClientConfig(array $options = []): Config
     {
-        $options = array_merge([
-            'hostname' => '0.0.0.0:9000',
-        ], $options);
+        return new Config(['hostname' => '0.0.0.0:9000'] + $options);
+    }
 
-        $this->clientConfig = new Config($options);
-        $this->client = new Client(ThingsClient::class, $this->clientConfig);
+    private static function createClient(Config $clientConfig): Client
+    {
+        return new Client(ThingsClient::class, $clientConfig);
     }
 
     public function setUp()
     {
-        $this->buildClient();
-    }
-
-    public function testConstructor()
-    {
-        $this->assertInstanceOf(Client::class, $this->client);
+        $this->client = static::createClient(static::createClientConfig());
     }
 
     public function testClearInterceptors()
@@ -64,9 +59,6 @@ final class ClientTest extends TestCase
         $this->assertCount(0, $this->client->getInterceptors());
     }
 
-    /**
-     * @depends testConstructor
-     */
     public function testAddInterceptor()
     {
         $i = new TestInterceptor();
@@ -144,7 +136,7 @@ final class ClientTest extends TestCase
                 'response_details' => 'foo',
             ]);
         } catch (Error $e) {
-            $this->assertEquals($this->clientConfig, $e->getConfig());
+            $this->assertAttributeSame($e->getConfig(), 'config', $this->client);
             $this->assertEquals('foo', $e->getDetails());
             $this->assertEquals(9, $e->getStatusCode());
             $this->assertNull($e->getTrailer());
@@ -156,16 +148,18 @@ final class ClientTest extends TestCase
      */
     public function testCallWithAuth()
     {
-        $this->cient = $this->buildClient([
-            'authentication' => new Basic([
-                'username' => 'foo',
-                'password' => 'bar',
-            ]),
-        ]);
+        $client = static::createClient(
+            static::createClientConfig([
+                'authentication' => new Basic([
+                    'username' => 'foo',
+                    'password' => 'bar',
+                ]),
+            ])
+        );
 
         $req = new GetThingReq();
         $req->setId(123);
-        $resp = $this->client->call($req, 'GetThing', [], []);
+        $resp = $client->call($req, 'GetThing', [], []);
         $this->assertInstanceOf(Response::class, $resp);
         $this->assertEquals(true, $resp->isSuccess());
 
@@ -180,8 +174,6 @@ final class ClientTest extends TestCase
 
     public function testClientIsNotInstantiatedOnConstruct()
     {
-        $this->buildClient();
-
         static::assertAttributeEmpty('client', $this->client);
     }
 }
