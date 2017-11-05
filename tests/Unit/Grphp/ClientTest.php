@@ -24,10 +24,10 @@ use Grphp\Client\Error;
 use Grphp\Client\Response;
 use Grphp\Test\GetThingReq;
 use Grphp\Test\GetThingResp;
-use Grphp\Test\TestInterceptor;
 use Grphp\Test\Thing;
 use Grphp\Test\ThingsClient;
 use PHPUnit\Framework\TestCase;
+use Grphp\Client\Interceptors\Base as BaseInterceptor;
 
 final class ClientTest extends TestCase
 {
@@ -53,17 +53,20 @@ final class ClientTest extends TestCase
 
     public function testClearInterceptors()
     {
-        $i = new TestInterceptor();
-        $this->client->addInterceptor($i);
+        $interceptorProphecy = $this->prophesize(BaseInterceptor::class);
+
+        $this->client->addInterceptor($interceptorProphecy->reveal());
         $this->client->clearInterceptors();
         $this->assertCount(0, $this->client->getInterceptors());
     }
 
     public function testAddInterceptor()
     {
-        $i = new TestInterceptor();
-        $this->client->addInterceptor($i);
-        $this->assertContains($i, $this->client->getInterceptors());
+        $interceptorProphecy = $this->prophesize(BaseInterceptor::class);
+        $interceptorMock = $interceptorProphecy->reveal();
+
+        $this->client->addInterceptor($interceptorMock);
+        $this->assertContains($interceptorMock, $this->client->getInterceptors());
     }
 
     /**
@@ -73,13 +76,11 @@ final class ClientTest extends TestCase
     public function testGetInterceptors()
     {
         $this->client->clearInterceptors();
-        $i1 = new TestInterceptor();
-        $this->client->addInterceptor($i1);
-        $i1 = new TestInterceptor();
-        $this->client->addInterceptor($i1);
 
-        $interceptors = $this->client->getInterceptors();
-        $this->assertCount(2, $interceptors);
+        $this->client->addInterceptor($this->prophesize(BaseInterceptor::class)->reveal());
+        $this->client->addInterceptor($this->prophesize(BaseInterceptor::class)->reveal());
+
+        $this->assertCount(2, $this->client->getInterceptors());
     }
 
     /**
