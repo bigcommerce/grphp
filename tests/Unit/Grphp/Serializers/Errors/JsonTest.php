@@ -17,9 +17,9 @@
  */
 namespace Grphp\Serializers\Errors;
 
-use Grphp\Test\BaseTest;
+use PHPUnit\Framework\TestCase;
 
-final class JsonTest extends BaseTest
+final class JsonTest extends TestCase
 {
     /** @var Json $serializer */
     protected $serializer;

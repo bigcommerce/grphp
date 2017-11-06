@@ -17,9 +17,9 @@
  */
 namespace Grphp\Client;
 
-use \Grphp\Test\BaseTest;
+use PHPUnit\Framework\TestCase;
 
-final class ResponseTest extends BaseTest
+final class ResponseTest extends TestCase
 {
     /** @var \Grphp\Test\GetThingResp */
     protected $resp;

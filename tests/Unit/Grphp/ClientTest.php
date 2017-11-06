@@ -19,38 +19,54 @@ namespace Grphp\Test;
 
 use Grphp\Authentication\Basic;
 use Grphp\Client;
+use Grphp\Client\Config;
+use Grphp\Client\Error;
+use Grphp\Client\Response;
+use Grphp\Test\GetThingReq;
+use Grphp\Test\GetThingResp;
+use Grphp\Test\Thing;
+use Grphp\Test\ThingsClient;
+use PHPUnit\Framework\TestCase;
+use Grphp\Client\Interceptors\Base as BaseInterceptor;
 
-final class ClientTest extends BaseTest
+final class ClientTest extends TestCase
 {
+    /** @var Config $clientConfig */
+    protected $clientConfig;
+    /** @var Client $client */
+    protected $client;
+
+    private static function createClientConfig(array $options = []): Config
+    {
+        return new Config(['hostname' => '0.0.0.0:9000'] + $options);
+    }
+
+    private static function createClient(Config $clientConfig): Client
+    {
+        return new Client(ThingsClient::class, $clientConfig);
+    }
+
     public function setUp()
     {
-        $this->buildClient();
+        $this->client = static::createClient(static::createClientConfig());
     }
 
-    public function testConstructor()
-    {
-        $this->assertInstanceOf(Client::class, $this->client);
-    }
-
-    /**
-     *
-     */
     public function testClearInterceptors()
     {
-        $i = new TestInterceptor();
-        $this->client->addInterceptor($i);
+        $interceptorProphecy = $this->prophesize(BaseInterceptor::class);
+
+        $this->client->addInterceptor($interceptorProphecy->reveal());
         $this->client->clearInterceptors();
-        $this->assertCount(0, $this->client->getInterceptors());
+        static::assertCount(0, $this->client->getInterceptors());
     }
 
-    /**
-     * @depends testConstructor
-     */
     public function testAddInterceptor()
     {
-        $i = new TestInterceptor();
-        $this->client->addInterceptor($i);
-        $this->assertContains($i, $this->client->getInterceptors());
+        $interceptorProphecy = $this->prophesize(BaseInterceptor::class);
+        $interceptorMock = $interceptorProphecy->reveal();
+
+        $this->client->addInterceptor($interceptorMock);
+        static::assertContains($interceptorMock, $this->client->getInterceptors());
     }
 
     /**
@@ -60,13 +76,11 @@ final class ClientTest extends BaseTest
     public function testGetInterceptors()
     {
         $this->client->clearInterceptors();
-        $i1 = new TestInterceptor();
-        $this->client->addInterceptor($i1);
-        $i1 = new TestInterceptor();
-        $this->client->addInterceptor($i1);
 
-        $interceptors = $this->client->getInterceptors();
-        $this->assertCount(2, $interceptors);
+        $this->client->addInterceptor($this->prophesize(BaseInterceptor::class)->reveal());
+        $this->client->addInterceptor($this->prophesize(BaseInterceptor::class)->reveal());
+
+        static::assertCount(2, $this->client->getInterceptors());
     }
 
     /**
@@ -84,22 +98,23 @@ final class ClientTest extends BaseTest
         $req = new GetThingReq();
         $req->setId($id);
         $resp = $this->client->call($req, 'GetThing', [], $opts);
-        $this->assertInstanceOf(\Grphp\Client\Response::class, $resp);
-        $this->assertEquals($isSuccess, $resp->isSuccess());
-        $this->assertEquals($opts['response_code'], $resp->getStatusCode());
-        $this->assertEquals($opts['response_details'], $resp->getStatusDetails());
-        $this->assertEquals($opts['response_metadata'], $resp->getStatus()->metadata);
+        static::assertInstanceOf(Response::class, $resp);
+        static::assertEquals($isSuccess, $resp->isSuccess());
+        static::assertEquals($opts['response_code'], $resp->getStatusCode());
+        static::assertEquals($opts['response_details'], $resp->getStatusDetails());
+        static::assertEquals($opts['response_metadata'], $resp->getStatus()->metadata);
 
-        /** @var \Grphp\Test\GetThingResp $message */
+        /** @var GetThingResp $message */
         $message = $resp->getResponse();
         $this->assertInstanceOf(GetThingResp::class, $message);
 
-        /** @var \Grphp\Test\Thing $thing */
+        /** @var Thing $thing */
         $thing = $message->getThing();
-        $this->assertInstanceOf(\Grphp\Test\Thing::class, $thing);
-        $this->assertEquals($id, $thing->getId());
-        $this->assertEquals('Foo', $thing->getName());
+        static::assertInstanceOf(Thing::class, $thing);
+        static::assertEquals($id, $thing->getId());
+        static::assertEquals('Foo', $thing->getName());
     }
+
     public function providerCall()
     {
         return [
@@ -121,40 +136,54 @@ final class ClientTest extends BaseTest
                 'response_code' => 9,
                 'response_details' => 'foo',
             ]);
-        } catch (\Grphp\Client\Error $e) {
-            $this->assertEquals($this->clientConfig, $e->getConfig());
-            $this->assertEquals('foo', $e->getDetails());
-            $this->assertEquals(9, $e->getStatusCode());
-            $this->assertNull($e->getTrailer());
+        } catch (Error $e) {
+            static::assertAttributeSame($e->getConfig(), 'config', $this->client);
+            static::assertEquals('foo', $e->getDetails());
+            static::assertEquals(9, $e->getStatusCode());
+            static::assertNull($e->getTrailer());
         }
     }
 
     /**
      * Test the call method with auth provided
-     *
-     * @dataProvider providerCall
      */
     public function testCallWithAuth()
     {
-        $this->cient = $this->buildClient([
-            'authentication' => new Basic([
-                'username' => 'foo',
-                'password' => 'bar',
-            ]),
-        ]);
+        $client = static::createClient(
+            static::createClientConfig([
+                'authentication' => new Basic([
+                    'username' => 'foo',
+                    'password' => 'bar',
+                ]),
+            ])
+        );
 
         $req = new GetThingReq();
         $req->setId(123);
-        $resp = $this->client->call($req, 'GetThing', [], []);
-        $this->assertInstanceOf(\Grphp\Client\Response::class, $resp);
-        $this->assertEquals(true, $resp->isSuccess());
+        $resp = $client->call($req, 'GetThing', [], []);
+        static::assertInstanceOf(Response::class, $resp);
+        static::assertEquals(true, $resp->isSuccess());
 
-        /** @var \Grphp\Test\GetThingResp $message */
+        /** @var GetThingResp $message */
         $message = $resp->getResponse();
-        $this->assertInstanceOf(GetThingResp::class, $message);
+        static::assertInstanceOf(GetThingResp::class, $message);
 
-        /** @var \Grphp\Test\Thing $thing */
+        /** @var Thing $thing */
         $thing = $message->getThing();
-        $this->assertInstanceOf(\Grphp\Test\Thing::class, $thing);
+        static::assertInstanceOf(Thing::class, $thing);
+    }
+
+    public function testClientIsNotInstantiatedOnConstruct()
+    {
+        static::assertAttributeEmpty('client', $this->client);
+    }
+
+    public function testCallInstantiatesClient()
+    {
+        $getThingReq = new GetThingReq();
+        $getThingReq->setId(123);
+
+        $this->client->call($getThingReq, 'GetThing', [], []);
+        static::assertAttributeInstanceOf(ThingsClient::class, 'client', $this->client);
     }
 }

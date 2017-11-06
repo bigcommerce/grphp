@@ -17,9 +17,9 @@
  */
 namespace Grphp\Authentication;
 
-use Grphp\Test\BaseTest;
+use PHPUnit\Framework\TestCase;
 
-final class BasicTest extends BaseTest
+final class BasicTest extends TestCase
 {
     /**
      * @dataProvider providerGetMetadata

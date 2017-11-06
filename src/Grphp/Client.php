@@ -17,6 +17,7 @@
  */
 namespace Grphp;
 
+use Grpc\BaseStub;
 use Grpc\ChannelCredentials;
 use Grphp\Client\Config;
 use Grphp\Client\Interceptors\Base as BaseInterceptor;
@@ -31,24 +32,24 @@ use Grphp\Client\Interceptors\LinkerD\ContextPropagation as LinkerDContextInterc
  */
 class Client
 {
-    /** @var \Grpc\BaseStub $client */
+    /** @var BaseStub $client */
     protected $client;
     /** @var Config $config */
     protected $config;
     /** @var array<BaseInterceptor> $interceptors */
     protected $interceptors = [];
+    /** @var string */
+    private $clientClassName;
 
     /**
-     * @param string $clientClass
+     * @param string $clientClassName
      * @param Client\Config|null $config
      */
-    public function __construct($clientClass, Config $config)
+    public function __construct(string $clientClassName, Config $config)
     {
+        $this->clientClassName = $clientClassName;
         $this->config = $config;
-        $credentials = ChannelCredentials::createInsecure();
-        $this->client = new $clientClass($config->hostname, [
-            'credentials' => $credentials,
-        ]);
+
         if ($this->config->useDefaultInterceptors) {
             $this->addInterceptor(new TimerInterceptor());
             $this->addInterceptor(new LinkerDContextInterceptor());
@@ -72,7 +73,7 @@ class Client
         $interceptors = $this->interceptors;
         return $this->intercept($interceptors, $request, $method, $metadata, $options, function() use (&$interceptors, &$request, &$method, &$metadata, &$options)
         {
-            list($resp, $status) = $this->client->$method($request, $metadata, $options)->wait();
+            list($resp, $status) = $this->getClient()->$method($request, $metadata, $options)->wait();
             if (!is_null($resp)) {
                 $response = new Client\Response($resp, $status);
             } else {
@@ -80,6 +81,21 @@ class Client
             }
             return $response;
         });
+    }
+
+    /**
+     * Lazy-load/instantiate client instance and appropriate channel credentials
+     * @return BaseStub
+     */
+    private function getClient(): BaseStub
+    {
+        if ($this->client === null) {
+            $this->client = new $this->clientClassName($this->config->hostname, [
+                'credentials' => ChannelCredentials::createInsecure(),
+            ]);
+        }
+
+        return $this->client;
     }
 
     /**
@@ -141,7 +157,8 @@ class Client
             $i->setRequest($request);
             $i->setMethod($method);
             $i->setMetadata($metadata);
-            $i->setStub($this->client);
+            $client = $this->getClient();
+            $i->setStub($client);
             return $i->call(function() use (&$i, &$interceptors, &$method, &$request, &$metadata, &$options, &$callback) {
                 $metadata = $i->getMetadata();
                 $request = $i->getRequest();
