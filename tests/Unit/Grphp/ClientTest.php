@@ -57,7 +57,7 @@ final class ClientTest extends TestCase
 
         $this->client->addInterceptor($interceptorProphecy->reveal());
         $this->client->clearInterceptors();
-        $this->assertCount(0, $this->client->getInterceptors());
+        static::assertCount(0, $this->client->getInterceptors());
     }
 
     public function testAddInterceptor()
@@ -66,7 +66,7 @@ final class ClientTest extends TestCase
         $interceptorMock = $interceptorProphecy->reveal();
 
         $this->client->addInterceptor($interceptorMock);
-        $this->assertContains($interceptorMock, $this->client->getInterceptors());
+        static::assertContains($interceptorMock, $this->client->getInterceptors());
     }
 
     /**
@@ -80,7 +80,7 @@ final class ClientTest extends TestCase
         $this->client->addInterceptor($this->prophesize(BaseInterceptor::class)->reveal());
         $this->client->addInterceptor($this->prophesize(BaseInterceptor::class)->reveal());
 
-        $this->assertCount(2, $this->client->getInterceptors());
+        static::assertCount(2, $this->client->getInterceptors());
     }
 
     /**
@@ -98,11 +98,11 @@ final class ClientTest extends TestCase
         $req = new GetThingReq();
         $req->setId($id);
         $resp = $this->client->call($req, 'GetThing', [], $opts);
-        $this->assertInstanceOf(Response::class, $resp);
-        $this->assertEquals($isSuccess, $resp->isSuccess());
-        $this->assertEquals($opts['response_code'], $resp->getStatusCode());
-        $this->assertEquals($opts['response_details'], $resp->getStatusDetails());
-        $this->assertEquals($opts['response_metadata'], $resp->getStatus()->metadata);
+        static::assertInstanceOf(Response::class, $resp);
+        static::assertEquals($isSuccess, $resp->isSuccess());
+        static::assertEquals($opts['response_code'], $resp->getStatusCode());
+        static::assertEquals($opts['response_details'], $resp->getStatusDetails());
+        static::assertEquals($opts['response_metadata'], $resp->getStatus()->metadata);
 
         /** @var GetThingResp $message */
         $message = $resp->getResponse();
@@ -110,9 +110,9 @@ final class ClientTest extends TestCase
 
         /** @var Thing $thing */
         $thing = $message->getThing();
-        $this->assertInstanceOf(Thing::class, $thing);
-        $this->assertEquals($id, $thing->getId());
-        $this->assertEquals('Foo', $thing->getName());
+        static::assertInstanceOf(Thing::class, $thing);
+        static::assertEquals($id, $thing->getId());
+        static::assertEquals('Foo', $thing->getName());
     }
 
     public function providerCall()
@@ -137,10 +137,10 @@ final class ClientTest extends TestCase
                 'response_details' => 'foo',
             ]);
         } catch (Error $e) {
-            $this->assertAttributeSame($e->getConfig(), 'config', $this->client);
-            $this->assertEquals('foo', $e->getDetails());
-            $this->assertEquals(9, $e->getStatusCode());
-            $this->assertNull($e->getTrailer());
+            static::assertAttributeSame($e->getConfig(), 'config', $this->client);
+            static::assertEquals('foo', $e->getDetails());
+            static::assertEquals(9, $e->getStatusCode());
+            static::assertNull($e->getTrailer());
         }
     }
 
@@ -161,16 +161,16 @@ final class ClientTest extends TestCase
         $req = new GetThingReq();
         $req->setId(123);
         $resp = $client->call($req, 'GetThing', [], []);
-        $this->assertInstanceOf(Response::class, $resp);
-        $this->assertEquals(true, $resp->isSuccess());
+        static::assertInstanceOf(Response::class, $resp);
+        static::assertEquals(true, $resp->isSuccess());
 
         /** @var GetThingResp $message */
         $message = $resp->getResponse();
-        $this->assertInstanceOf(GetThingResp::class, $message);
+        static::assertInstanceOf(GetThingResp::class, $message);
 
         /** @var Thing $thing */
         $thing = $message->getThing();
-        $this->assertInstanceOf(Thing::class, $thing);
+        static::assertInstanceOf(Thing::class, $thing);
     }
 
     public function testClientIsNotInstantiatedOnConstruct()
@@ -184,6 +184,6 @@ final class ClientTest extends TestCase
         $getThingReq->setId(123);
 
         $this->client->call($getThingReq, 'GetThing', [], []);
-        $this->assertAttributeInstanceOf(ThingsClient::class, 'client', $this->client);
+        static::assertAttributeInstanceOf(ThingsClient::class, 'client', $this->client);
     }
 }
