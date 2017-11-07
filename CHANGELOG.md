@@ -1,5 +1,9 @@
 Changelog for grphp.
 
+h3. 0.3.9
+
+* Ensure that client stubs are not instantiated on construction, but rather lazily loaded on first service call
+
 h3. 0.3.2
 
 * Ensure LinkerD interceptor pulls from SERVER and REQUEST
@@ -18,7 +22,7 @@ h3. 0.2.1
 
 * Allow client stub to be accessible to interceptors
 * Add isSuccess to \Grphp\Client\Response
- 
+
 h3. 0.2.0
 
 * Add LinkerD context propagation interceptor
