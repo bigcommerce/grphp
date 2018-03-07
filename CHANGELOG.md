@@ -1,5 +1,10 @@
 Changelog for grphp.
 
+h3. 0.4.0
+
+* Update to gRPC 1.9.x
+* Get off BC gRPC fork now that root SSL memory leak issue is fixed
+
 h3. 0.3.9
 
 * Ensure that client stubs are not instantiated on construction, but rather lazily loaded on first service call
