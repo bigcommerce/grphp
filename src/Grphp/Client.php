@@ -15,14 +15,19 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+declare(strict_types = 1);
+
 namespace Grphp;
 
+use Google\Protobuf\Internal\Message;
 use Grpc\BaseStub;
 use Grpc\ChannelCredentials;
 use Grphp\Client\Config;
 use Grphp\Client\Interceptors\Base as BaseInterceptor;
 use Grphp\Client\Interceptors\Timer as TimerInterceptor;
 use Grphp\Client\Interceptors\LinkerD\ContextPropagation as LinkerDContextInterceptor;
+use Grphp\Client\Response;
+use Grphp\Client\Error;
 
 /**
  * Layers over gRPC client communication to provide extra response, header, and timing
@@ -63,21 +68,25 @@ class Client
      * @param string $method
      * @param array $metadata
      * @param array $options
-     * @return Client\Response
-     * @throws Client\Error
+     * @return Response
      */
-    public function call($request, $method, array $metadata = [], array $options = [])
+    public function call(Message $request, string $method, array $metadata = [], array $options = []): Response
     {
         $metadata = array_merge($this->buildAuthenticationMetadata(), $metadata);
 
         $interceptors = $this->interceptors;
-        return $this->intercept($interceptors, $request, $method, $metadata, $options, function() use (&$interceptors, &$request, &$method, &$metadata, &$options)
-        {
+        return $this->intercept($interceptors, $request, $method, $metadata, $options, function () use (
+            &$interceptors,
+            &$request,
+            &$method,
+            &$metadata,
+            &$options
+        ) {
             list($resp, $status) = $this->getClient()->$method($request, $metadata, $options)->wait();
             if (!is_null($resp)) {
-                $response = new Client\Response($resp, $status);
+                $response = new Response($resp, $status);
             } else {
-                throw new Client\Error($this->config, $status);
+                throw new Error($this->config, $status);
             }
             return $response;
         });
@@ -112,13 +121,15 @@ class Client
     /**
      * @return array<BaseInterceptor> An array of all interceptor objects assigned to this client
      */
-    public function getInterceptors()
+    public function getInterceptors(): array
     {
         return $this->interceptors;
     }
 
     /**
      * Clears all interceptors on the client
+     *
+     * @return void
      */
     public function clearInterceptors()
     {
@@ -128,7 +139,7 @@ class Client
     /**
      * @return array
      */
-    private function buildAuthenticationMetadata()
+    private function buildAuthenticationMetadata(): array
     {
         $authentication = Authentication\Builder::fromClientConfig($this->config);
         if ($authentication) {
@@ -159,7 +170,15 @@ class Client
             $i->setMetadata($metadata);
             $client = $this->getClient();
             $i->setStub($client);
-            return $i->call(function() use (&$i, &$interceptors, &$method, &$request, &$metadata, &$options, &$callback) {
+            return $i->call(function () use (
+                &$i,
+                &$interceptors,
+                &$method,
+                &$request,
+                &$metadata,
+                &$options,
+                &$callback
+            ) {
                 $metadata = $i->getMetadata();
                 $request = $i->getRequest();
                 if (count($interceptors) > 0) {

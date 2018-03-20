@@ -15,7 +15,11 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+declare(strict_types = 1);
+
 namespace Grphp\Client;
+
+use Grphp\Serializers\Errors\Json as JsonSerializer;
 
 /**
  * Configuration object for Grphp Client
@@ -45,13 +49,29 @@ class Config
      */
     public function __construct($options = [])
     {
-        $this->hostname = array_key_exists('hostname', $options) ? $options['hostname'] : '';
-        $this->authentication = array_key_exists('authentication', $options) ? $options['authentication'] : null;
-        $this->authenticationOptions = array_key_exists('authentication_options', $options) ? $options['authentication_options'] : [];
-        $this->errorSerializer = array_key_exists('error_serializer', $options) ? $options['error_serializer'] : \Grphp\Serializers\Errors\Json::class;
-        $this->errorSerializerOptions = array_key_exists('error_serializer_options', $options) ? $options['error_serializer_options'] : [];
-        $this->errorMetadataKey = array_key_exists('error_metadata_key', $options) ? $options['error_metadata_key'] : 'error-internal-bin';
-        $this->interceptorOptions = array_key_exists('interceptor_options', $options) ? $options['interceptor_options'] : [];
-        $this->useDefaultInterceptors = array_key_exists('use_default_interceptors', $options) ? $options['use_default_interceptors'] : true;
+        $this->hostname = array_key_exists('hostname', $options)
+            ? $options['hostname']
+            : '';
+        $this->authentication = array_key_exists('authentication', $options)
+            ? $options['authentication']
+            : null;
+        $this->authenticationOptions = array_key_exists('authentication_options', $options)
+            ? $options['authentication_options']
+            : [];
+        $this->errorSerializer = array_key_exists('error_serializer', $options)
+            ? $options['error_serializer']
+            : JsonSerializer::class;
+        $this->errorSerializerOptions = array_key_exists('error_serializer_options', $options)
+            ? $options['error_serializer_options']
+            : [];
+        $this->errorMetadataKey = array_key_exists('error_metadata_key', $options)
+            ? $options['error_metadata_key']
+            : 'error-internal-bin';
+        $this->interceptorOptions = array_key_exists('interceptor_options', $options)
+            ? $options['interceptor_options']
+            : [];
+        $this->useDefaultInterceptors = array_key_exists('use_default_interceptors', $options)
+            ? $options['use_default_interceptors']
+            : true;
     }
 }
