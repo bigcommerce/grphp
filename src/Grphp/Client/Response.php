@@ -15,7 +15,11 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+declare(strict_types = 1);
+
 namespace Grphp\Client;
+
+use Google\Protobuf\Internal\Message;
 
 /**
  * Abstracts a gRPC response to provide accessor information into metadata, status codes,
@@ -25,7 +29,7 @@ namespace Grphp\Client;
  */
 class Response
 {
-    /** @var \Google\Protobuf\Internal\Message $response */
+    /** @var Message $response */
     protected $response;
     /** @var \stdClass $status */
     protected $status;
@@ -33,20 +37,19 @@ class Response
     protected $elapsed = 0.0;
 
     /**
-     * @param \Google\Protobuf\Internal\Message $response
+     * @param Message $response
      * @param \stdClass $status
-     * @param float $elapsed
      */
-    public function __construct($response, $status)
+    public function __construct(Message $response, $status)
     {
         $this->response = $response;
         $this->status = $status;
     }
 
     /**
-     * @return \Google\Protobuf\Internal\Message
+     * @return Message
      */
-    public function getResponse()
+    public function getResponse(): Message
     {
         return $this->response;
     }
@@ -54,7 +57,7 @@ class Response
     /**
      * @return int
      */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return $this->status->code;
     }
@@ -62,7 +65,7 @@ class Response
     /**
      * @return string
      */
-    public function getStatusDetails()
+    public function getStatusDetails(): string
     {
         return $this->status->details;
     }
@@ -70,7 +73,7 @@ class Response
     /**
      * @return array
      */
-    public function getMetadata()
+    public function getMetadata(): array
     {
         return $this->status->metadata;
     }
@@ -86,7 +89,7 @@ class Response
     /**
      * @return float
      */
-    public function getElapsed()
+    public function getElapsed(): float
     {
         return $this->elapsed;
     }
@@ -94,7 +97,7 @@ class Response
     /**
      * @param float $time
      */
-    public function setElapsed($time)
+    public function setElapsed(float $time)
     {
         $this->elapsed = $time;
     }
@@ -102,7 +105,7 @@ class Response
     /**
      * @return bool
      */
-    public function isSuccess()
+    public function isSuccess(): bool
     {
         return $this->getStatusCode() == 0;
     }
@@ -111,7 +114,7 @@ class Response
      * @param array $newMetadata
      * @param bool $merge
      */
-    public function setMetadata(array $newMetadata = [], $merge = true)
+    public function setMetadata(array $newMetadata = [], bool $merge = true)
     {
         if ($merge) {
             $this->status->metadata = array_merge($this->status->metadata, $newMetadata);
@@ -123,7 +126,7 @@ class Response
     /**
      * @return float
      */
-    public function getInternalExecutionTime()
+    public function getInternalExecutionTime(): float
     {
         return array_key_exists('timer', $this->status->metadata)
           && count($this->status->metadata['timer']) > 0

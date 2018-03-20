@@ -15,9 +15,14 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+declare(strict_types = 1);
+
 namespace Grphp\Client\Interceptors\LinkerD;
 
+use Grphp\Client\Response;
+use Grphp\Test\GetThingResp;
 use PHPUnit\Framework\TestCase;
+use Grphp\Client\Interceptors\Base;
 
 final class ContextPropagationTest extends TestCase
 {
@@ -38,9 +43,7 @@ final class ContextPropagationTest extends TestCase
     public function testMetadataInServer($incomingKey, $metadataKey, $value)
     {
         $_SERVER[$incomingKey] = $value;
-        $this->interceptor->call(function() {
-            return true;
-        });
+        $this->callInterceptor($this->interceptor);
         $interceptorMetadata = $this->interceptor->getMetadata();
         $this->assertEquals($value, $interceptorMetadata[$metadataKey][0]);
     }
@@ -62,9 +65,7 @@ final class ContextPropagationTest extends TestCase
     public function testMetadataInRequest($incomingKey, $metadataKey, $value)
     {
         $_REQUEST[$incomingKey] = $value;
-        $this->interceptor->call(function() {
-            return true;
-        });
+        $this->callInterceptor($this->interceptor);
         $interceptorMetadata = $this->interceptor->getMetadata();
         $this->assertEquals($value, $interceptorMetadata[$metadataKey][0]);
     }
@@ -88,9 +89,7 @@ final class ContextPropagationTest extends TestCase
     {
         $_SERVER[$incomingKey] = $serverValue;
         $_REQUEST[$incomingKey] = $requestValue;
-        $this->interceptor->call(function() {
-            return true;
-        });
+        $this->callInterceptor($this->interceptor);
         $interceptorMetadata = $this->interceptor->getMetadata();
         $this->assertEquals($requestValue, $interceptorMetadata[$metadataKey][0]);
     }
@@ -101,5 +100,33 @@ final class ContextPropagationTest extends TestCase
             $data[] = [$k, $v, 'foo', 'bar'];
         }
         return $data;
+    }
+
+    /**
+     * @param Base $interceptor
+     * @return Response
+     */
+    private function callInterceptor(Base $interceptor): Response
+    {
+        $resp = $this->buildResponse();
+        return $interceptor->call(function () use (&$resp) {
+            return $resp;
+        });
+    }
+
+    /**
+     * @return Response
+     */
+    private function buildResponse(): Response
+    {
+        $status = new \stdClass();
+        $status->code = 0;
+        $status->details = 'foo';
+        $status->code = 0;
+        $status->details = 'OK';
+        $status->metadata = [
+            'error-internal-bin' => ['{"message": "Test"}'],
+        ];
+        return new Response(new GetThingResp(), $status);
     }
 }

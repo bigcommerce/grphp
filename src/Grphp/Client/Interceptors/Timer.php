@@ -15,6 +15,8 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+declare(strict_types = 1);
+
 namespace Grphp\Client\Interceptors;
 
 use Grphp\Client\Response;
@@ -28,7 +30,7 @@ class Timer extends Base
      * @param callable $callback
      * @return Response
      */
-    public function call(callable $callback)
+    public function call(callable $callback): Response
     {
         \PHP_Timer::start();
         /** @var Response $response */

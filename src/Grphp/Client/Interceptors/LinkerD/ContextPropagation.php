@@ -15,9 +15,12 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+declare(strict_types = 1);
+
 namespace Grphp\Client\Interceptors\LinkerD;
 
 use Grphp\Client\Interceptors\Base;
+use Grphp\Client\Response;
 
 /**
  * Properly passes through l5d context propagation headers to enable dynamic l5d request routing
@@ -37,8 +40,9 @@ class ContextPropagation extends Base
      * gRPC requires metadata keys to be as a string. Also, the PHP gRPC library expects them in an array.
      *
      * @param callable $callback
+     * @return Response
      */
-    public function call(callable $callback)
+    public function call(callable $callback): Response
     {
         foreach (self::METADATA_KEYS as $incomingKey => $metadataKey) {
             if (array_key_exists($incomingKey, $_SERVER)) {
