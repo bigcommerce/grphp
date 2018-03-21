@@ -25,7 +25,6 @@ require_once __DIR__ . '/Compiled/GetThingResp.php';
 
 use Grpc\AbstractCall;
 use Grpc\Channel;
-use Grpc\UnaryCall;
 
 class StubbedCall extends AbstractCall
 {
@@ -71,7 +70,7 @@ class CallStatus
     public $details = '';
     public $metadata = [];
 
-    public function __construct($code = 0, $details = '', $metadata = [])
+    public function __construct(int $code = 0, string $details = '', array $metadata = [])
     {
         $this->code = $code;
         $this->details = $details;

@@ -3,7 +3,7 @@ set -e
 
 if [ "$TEST_GROUP" == "prereq" ]
 then
-  ./vendor/bin/phpcs --standard=PSR2 src
+  ./vendor/bin/phpcs --standard=PSR2 --ignore=src/Grphp/grpc.stubs.php src
 
 elif [ "$TEST_GROUP"  == "1" ]
 then

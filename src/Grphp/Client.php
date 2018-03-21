@@ -21,13 +21,15 @@ namespace Grphp;
 
 use Google\Protobuf\Internal\Message;
 use Grpc\BaseStub;
-use Grpc\ChannelCredentials;
 use Grphp\Client\Config;
 use Grphp\Client\Interceptors\Base as BaseInterceptor;
 use Grphp\Client\Interceptors\Timer as TimerInterceptor;
 use Grphp\Client\Interceptors\LinkerD\ContextPropagation as LinkerDContextInterceptor;
+use Grphp\Client\Request;
 use Grphp\Client\Response;
-use Grphp\Client\Error;
+use Grphp\Client\Strategy\H2Proxy\Config as H2ProxyConfig;
+use Grphp\Client\Strategy\H2Proxy\Strategy as H2ProxyStrategy;
+use Grphp\Client\Strategy\H2Proxy\StrategyFactory as H2ProxyStrategyFactory;
 
 /**
  * Layers over gRPC client communication to provide extra response, header, and timing
@@ -59,12 +61,13 @@ class Client
             $this->addInterceptor(new TimerInterceptor());
             $this->addInterceptor(new LinkerDContextInterceptor());
         }
+        $this->validateAndDetermineStrategy();
     }
 
     /**
      * Issue the call to the server, wrapping with the given interceptors
      *
-     * @param \Google\Protobuf\Internal\Message $request
+     * @param Message $request
      * @param string $method
      * @param array $metadata
      * @param array $options
@@ -82,25 +85,21 @@ class Client
             &$metadata,
             &$options
         ) {
-            list($resp, $status) = $this->getClient()->$method($request, $metadata, $options)->wait();
-            if (!is_null($resp)) {
-                $response = new Response($resp, $status);
-            } else {
-                throw new Error($this->config, $status);
-            }
-            return $response;
+            $strategy = $this->config->getStrategy();
+            $request = new Request($this->config, $method, $request, $this->getClient(), $metadata, $options);
+            return $strategy->execute($request);
         });
     }
 
     /**
      * Lazy-load/instantiate client instance and appropriate channel credentials
-     * @return BaseStub
+     * @return \Grpc\BaseStub
      */
-    private function getClient(): BaseStub
+    private function getClient()
     {
         if ($this->client === null) {
             $this->client = new $this->clientClassName($this->config->hostname, [
-                'credentials' => ChannelCredentials::createInsecure(),
+                'credentials' => \Grpc\ChannelCredentials::createInsecure(),
             ]);
         }
 
@@ -189,6 +188,26 @@ class Client
             });
         } else {
             return $callback();
+        }
+    }
+
+    /**
+     * Load stubs and use h2proxy strategy if the C extension is not loaded
+     */
+    private function validateAndDetermineStrategy()
+    {
+        if (extension_loaded('grpc')) {
+            return;
+        }
+
+        require_once dirname(__FILE__) . '/grpc.stubs.php';
+
+        // force the h2proxy strategy
+        $strategy = $this->config->getStrategy();
+        if (!is_a($strategy, H2ProxyStrategy::class)) {
+            $h2ProxyConfig = new H2ProxyConfig();
+            $h2ProxyStrategy = (new H2ProxyStrategyFactory($h2ProxyConfig))->build();
+            $this->config->setStrategy($h2ProxyStrategy);
         }
     }
 }

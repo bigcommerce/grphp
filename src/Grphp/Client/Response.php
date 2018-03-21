@@ -20,27 +20,26 @@ declare(strict_types = 1);
 namespace Grphp\Client;
 
 use Google\Protobuf\Internal\Message;
+use Grphp\Client\Error\Status;
 
 /**
  * Abstracts a gRPC response to provide accessor information into metadata, status codes,
  * trailing output metadata, and more.
- *
- * @package Grphp\Client
  */
 class Response
 {
     /** @var Message $response */
     protected $response;
-    /** @var \stdClass $status */
+    /** @var Status $status */
     protected $status;
     /** @var float $elapsed */
     protected $elapsed = 0.0;
 
     /**
      * @param Message $response
-     * @param \stdClass $status
+     * @param Status $status
      */
-    public function __construct(Message $response, $status)
+    public function __construct($response, Status $status)
     {
         $this->response = $response;
         $this->status = $status;
@@ -49,7 +48,7 @@ class Response
     /**
      * @return Message
      */
-    public function getResponse(): Message
+    public function getResponse()
     {
         return $this->response;
     }
@@ -59,7 +58,7 @@ class Response
      */
     public function getStatusCode(): int
     {
-        return $this->status->code;
+        return $this->status->getCode();
     }
 
     /**
@@ -67,7 +66,7 @@ class Response
      */
     public function getStatusDetails(): string
     {
-        return $this->status->details;
+        return $this->status->getDetails();
     }
 
     /**
@@ -75,13 +74,13 @@ class Response
      */
     public function getMetadata(): array
     {
-        return $this->status->metadata;
+        return $this->status->getHeaders()->toArray();
     }
 
     /**
-     * @return \stdClass
+     * @return Status
      */
-    public function getStatus()
+    public function getStatus(): Status
     {
         return $this->status;
     }
@@ -96,6 +95,7 @@ class Response
 
     /**
      * @param float $time
+     * @return void
      */
     public function setElapsed(float $time)
     {
@@ -111,26 +111,15 @@ class Response
     }
 
     /**
-     * @param array $newMetadata
-     * @param bool $merge
-     */
-    public function setMetadata(array $newMetadata = [], bool $merge = true)
-    {
-        if ($merge) {
-            $this->status->metadata = array_merge($this->status->metadata, $newMetadata);
-        } else {
-            $this->status->metadata = $newMetadata;
-        }
-    }
-
-    /**
      * @return float
      */
     public function getInternalExecutionTime(): float
     {
-        return array_key_exists('timer', $this->status->metadata)
-          && count($this->status->metadata['timer']) > 0
-            ? floatval($this->status->metadata['timer'][0])
-            : 0.0;
+        $headers = $this->status->getHeaders();
+        $header = $headers->get('timer');
+        if ($header) {
+            return floatval($header->getFirstValue());
+        }
+        return 0.0;
     }
 }

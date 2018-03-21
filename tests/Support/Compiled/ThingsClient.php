@@ -17,10 +17,13 @@
  */
 namespace Grphp\Test;
 
-use Grpc\AbstractCall;
-
 class ThingsClient extends \Grpc\BaseStub
 {
+    public function getExpectedResponseMessages() {
+        return [
+            'getThing' => '\Grphp\Test\GetThingResp',
+        ];
+    }
 
     protected $channel;
 
@@ -31,14 +34,14 @@ class ThingsClient extends \Grpc\BaseStub
      */
     public function __construct($hostname, $opts, $channel = null) {
         parent::__construct($hostname, $opts, $channel);
-        $this->channel = new \Grpc\Channel($hostname, $opts);;
+        $this->channel = new \Grpc\Channel($hostname, $opts);
     }
 
     /**
      * @param \Grphp\Test\GetThingReq $argument input argument
      * @param array $metadata metadata
      * @param array $options call options
-     * @return AbstractCall
+     * @return StubbedCall
      */
     public function GetThing(\Grphp\Test\GetThingReq $argument,
                              $metadata = [], $options = []) {

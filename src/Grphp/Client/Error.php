@@ -19,6 +19,7 @@ declare(strict_types = 1);
 
 namespace Grphp\Client;
 
+use Grphp\Client\Error\Status;
 use Grphp\Serializers\Errors\Base as BaseSerializer;
 
 /**
@@ -39,13 +40,13 @@ class Error extends \Exception
 
     /**
      * @param \Grphp\Client\Config $config
-     * @param \stdClass $status
+     * @param Status $status
      */
-    public function __construct(Config $config, $status)
+    public function __construct(Config $config, Status $status)
     {
         $this->status = $status;
         $this->config = $config;
-        parent::__construct("Error: $status->details", $status->code);
+        parent::__construct("Error: {$this->getDetails()}", $this->getStatusCode());
     }
 
     /**
@@ -53,7 +54,7 @@ class Error extends \Exception
      */
     public function getDetails(): string
     {
-        return $this->status ? $this->status->details : '';
+        return $this->status->getDetails();
     }
 
     /**
@@ -61,7 +62,15 @@ class Error extends \Exception
      */
     public function getStatusCode(): int
     {
-        return $this->status ? intval($this->status->code) : 0;
+        return intval($this->status->getCode());
+    }
+
+    /**
+     * @return array
+     */
+    public function getStatusMetadata(): array
+    {
+        return $this->status->getHeaders()->toArray();
     }
 
     /**
@@ -93,12 +102,12 @@ class Error extends \Exception
      */
     private function getTrailingMetadataError()
     {
-        return $this->status
-            && $this->status->metadata
-            && array_key_exists(self::ERROR_METADATA_KEY, $this->status->metadata)
-            && is_array($this->status->metadata[self::ERROR_METADATA_KEY])
-                ? $this->status->metadata[self::ERROR_METADATA_KEY][0]
-                : null;
+        $headers = $this->status->getHeaders();
+        $metadataHeader = $headers->get(self::ERROR_METADATA_KEY);
+        if ($metadataHeader) {
+            return $metadataHeader->getFirstValue();
+        }
+        return null;
     }
 
     /**

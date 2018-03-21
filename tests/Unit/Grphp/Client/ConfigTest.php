@@ -17,20 +17,35 @@
  */
 namespace Grphp\Client;
 
+use Grphp\Client\Config as ClientConfig;
+use Grphp\Client\Strategy\Grpc\Strategy as GrpcStrategy;
+use Grphp\Client\Strategy\H2Proxy\Config as H2ProxyConfig;
+use Grphp\Client\Strategy\H2Proxy\StrategyFactory as H2ProxyStrategyFactory;
 use PHPUnit\Framework\TestCase;
+use Grphp\Serializers\Errors\Json as JsonErrorSerializer;
 
 final class ConfigTest extends TestCase
 {
     public function testDefaults()
     {
-        $config = new Config();
-        $this->assertEquals('', $config->hostname);
-        $this->assertEquals(null, $config->authentication);
-        $this->assertEquals([], $config->authenticationOptions);
-        $this->assertEquals(\Grphp\Serializers\Errors\Json::class, $config->errorSerializer);
-        $this->assertEquals([], $config->errorSerializerOptions);
-        $this->assertEquals('error-internal-bin', $config->errorMetadataKey);
-        $this->assertEquals([], $config->interceptorOptions);
-        $this->assertEquals(true, $config->useDefaultInterceptors);
+        $config = new ClientConfig();
+        static::assertEquals('', $config->hostname);
+        static::assertEquals(null, $config->authentication);
+        static::assertEquals([], $config->authenticationOptions);
+        static::assertEquals(JsonErrorSerializer::class, $config->errorSerializer);
+        static::assertEquals([], $config->errorSerializerOptions);
+        static::assertEquals('error-internal-bin', $config->errorMetadataKey);
+        static::assertEquals([], $config->interceptorOptions);
+        static::assertEquals(true, $config->useDefaultInterceptors);
+        static::assertInstanceOf(GrpcStrategy::class, $config->getStrategy());
+    }
+
+    public function testSetters()
+    {
+        $config = new ClientConfig();
+        $h2ProxyConfig = new H2ProxyConfig();
+        $strategy = (new H2ProxyStrategyFactory($h2ProxyConfig))->build();
+        $config->setStrategy($strategy);
+        static::assertEquals($strategy, $config->getStrategy());
     }
 }

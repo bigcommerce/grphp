@@ -19,6 +19,8 @@ declare(strict_types = 1);
 
 namespace Grphp\Client\Interceptors\LinkerD;
 
+use Grphp\Client\Error\Status;
+use Grphp\Client\HeaderCollection;
 use Grphp\Client\Response;
 use Grphp\Test\GetThingResp;
 use PHPUnit\Framework\TestCase;
@@ -119,14 +121,9 @@ final class ContextPropagationTest extends TestCase
      */
     private function buildResponse(): Response
     {
-        $status = new \stdClass();
-        $status->code = 0;
-        $status->details = 'foo';
-        $status->code = 0;
-        $status->details = 'OK';
-        $status->metadata = [
-            'error-internal-bin' => ['{"message": "Test"}'],
-        ];
+        $headers = new HeaderCollection();
+        $headers->add('error-internal-bin', '{"message": "Test"}');
+        $status = new Status(0, 'OK', $headers);
         return new Response(new GetThingResp(), $status);
     }
 }
