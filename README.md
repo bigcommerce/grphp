@@ -22,8 +22,9 @@ grphp currently has active support for gRPC 1.9.0, and requires PHP 5.5+ or 7.0+
 composer require bigcommerce/grphp
 ```
 
-You'll need to make sure you fit [the requirements for the grpc/grpc PHP library](https://github.com/grpc/grpc/tree/master/src/php#environment),
-which does involve installing the gRPC PHP extension.
+You'll need to make sure you fit 
+[the requirements for the grpc/grpc PHP library](https://github.com/grpc/grpc/tree/master/src/php#environment),
+which does involve installing the gRPC PHP extension (unless you are using the H2Proxy strategy).
 
 ## Client
 
@@ -42,6 +43,40 @@ echo $thing->id; // 1234
 echo $resp->getStatusCode(); // 0 (these are gRPC status codes)
 echo $resp->getStatusDetails(); // OK
 ``` 
+
+## Strategy
+
+grphp comes with the ability to utilize injectable strategies for how it communicates outward. Currently, there are two
+strategies that come packaged with grphp:
+
+* *Grpc* - This strategy class will utilize the core gRPC PHP libraries to communicate outbound to services
+* *H2Proxy* - This strategy is set to call out to an [nghttpx](https://nghttp2.org/) proxy to communicate via HTTP/1.1,
+  which is then upgraded to an HTTP/2 connection, and transformed into a gRPC request.
+  
+### H2Proxy Strategy
+
+The H2Proxy strategy pairs with a [nghttpx](https://nghttp2.org/) service and sends HTTP/1.1 requests that are upgraded
+to HTTP/2 and gRPC. It does this by sending the binary encoded protobuf across the wire with the `Upgrade: h2c` and 
+`Connection: Upgrade` headers, which nghttpx uses to upgrade the connection into a proper gRPC request.
+
+This is useful if you do not want to utilize the gRPC PHP C extension but still gain the benefit of the protobuf
+contracts. If you do not have the gRPC PHP C extension installed, grphp will automatically switch you to the H2Proxy
+strategy.
+
+You can use and configure the proxy strategy like so, assuming we have a nghttpx service running at the address 0.0.0.0 
+on port 3000:
+
+```php
+
+$shovelConfig = new Grphp\Client\Strategy\Shovel\Config('http://0.0.0.0:3000', 15);
+$shovelStrategyFactory = new Grphp\Client\Strategy\Shovel\StrategyFactory($shovelConfig);
+$config = new Grphp\Client\Config([
+    'strategy' => $shovelStrategyFactory->build(),
+]);
+```
+
+This sets the proxy client to also utilize a timeout of 15 seconds. This setup is configurable per-client, so you can
+adjust these settings - and the strategy - on a service-by-service basis. 
 
 ## Authentication
 

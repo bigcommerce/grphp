@@ -1,5 +1,14 @@
 Changelog for grphp.
 
+h3. 0.5.0
+
+* Introduce new strategy patterns for communicating out to services, allowing either gRPC or H2Proxy for the client
+* Adds H2Proxy strategy for utilizing nghttpx to proxy H1 requests into H2 gRPC requests without need of the PHP C
+extension
+* Adds a new Error\Status class for representing gRPC error statuses
+* Adds a new client request object for encapsulating contextual information about the outgoing request
+* Adds new Header and HeaderCollection classes for representing HTTP headers both outbound and inbound  
+
 h3. 0.4.0
 
 * Update to gRPC 1.9.x
