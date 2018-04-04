@@ -19,6 +19,9 @@ declare(strict_types = 1);
 
 namespace Grphp\Client;
 
+use Grphp\Client\Strategy\Grpc\Config as GrpcConfig;
+use Grphp\Client\Strategy\Grpc\Strategy as GrpcStrategy;
+use Grphp\Client\Strategy\StrategyInterface;
 use Grphp\Serializers\Errors\Json as JsonSerializer;
 
 /**
@@ -43,6 +46,8 @@ class Config
     public $interceptorOptions = [];
     /** @var bool $useDefaultInterceptors */
     public $useDefaultInterceptors = true;
+    /** @var \stdClass */
+    private $strategy;
 
     /**
      * @param array $options
@@ -73,5 +78,26 @@ class Config
         $this->useDefaultInterceptors = array_key_exists('use_default_interceptors', $options)
             ? $options['use_default_interceptors']
             : true;
+        $this->strategy = array_key_exists('strategy', $options)
+            ? $options['strategy']
+            : new GrpcStrategy(new GrpcConfig());
+    }
+
+    /**
+     * @return StrategyInterface
+     */
+    public function getStrategy(): StrategyInterface
+    {
+        return $this->strategy;
+    }
+
+    /**
+     * @param mixed $strategy
+     * @return $this
+     */
+    public function setStrategy($strategy): Config
+    {
+        $this->strategy = $strategy;
+        return $this;
     }
 }

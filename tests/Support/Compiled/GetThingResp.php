@@ -25,22 +25,23 @@ use Google\Protobuf\Internal\RepeatedField;
 use Google\Protobuf\Internal\GPBUtil;
 
 /**
- * Protobuf type <code>grphp.test.GetThingResp</code>
+ * Generated from protobuf message <code>grphp.test.GetThingResp</code>
  */
 class GetThingResp extends \Google\Protobuf\Internal\Message
 {
     /**
-     * <code>.grphp.test.Thing thing = 1;</code>
+     * Generated from protobuf field <code>.grphp.test.Thing thing = 1;</code>
      */
     private $thing = null;
 
     public function __construct() {
-        \GPBMetadata\Grphp\Test\Things::initOnce();
+        \GPBMetadata\Grphp\Test\Thing::initOnce();
         parent::__construct();
     }
 
     /**
-     * <code>.grphp.test.Thing thing = 1;</code>
+     * Generated from protobuf field <code>.grphp.test.Thing thing = 1;</code>
+     * @return \Grphp\Test\Thing
      */
     public function getThing()
     {
@@ -48,12 +49,16 @@ class GetThingResp extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * <code>.grphp.test.Thing thing = 1;</code>
+     * Generated from protobuf field <code>.grphp.test.Thing thing = 1;</code>
+     * @param \Grphp\Test\Thing $var
+     * @return $this
      */
-    public function setThing(&$var)
+    public function setThing($var)
     {
         GPBUtil::checkMessage($var, \Grphp\Test\Thing::class);
         $this->thing = $var;
+
+        return $this;
     }
 
 }

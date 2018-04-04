@@ -28,6 +28,11 @@ final class ErrorTest extends TestCase
     /** @var float */
     protected $elapsed;
 
+    /** @var \Grphp\Client */
+    private $client;
+    /** @var \Grphp\Client\Config */
+    private $clientConfig;
+
     private function buildClient(array $options = [])
     {
         $options = array_merge([
@@ -44,32 +49,50 @@ final class ErrorTest extends TestCase
             'error_serializer' => \Grphp\Serializers\Errors\Json::class,
         ]);
         $this->elapsed = rand(0.0, 20.0);
-        $status = new \stdClass();
-        $status->code = 0;
-        $status->details = 'OK';
-        $status->metadata = [
-            Error::ERROR_METADATA_KEY => ['{"message": "Test"}'],
-        ];
-        $this->status = $status;
-        $this->error = new Error($this->clientConfig, $status, $this->elapsed);
+
+        $headerRegistry = new HeaderCollection();
+        $headerRegistry->add(Error::ERROR_METADATA_KEY, '{"message": "Test"}');
+        $this->status = new Error\Status(0, 'OK', $headerRegistry);;
     }
 
+    /**
+     * Test the pass-through to the exception class
+     */
     public function testConstructor()
     {
-        $this->assertInstanceOf(\Grphp\Client\Error::class, $this->error);
-        $this->assertEquals("Error: {$this->status->details}", $this->error->getMessage());
-        $this->assertInstanceOf(\Grphp\Client\Config::class, $this->error->getConfig());
-        $this->assertEquals($this->status->code, $this->error->getCode());
+        $error = new Error($this->clientConfig, $this->status);
+        static::assertInstanceOf(\Grphp\Client\Error::class, $error);
+        static::assertEquals("Error: {$this->status->getDetails()}", $error->getMessage());
+        static::assertEquals($this->status->getCode(), $error->getCode());
     }
 
-    public function testGetConfig()
+    public function testGetDetails()
     {
-        $this->assertInstanceOf(\Grphp\Client\Config::class, $this->error->getConfig());
-        $this->assertEquals($this->clientConfig, $this->error->getConfig());
+        $error = new Error($this->clientConfig, $this->status);
+        static::assertEquals($this->status->getDetails(), $error->getDetails());
+    }
+
+    public function testGetStatusCode()
+    {
+        $error = new Error($this->clientConfig, $this->status);
+        static::assertEquals($this->status->getCode(), $error->getStatusCode());
+    }
+
+    public function testGetStatusMetadata()
+    {
+        $error = new Error($this->clientConfig, $this->status);
+        static::assertEquals($this->status->getHeaders()->toArray(), $error->getStatusMetadata());
     }
 
     public function testGetTrailer()
     {
-        $this->assertEquals(['message' => 'Test'], $this->error->getTrailer());
+        $error = new Error($this->clientConfig, $this->status);
+        static::assertEquals(['message' => 'Test'], $error->getTrailer());
+    }
+
+    public function testGetConfig()
+    {
+        $error = new Error($this->clientConfig, $this->status);
+        static::assertEquals($this->clientConfig, $error->getConfig());
     }
 }

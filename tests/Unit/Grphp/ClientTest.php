@@ -22,10 +22,6 @@ use Grphp\Client;
 use Grphp\Client\Config;
 use Grphp\Client\Error;
 use Grphp\Client\Response;
-use Grphp\Test\GetThingReq;
-use Grphp\Test\GetThingResp;
-use Grphp\Test\Thing;
-use Grphp\Test\ThingsClient;
 use PHPUnit\Framework\TestCase;
 use Grphp\Client\Interceptors\Base as BaseInterceptor;
 
@@ -102,7 +98,7 @@ final class ClientTest extends TestCase
         static::assertEquals($isSuccess, $resp->isSuccess());
         static::assertEquals($opts['response_code'], $resp->getStatusCode());
         static::assertEquals($opts['response_details'], $resp->getStatusDetails());
-        static::assertEquals($opts['response_metadata'], $resp->getStatus()->metadata);
+        static::assertEquals($opts['response_metadata'], $resp->getStatus()->getHeaders()->toArray());
 
         /** @var GetThingResp $message */
         $message = $resp->getResponse();
@@ -118,8 +114,8 @@ final class ClientTest extends TestCase
     public function providerCall()
     {
         return [
-            [123, true, 0, 'Whoa now', ['one' => 'two']],
-            [123, false, 8, 'Whoa now', ['one' => 'two']],
+            [123, true, 0, 'Whoa now', ['one' => ['two']]],
+            [123, false, 8, 'Whoa now', ['one' => ['two']]],
         ];
     }
 

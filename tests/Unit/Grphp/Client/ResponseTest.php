@@ -17,6 +17,7 @@
  */
 namespace Grphp\Client;
 
+use Grphp\Client\Error\Status;
 use PHPUnit\Framework\TestCase;
 
 final class ResponseTest extends TestCase
@@ -25,7 +26,7 @@ final class ResponseTest extends TestCase
     protected $resp;
     /** @var \Grphp\Client\Response */
     protected $response;
-    /** @var \stdClass */
+    /** @var Status */
     protected $statusObj;
     /** @var float */
     protected $elapsed;
@@ -38,12 +39,9 @@ final class ResponseTest extends TestCase
         $this->resp = new \Grphp\Test\GetThingResp();
         $this->resp->setThing($thing);
 
-        $this->statusObj = new \stdClass();
-        $this->statusObj->code = 0;
-        $this->statusObj->details = 'OK';
-        $this->statusObj->metadata = [
-            'timer' => [rand(0.0, 200.0)],
-        ];
+        $responseHeaders = new HeaderCollection();
+        $responseHeaders->add('timer', rand(0.0, 200.0));
+        $this->statusObj = new Status(0, 'OK', $responseHeaders);
 
         $this->elapsed = rand(0.0, 200.0);
         $this->response = new Response($this->resp, $this->statusObj);
@@ -52,36 +50,37 @@ final class ResponseTest extends TestCase
 
     public function testGetResponse()
     {
-        $this->assertEquals($this->resp, $this->response->getResponse());
+        static::assertEquals($this->resp, $this->response->getResponse());
     }
 
     public function testGetStatusCode()
     {
-        $this->assertEquals($this->statusObj->code, $this->response->getStatusCode());
+        static::assertEquals($this->statusObj->getCode(), $this->response->getStatusCode());
     }
 
     public function testGetStatusDetails()
     {
-        $this->assertEquals($this->statusObj->details, $this->response->getStatusDetails());
+        static::assertEquals($this->statusObj->getDetails(), $this->response->getStatusDetails());
     }
 
     public function testGetMetadata()
     {
-        $this->assertEquals($this->statusObj->metadata, $this->response->getMetadata());
+        static::assertEquals($this->statusObj->getHeaders()->toArray(), $this->response->getMetadata());
     }
 
     public function testGetStatus()
     {
-        $this->assertEquals($this->statusObj, $this->response->getStatus());
+        static::assertEquals($this->statusObj, $this->response->getStatus());
     }
 
     public function testGetElapsed()
     {
-        $this->assertEquals($this->elapsed, $this->response->getElapsed());
+        static::assertEquals($this->elapsed, $this->response->getElapsed());
     }
 
     public function testGetInternalExecutionTime()
     {
-        $this->assertEquals($this->statusObj->metadata['timer'][0], $this->response->getInternalExecutionTime());
+        $timer = $this->statusObj->getHeaders()->get('timer')->getFirstValue();
+        static::assertEquals($timer, $this->response->getInternalExecutionTime());
     }
 }
