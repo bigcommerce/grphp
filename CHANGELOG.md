@@ -1,5 +1,9 @@
 Changelog for grphp.
 
+h3. 0.5.1
+
+* Suppress "expect: 100-continue" header on outbound cURL requests for the H2Proxy strategy
+
 h3. 0.5.0
 
 * Introduce new strategy patterns for communicating out to services, allowing either gRPC or H2Proxy for the client
