@@ -34,6 +34,15 @@ class RequestExecutor
     const PACK_ARGS = '\0';
     const PACK_FORMAT = 'cN';
     const PACK_START = 5;
+    /**
+     * curl automatically sets "expect: 100-continue" header, if either
+     * - the request is a PUT, or
+     * - the request is a POST and the data size is larger than 1024 bytes
+     *
+     * the header is not always correctly handled by servers,
+     * especially http2 based; curl won't send it, if the following header is set
+     */
+    const EXPECT_CONTINUE_DISABLING_HEADER = 'expect:';
 
     /**
      * @param Request $request
@@ -113,12 +122,14 @@ class RequestExecutor
      */
     private function getCurlOptions(Request $request, string $payload): array
     {
+        $headers = $request->getHeaders()->compress();
+        $headers[] = self::EXPECT_CONTINUE_DISABLING_HEADER;
         return [
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_BINARYTRANSFER => true,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_HTTPHEADER => $request->getHeaders()->compress(),
+            CURLOPT_HTTPHEADER => $headers,
             CURLOPT_POSTFIELDS => $payload,
             CURLOPT_HEADER => true,
             CURLOPT_USERAGENT => static::GRPHP_USER_AGENT,
