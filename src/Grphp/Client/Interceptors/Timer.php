@@ -32,10 +32,10 @@ class Timer extends Base
      */
     public function call(callable $callback): Response
     {
-        \PHP_Timer::start();
+        $start = microtime(true);
         /** @var Response $response */
         $response = $callback();
-        $time = \PHP_Timer::stop();
+        $time = microtime(true) - $start;
         $response->setElapsed(round($time * 1000.00, 4));
         return $response;
     }
