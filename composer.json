@@ -7,7 +7,6 @@
     { "type": "vcs", "url": "https://github.com/grpc/grpc-php" }
   ],
   "require": {
-    "phpunit/php-timer": "1.0.*",
     "grpc/grpc": "1.9.*",
     "google/protobuf": "3.5.*"
   },
@@ -20,5 +19,10 @@
     "psr-4": { "": "src/"}
   },
   "minimum-stability": "dev",
-  "prefer-stable": true
+  "prefer-stable": true,
+  "config": {
+    "platform": {
+      "php": "7.0.30"
+    }
+  }
 }
