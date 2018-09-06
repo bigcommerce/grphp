@@ -7,7 +7,7 @@
     { "type": "vcs", "url": "https://github.com/grpc/grpc-php" }
   ],
   "require": {
-    "grpc/grpc": "1.9.*",
+    "grpc/grpc": "^1.13",
     "google/protobuf": "3.5.*"
   },
   "require-dev": {

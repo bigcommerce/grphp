@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "a036754f3364140dd41affa144e3ecf9",
+    "content-hash": "11d3093239007d29fe9efeba3c30b3c1",
     "packages": [
         {
             "name": "google/protobuf",
@@ -49,16 +49,16 @@
         },
         {
             "name": "grpc/grpc",
-            "version": "1.9.0",
+            "version": "1.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/grpc/grpc-php.git",
-                "reference": "a502df7fac0b392dde13ddf157062b5184d0688e"
+                "reference": "8ff8ed6a99803b4e2396ce63b289cad4b4c40d39"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/grpc/grpc-php/zipball/a502df7fac0b392dde13ddf157062b5184d0688e",
-                "reference": "a502df7fac0b392dde13ddf157062b5184d0688e",
+                "url": "https://api.github.com/repos/grpc/grpc-php/zipball/8ff8ed6a99803b4e2396ce63b289cad4b4c40d39",
+                "reference": "8ff8ed6a99803b4e2396ce63b289cad4b4c40d39",
                 "shasum": ""
             },
             "require": {
@@ -86,9 +86,9 @@
                 "rpc"
             ],
             "support": {
-                "source": "https://github.com/grpc/grpc-php/tree/v1.9.0"
+                "source": "https://github.com/grpc/grpc-php/tree/v1.14.0"
             },
-            "time": "2018-01-24T21:48:21+00:00"
+            "time": "2018-06-28T22:47:39+00:00"
         }
     ],
     "packages-dev": [
