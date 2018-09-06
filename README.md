@@ -13,8 +13,9 @@ up fast and efficiently at scale. Some of its features include:
 * Error data serialization in output metadata to allow fine-grained error handling in the transport while still 
 preserving gRPC BadStatus codes
 * Client execution timings in responses
+* H2Proxy via nghttpx support that allows gRPC-based communication without the gRPC C libraries
 
-grphp currently has active support for gRPC 1.9.0, and requires PHP 5.5+ or 7.0+ to run.
+grphp currently has active support for gRPC 1.9.0, and requires PHP 7.0+ to run.
 
 ## Installation
 
@@ -188,6 +189,7 @@ you can pass in an associative array of `error_serializer_options` to the config
 ## Roadmap
 
 * Add TLS configuration support
+* Experimental gRPC server support via sidecar proxy through FastCGI
 
 ## License
 
