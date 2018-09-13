@@ -7,7 +7,7 @@ dist: trusty
 before_install:
   - composer self-update --no-interaction || true
 before_script:
-  - composer install --no-interaction
+  - composer install --no-interaction --prefer-dist
   - pecl update-channels; pecl install grpc-1.13.0 > /dev/null
 script:
   - ./.travis.sh
