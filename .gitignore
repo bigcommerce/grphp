@@ -3,3 +3,4 @@ vendor/
 tmp
 test.php
 coverage/
+/composer.lock
