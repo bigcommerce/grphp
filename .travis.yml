@@ -1,19 +1,35 @@
-language: php
-php:
-  - 7.0
-  - 7.1
 sudo: false
-dist: trusty
+
+cache:
+    directories:
+        - $HOME/.composer
+
+git:
+    depth: 1
+
+language: php
+
 before_install:
-  - composer self-update --no-interaction || true
-before_script:
-  - composer install --no-interaction --prefer-dist
-  - pecl update-channels; pecl install grpc-1.15.0 > /dev/null
-script:
-  - ./.travis.sh
-env:
-  matrix:
-    - TEST_GROUP=prereq
-    - TEST_GROUP=1
+    - pecl update-channels; pecl install grpc-1.15.0 > /dev/null
+    - composer self-update
+    - phpenv config-rm xdebug.ini || return 0
+    - composer global show hirak/prestissimo -q || composer global require hirak/prestissimo
+
 matrix:
-  fast_finish: true
+    include:
+        - name: PHP 7.0 with lowest versions of dependencies
+          php: '7.0'
+          install: composer update --prefer-lowest
+        - name: PHP 7.0
+          php: '7.0'
+          install: composer update
+        - name: PHP 7.1
+          php: '7.1'
+          install: composer update
+        - name: PHP 7.2
+          php: '7.2'
+          install: composer update
+
+script:
+  - vendor/bin/phpcs --standard=PSR2 --ignore=src/Grphp/grpc.stubs.php src
+  - vendor/bin/phpunit
