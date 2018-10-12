@@ -21,5 +21,4 @@ namespace Grphp\Protobuf;
 
 class SerializationException extends \Exception
 {
-
 }

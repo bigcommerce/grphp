@@ -35,7 +35,8 @@ class Thing extends \Google\Protobuf\Internal\Message
      */
     private $name = '';
 
-    public function __construct() {
+    public function __construct()
+    {
         \GPBMetadata\Grphp\Test\Thing::initOnce();
         parent::__construct();
     }
@@ -78,11 +79,9 @@ class Thing extends \Google\Protobuf\Internal\Message
      */
     public function setName($var)
     {
-        GPBUtil::checkString($var, True);
+        GPBUtil::checkString($var, true);
         $this->name = $var;
 
         return $this;
     }
-
 }
-

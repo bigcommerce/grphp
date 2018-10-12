@@ -24,7 +24,8 @@ class Thing
 {
     public static $is_initialized = false;
 
-    public static function initOnce() {
+    public static function initOnce()
+    {
         $pool = \Google\Protobuf\Internal\DescriptorPool::getGeneratedPool();
 
         if (static::$is_initialized == true) {
@@ -44,4 +45,3 @@ class Thing
         static::$is_initialized = true;
     }
 }
-

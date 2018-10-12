@@ -26,5 +26,4 @@ namespace Grphp\Client;
  */
 class Channel extends \Grpc\Channel
 {
-
 }

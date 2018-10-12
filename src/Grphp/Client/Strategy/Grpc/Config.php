@@ -24,5 +24,4 @@ namespace Grphp\Client\Strategy\Grpc;
  */
 class Config
 {
-
 }

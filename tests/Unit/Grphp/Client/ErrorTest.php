@@ -52,7 +52,7 @@ final class ErrorTest extends TestCase
 
         $headerRegistry = new HeaderCollection();
         $headerRegistry->add(Error::ERROR_METADATA_KEY, '{"message": "Test"}');
-        $this->status = new Error\Status(0, 'OK', $headerRegistry);;
+        $this->status = new Error\Status(0, 'OK', $headerRegistry);
     }
 
     /**
