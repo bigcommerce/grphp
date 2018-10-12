@@ -9,4 +9,10 @@ return PhpCsFixer\Config::create()
     )
     ->setRules([
         '@PSR2' => true,
+        'header_comment' => [
+            'comment_type' => 'PHPDoc',
+            'header' => trim(file_get_contents(__DIR__ . '/LICENSE.md')),
+            'location' => 'after_open',
+            'separate' => 'none',
+        ],
     ]);
