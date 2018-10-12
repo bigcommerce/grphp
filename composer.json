@@ -12,16 +12,9 @@
     "phpunit/phpunit": "6.1.*",
     "squizlabs/php_codesniffer": "3.*"
   },
-  "config": {
-    "platform": {
-      "php": "7.0.30"
-    }
-  },
   "autoload": {
     "psr-4": {
       "Grphp\\": "src/Grphp"
     }
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true
+  }
 }
