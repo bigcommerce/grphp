@@ -68,5 +68,4 @@ final class BasicTest extends TestCase
         $s = base64_encode($str);
         return "Basic $s";
     }
-
 }

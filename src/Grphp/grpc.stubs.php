@@ -55,7 +55,6 @@ if (!defined(\Grpc\ChannelCredentials::class)) {
 if (!defined(\Grpc\Channel::class)) {
     class Channel
     {
-
     }
 }
 
@@ -72,6 +71,5 @@ if (!defined(\Grpc\Timeval::class)) {
 if (!defined(\Grpc\Call::class)) {
     class Call
     {
-
     }
 }

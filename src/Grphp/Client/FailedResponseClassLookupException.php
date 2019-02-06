@@ -21,5 +21,4 @@ namespace Grphp\Client;
 
 class FailedResponseClassLookupException extends \Exception
 {
-
 }

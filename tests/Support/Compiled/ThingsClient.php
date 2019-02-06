@@ -19,7 +19,8 @@ namespace Grphp\Test;
 
 class ThingsClient extends \Grpc\BaseStub
 {
-    public function getExpectedResponseMessages() {
+    public function getExpectedResponseMessages()
+    {
         return [
             'getThing' => '\Grphp\Test\GetThingResp',
         ];
@@ -32,7 +33,8 @@ class ThingsClient extends \Grpc\BaseStub
      * @param array $opts channel options
      * @param \Grpc\Channel $channel (optional) re-use channel object
      */
-    public function __construct($hostname, $opts, $channel = null) {
+    public function __construct($hostname, $opts, $channel = null)
+    {
         parent::__construct($hostname, $opts, $channel);
         $this->channel = new \Grpc\Channel($hostname, $opts);
     }
@@ -43,9 +45,11 @@ class ThingsClient extends \Grpc\BaseStub
      * @param array $options call options
      * @return StubbedCall
      */
-    public function GetThing(\Grphp\Test\GetThingReq $argument,
-                             $metadata = [], $options = []) {
-
+    public function GetThing(
+        \Grphp\Test\GetThingReq $argument,
+        $metadata = [],
+        $options = []
+    ) {
         $thing = new Thing();
         $thing->setId($argument->getId());
         $thing->setName('Foo');
