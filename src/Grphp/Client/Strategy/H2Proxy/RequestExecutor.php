@@ -28,6 +28,7 @@ class RequestExecutor
 {
     const GRPC_BINARY_ENCODED_METADATA_POSTFIX = '-bin';
     const GRPC_CONTENT_TYPE = 'application/grpc+proto';
+    const GRPC_ENCODING = 'identity';
     const GRPC_STATUS_HEADER = 'grpc-status';
     const GRPC_STATUS_OK = '0';
     const GRPHP_USER_AGENT = 'grphp/1.0.0';
@@ -133,7 +134,7 @@ class RequestExecutor
             CURLOPT_POSTFIELDS => $payload,
             CURLOPT_HEADER => true,
             CURLOPT_USERAGENT => static::GRPHP_USER_AGENT,
-            CURLOPT_ENCODING => static::GRPC_CONTENT_TYPE
+            CURLOPT_ENCODING => static::GRPC_ENCODING
         ];
     }
 }
