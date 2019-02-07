@@ -21,7 +21,6 @@ use PHPUnit\Framework\TestCase;
 
 final class HeaderTest extends TestCase
 {
-
     public function testGetName()
     {
         $header = new Header('Foo');

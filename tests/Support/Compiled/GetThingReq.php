@@ -34,7 +34,8 @@ class GetThingReq extends \Google\Protobuf\Internal\Message
      */
     private $id = 0;
 
-    public function __construct() {
+    public function __construct()
+    {
         \GPBMetadata\Grphp\Test\Thing::initOnce();
         parent::__construct();
     }
@@ -60,6 +61,4 @@ class GetThingReq extends \Google\Protobuf\Internal\Message
 
         return $this;
     }
-
 }
-

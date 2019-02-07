@@ -31,12 +31,13 @@ class StubbedCall extends AbstractCall
     private $response;
     private $options = [];
 
-    public function __construct($response,
-                                Channel $channel,
-                                $method,
-                                $deserialize,
-                                array $options = [])
-    {
+    public function __construct(
+        $response,
+        Channel $channel,
+        $method,
+        $deserialize,
+        array $options = []
+    ) {
         parent::__construct($channel, $method, $deserialize, $options);
         $this->response = $response;
         $this->options = array_merge($this->options, $options);
