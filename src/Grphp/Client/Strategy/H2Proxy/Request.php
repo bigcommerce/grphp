@@ -24,6 +24,8 @@ use Grphp\Client\HeaderCollection;
 class Request
 {
     /** @var string */
+    private $proxyUri;
+    /** @var string */
     private $url;
     /** @var string */
     private $message;
@@ -34,12 +36,14 @@ class Request
      * @param string $url The URL of the nghttpx proxy
      * @param string $message The binary serialized protobuf message
      * @param HeaderCollection $headers Headers to send
+     * @param string $proxyUri
      */
-    public function __construct(string $url, string $message, HeaderCollection $headers)
+    public function __construct(string $url, string $message, HeaderCollection $headers, string $proxyUri = '')
     {
         $this->url = $url;
         $this->message = $message;
         $this->headers = $headers;
+        $this->proxyUri = $proxyUri;
     }
 
     /**
@@ -64,5 +68,13 @@ class Request
     public function getHeaders(): HeaderCollection
     {
         return $this->headers;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProxyUri(): string
+    {
+        return $this->proxyUri;
     }
 }

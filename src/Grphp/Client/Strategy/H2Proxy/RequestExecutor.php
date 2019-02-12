@@ -15,7 +15,7 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Grphp\Client\Strategy\H2Proxy;
 
@@ -57,21 +57,25 @@ class RequestExecutor
 
         $ch = curl_init($request->getUrl());
         curl_setopt_array($ch, $this->getCurlOptions($request, $payload));
-        curl_setopt($ch, CURLOPT_HEADERFUNCTION, function ($ch, $header) use ($responseHeaders) {
-            $vs = explode(':', $header, 2);
-            if (!empty($vs) && isset($vs[1])) {
-                $k = $vs[0];
-                $v = $vs[1];
-                if (strpos(strtolower($k), static::GRPC_BINARY_ENCODED_METADATA_POSTFIX) > 0) {
-                    // need to base64 decode binary encoded metadata here, since gRPC normally does this for us
-                    $v = base64_decode($v);
-                } else {
-                    $v = trim($v);// otherwise, we need to trim the output
+        curl_setopt(
+            $ch,
+            CURLOPT_HEADERFUNCTION,
+            function ($ch, $header) use ($responseHeaders) {
+                $vs = explode(':', $header, 2);
+                if (!empty($vs) && isset($vs[1])) {
+                    $k = $vs[0];
+                    $v = $vs[1];
+                    if (strpos(strtolower($k), static::GRPC_BINARY_ENCODED_METADATA_POSTFIX) > 0) {
+                        // need to base64 decode binary encoded metadata here, since gRPC normally does this for us
+                        $v = base64_decode($v);
+                    } else {
+                        $v = trim($v);// otherwise, we need to trim the output
+                    }
+                    $responseHeaders->add($k, $v);
                 }
-                $responseHeaders->add($k, $v);
+                return strlen($header);
             }
-            return strlen($header);
-        });
+        );
 
         $response = curl_exec($ch);
         if (empty($response)) {
@@ -125,7 +129,7 @@ class RequestExecutor
     {
         $headers = $request->getHeaders()->compress();
         $headers[] = self::EXPECT_CONTINUE_DISABLING_HEADER;
-        return [
+        $curlOptions = [
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_BINARYTRANSFER => true,
             CURLOPT_RETURNTRANSFER => true,
@@ -134,7 +138,11 @@ class RequestExecutor
             CURLOPT_POSTFIELDS => $payload,
             CURLOPT_HEADER => true,
             CURLOPT_USERAGENT => static::GRPHP_USER_AGENT,
-            CURLOPT_ENCODING => static::GRPC_ENCODING
+            CURLOPT_ENCODING => static::GRPC_ENCODING,
         ];
+        if ($request->getProxyUri()) {
+            $curlOptions[CURLOPT_PROXY] = $request->getProxyUri();
+        }
+        return $curlOptions;
     }
 }

@@ -15,7 +15,7 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Grphp\Client\Strategy\H2Proxy;
 
@@ -24,23 +24,33 @@ namespace Grphp\Client\Strategy\H2Proxy;
  */
 class Config
 {
+    const DEFAULT_PROXY_ADDRESS = '127.0.0.1:3000';
     const DEFAULT_ADDRESS = '0.0.0.0:3000';
     /** @var int The default timeout for connecting to the nghttpx proxy and resolving its result */
     const DEFAULT_TIMEOUT = 15;
 
     /** @var string */
     private $baseUri;
+
+    /** @var string */
+    private $proxyUri;
+
     /** @var int */
     private $timeout;
 
     /**
      * @param string $baseUri The address and port of the nghttpx proxy
      * @param int $timeout The timeout to connect to the proxy, in seconds
+     * @param string $proxyUri
      */
-    public function __construct(string $baseUri = Config::DEFAULT_ADDRESS, int $timeout = Config::DEFAULT_TIMEOUT)
-    {
+    public function __construct(
+        string $baseUri = Config::DEFAULT_ADDRESS,
+        int $timeout = Config::DEFAULT_TIMEOUT,
+        string $proxyUri = Config::DEFAULT_PROXY_ADDRESS
+    ) {
         $this->baseUri = $baseUri;
         $this->timeout = $timeout;
+        $this->proxyUri = $proxyUri;
     }
 
     /**
@@ -57,5 +67,13 @@ class Config
     public function getTimeout(): int
     {
         return $this->timeout;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProxyUri(): string
+    {
+        return $this->proxyUri;
     }
 }
