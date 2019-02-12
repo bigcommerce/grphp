@@ -15,7 +15,7 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Grphp\Client\Strategy\H2Proxy;
 
@@ -26,15 +26,20 @@ use Grphp\Protobuf\Serializer;
 use Grphp\Test\GetThingReq;
 use Grphp\Test\ThingsClient;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 
 final class RequestFactoryTest extends TestCase
 {
     /** @var Config */
     private $config;
+
     /** @var H2ProxyConfig */
     private $proxyConfig;
+
     /** @var Serializer */
     private $serializer;
+
     /** @var RequestFactory */
     private $requestFactory;
 
@@ -74,10 +79,13 @@ final class RequestFactoryTest extends TestCase
 
     public function testWithHeaders()
     {
-        $requestContext = $this->buildRequest(null, [
-            'Foo' => 'bar',
-            'Array' => ['123', '456'],
-        ]);
+        $requestContext = $this->buildRequest(
+            null,
+            [
+                'Foo' => 'bar',
+                'Array' => ['123', '456'],
+            ]
+        );
         $request = $this->requestFactory->build($requestContext);
         static::assertInstanceOf(Request::class, $request);
 
@@ -90,14 +98,62 @@ final class RequestFactoryTest extends TestCase
     {
         $newDeadline = 5.2;
 
-        $requestContext = $this->buildRequest(null, [], [
-            'timeout' => $newDeadline,
-        ]);
+        $requestContext = $this->buildRequest(
+            null,
+            [],
+            [
+                'timeout' => $newDeadline,
+            ]
+        );
         $httpRequest = $this->requestFactory->build($requestContext);
         static::assertInstanceOf(Request::class, $httpRequest);
 
         $deadlineish = intval(microtime(true) + $newDeadline);
         $headers = $httpRequest->getHeaders();
         static::assertEquals($deadlineish, intval($headers->get('Deadline')->getValuesAsString()));
+    }
+
+    public function testWithoutProxy()
+    {
+        $serializer = $this->prophesize(Serializer::class);
+        $serializer->serializeRequest(Argument::any())->willReturn('');
+        /** @var H2ProxyConfig|ObjectProphecy $config */
+        $config = $this->prophesize(\Grphp\Client\Strategy\H2Proxy\Config::class);
+        $config->getBaseUri()->willReturn('service.com:5678');
+
+        /** @var RequestContext|ObjectProphecy $requestContext */
+        $requestContext = $this->prophesize(RequestContext::class);
+        $requestContext->getMetadata()->willReturn([]);
+        $requestContext->buildDeadline()->willReturn(0);
+        $requestContext->getPath()->willReturn('/espresso.machine/PullDoubleShot');
+
+        $config->getProxyUri()->willReturn('')->shouldBeCalled();
+
+        $subject = new RequestFactory($config->reveal(), $serializer->reveal());
+
+        $request = $subject->build($requestContext->reveal());
+        static::assertEquals('', $request->getProxyUri());
+    }
+
+    public function testWithProxy()
+    {
+        $serializer = $this->prophesize(Serializer::class);
+        $serializer->serializeRequest(Argument::any())->willReturn('');
+        /** @var H2ProxyConfig|ObjectProphecy $config */
+        $config = $this->prophesize(\Grphp\Client\Strategy\H2Proxy\Config::class);
+        $config->getBaseUri()->willReturn('service.com:5678');
+
+        /** @var RequestContext|ObjectProphecy $requestContext */
+        $requestContext = $this->prophesize(RequestContext::class);
+        $requestContext->getMetadata()->willReturn([]);
+        $requestContext->buildDeadline()->willReturn(0);
+        $requestContext->getPath()->willReturn('/My.GRPC.Service/rpc');
+
+        $config->getProxyUri()->willReturn('127.0.0.1:1234')->shouldBeCalled();
+
+        $subject = new RequestFactory($config->reveal(), $serializer->reveal());
+
+        $request = $subject->build($requestContext->reveal());
+        static::assertEquals('127.0.0.1:1234', $request->getProxyUri());
     }
 }
