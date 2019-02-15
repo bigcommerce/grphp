@@ -24,7 +24,6 @@ namespace Grphp\Client\Strategy\H2Proxy;
  */
 class Config
 {
-    const DEFAULT_PROXY_ADDRESS = '127.0.0.1:3000';
     const DEFAULT_ADDRESS = '0.0.0.0:3000';
     /** @var int The default timeout for connecting to the nghttpx proxy and resolving its result */
     const DEFAULT_TIMEOUT = 15;
@@ -46,7 +45,7 @@ class Config
     public function __construct(
         string $baseUri = Config::DEFAULT_ADDRESS,
         int $timeout = Config::DEFAULT_TIMEOUT,
-        string $proxyUri = Config::DEFAULT_PROXY_ADDRESS
+        string $proxyUri = ''
     ) {
         $this->baseUri = $baseUri;
         $this->timeout = $timeout;

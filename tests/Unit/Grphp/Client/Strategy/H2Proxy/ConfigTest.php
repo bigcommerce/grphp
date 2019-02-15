@@ -45,6 +45,6 @@ final class ConfigTest extends TestCase
         $config = new Config();
         static::assertEquals(Config::DEFAULT_ADDRESS, $config->getBaseUri());
         static::assertEquals(Config::DEFAULT_TIMEOUT, $config->getTimeout());
-        static::assertEquals(Config::DEFAULT_PROXY_ADDRESS, $config->getProxyUri());
+        static::assertEquals('', $config->getProxyUri());
     }
 }
