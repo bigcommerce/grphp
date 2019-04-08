@@ -79,7 +79,7 @@ class RequestExecutor
 
         $response = curl_exec($ch);
         if (empty($response)) {
-            throw new RequestException('Empty body from nghttpx proxy', $responseHeaders);
+            throw new RequestException('Empty body from nghttpx proxy: ' . curl_error($ch), $responseHeaders);
         }
 
         $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
