@@ -50,7 +50,7 @@ class RequestException extends \Exception
     public function getErrorMessage(): string
     {
         $header = $this->headers->get('grpc-message');
-        return $header ? $header->getFirstValue() : '';
+        return $header ? $header->getFirstValue() : substr($this->body, 0, 255);
     }
 
     /**
