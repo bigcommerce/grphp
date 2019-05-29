@@ -23,8 +23,7 @@ const STATUS_INTERNAL = 13;
 const STATUS_UNKNOWN = 2;
 const STATUS_OK = 0;
 
-
-if (!defined(\Grpc\ChannelCredentials::class)) {
+if (!class_exists(\Grpc\ChannelCredentials::class, false)) {
     class ChannelCredentials
     {
         /**
@@ -52,13 +51,13 @@ if (!defined(\Grpc\ChannelCredentials::class)) {
     }
 }
 
-if (!defined(\Grpc\Channel::class)) {
+if (!class_exists(\Grpc\Channel::class, false)) {
     class Channel
     {
     }
 }
 
-if (!defined(\Grpc\Timeval::class)) {
+if (!class_exists(\Grpc\Timeval::class, false)) {
     class Timeval
     {
         public static function infFuture()
@@ -68,7 +67,7 @@ if (!defined(\Grpc\Timeval::class)) {
     }
 }
 
-if (!defined(\Grpc\Call::class)) {
+if (!class_exists(\Grpc\Call::class, false)) {
     class Call
     {
     }
