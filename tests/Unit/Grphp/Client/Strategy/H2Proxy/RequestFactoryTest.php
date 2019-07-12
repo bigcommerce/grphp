@@ -118,7 +118,7 @@ final class RequestFactoryTest extends TestCase
         $serializer = $this->prophesize(Serializer::class);
         $serializer->serializeRequest(Argument::any())->willReturn('');
         /** @var H2ProxyConfig|ObjectProphecy $config */
-        $config = $this->prophesize(\Grphp\Client\Strategy\H2Proxy\Config::class);
+        $config = $this->prophesize(H2ProxyConfig::class);
         $config->getBaseUri()->willReturn('service.com:5678');
 
         /** @var RequestContext|ObjectProphecy $requestContext */
@@ -140,7 +140,7 @@ final class RequestFactoryTest extends TestCase
         $serializer = $this->prophesize(Serializer::class);
         $serializer->serializeRequest(Argument::any())->willReturn('');
         /** @var H2ProxyConfig|ObjectProphecy $config */
-        $config = $this->prophesize(\Grphp\Client\Strategy\H2Proxy\Config::class);
+        $config = $this->prophesize(H2ProxyConfig::class);
         $config->getBaseUri()->willReturn('service.com:5678');
 
         /** @var RequestContext|ObjectProphecy $requestContext */
@@ -155,5 +155,47 @@ final class RequestFactoryTest extends TestCase
 
         $request = $subject->build($requestContext->reveal());
         static::assertEquals('127.0.0.1:1234', $request->getProxyUri());
+    }
+
+    public function testBuildAppendsSchemaToUriIfMissing()
+    {
+        $config = $this->prophesize(H2ProxyConfig::class);
+        $config->getBaseUri()->willReturn('127.0.0.1:80');
+        $config->getProxyUri()->willReturn('');
+
+        $requestContext = $this->prophesize(RequestContext::class);
+        $requestContext->getPath()->willReturn('/hello');
+        $requestContext->getMetadata()->willReturn([]);
+        $requestContext->buildDeadline()->willReturn(0);
+
+        $serializer = $this->prophesize(Serializer::class);
+        $serializer->serializeRequest($requestContext->reveal())->willReturn('');
+
+        $subject = new RequestFactory($config->reveal(), $serializer->reveal());
+
+        $request = $subject->build($requestContext->reveal());
+
+        $this->assertSame('http://127.0.0.1:80/hello', $request->getUrl());
+    }
+
+    public function testBuildPreservesUriSchemaIfProvided()
+    {
+        $config = $this->prophesize(H2ProxyConfig::class);
+        $config->getBaseUri()->willReturn('https://127.0.0.1:80');
+        $config->getProxyUri()->willReturn('');
+
+        $requestContext = $this->prophesize(RequestContext::class);
+        $requestContext->getPath()->willReturn('world');
+        $requestContext->getMetadata()->willReturn([]);
+        $requestContext->buildDeadline()->willReturn(0);
+
+        $serializer = $this->prophesize(Serializer::class);
+        $serializer->serializeRequest($requestContext->reveal())->willReturn('');
+
+        $subject = new RequestFactory($config->reveal(), $serializer->reveal());
+
+        $request = $subject->build($requestContext->reveal());
+
+        $this->assertSame('https://127.0.0.1:80/world', $request->getUrl());
     }
 }

@@ -51,7 +51,7 @@ class RequestFactory
      */
     public function build(RequestContext $requestContext): Request
     {
-        $url = trim($this->config->getBaseUri(), '/') . '/' . $requestContext->getPath();
+        $url = $this->getBaseUri() . '/' . ltrim($requestContext->getPath(), '/');
         $message = $this->serializer->serializeRequest($requestContext);
         $headers = $this->buildHeaders($requestContext);
         return new Request($url, $message, $headers, $this->config->getProxyUri());
@@ -86,5 +86,21 @@ class RequestFactory
         $headers->add('User-Agent', 'grphp/1.0.0');
         $headers->add('Grpc-Encoding', 'identity');
         return $headers;
+    }
+
+    /**
+     * Prepend schema to a given base URI if necessary
+     *
+     * @return string
+     */
+    private function getBaseUri(): string
+    {
+        $baseUri = trim($this->config->getBaseUri(), '/');
+
+        if (parse_url($baseUri, PHP_URL_SCHEME)) {
+            return $baseUri;
+        }
+
+        return 'http://' . $baseUri;
     }
 }
