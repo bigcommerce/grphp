@@ -17,6 +17,7 @@
  */
 namespace Grphp\Client\Strategy\H2Proxy;
 
+use Exception;
 use Grpc\UnaryCall;
 use Grphp\Client\Error;
 use Grphp\Client\Error\Status;
@@ -24,6 +25,7 @@ use Grphp\Client\HeaderCollection;
 use Grphp\Client\Request;
 use Grphp\Client\Response;
 use Grphp\Client\Strategy\H2Proxy\Request as H2ProxyRequest;
+use Grphp\Client\Strategy\H2Proxy\RequestException;
 use Grphp\Client\Strategy\H2Proxy\Response as H2ProxyResponse;
 use Grphp\Protobuf\Serializer;
 use Grphp\Test\CallStatus;
@@ -104,5 +106,81 @@ final class StrategyTest extends TestCase
         $strategy = new Strategy($this->serializer, $this->requestFactory, $this->executorProphecy->reveal());
         static::expectException(Error::class);
         $strategy->execute($clientRequest);
+    }
+
+    public function testExecutePropagatesGrpcStatusCodeInTheException()
+    {
+        $headers = new HeaderCollection();
+        $headers->add('grpc-status', 16);
+        $headers->add('grpc-message', 'Unathorized');
+        $body = 'Unauthorized, sorry!';
+
+        $expectedStatus = new Status(16, 'Unathorized', $headers);
+
+        $request = $this->prophesize(Request::class);
+
+        $config = $this->config;
+        $request->fail($expectedStatus)->will(function (array $args) use ($config) {
+            throw new Error($config, $args[0]);
+        });
+
+        $h2Request = $this->prophesize(H2ProxyRequest::class);
+
+        $serializer = $this->prophesize(Serializer::class);
+        $requestFactory = $this->prophesize(RequestFactory::class);
+        $requestFactory->build($request->reveal())->willReturn($h2Request->reveal());
+
+        $exception = new RequestException($body, $headers);
+
+        $this->executorProphecy->send($h2Request->reveal())->willThrow($exception);
+
+        $subject = new Strategy(
+            $serializer->reveal(),
+            $requestFactory->reveal(),
+            $this->executorProphecy->reveal()
+        );
+
+        $this->expectException(Error::class);
+        $this->expectExceptionMessage('Unathorized');
+        $this->expectExceptionCode(16);
+
+        $subject->execute($request->reveal());
+    }
+
+    public function testExecuteUsesUnknownCodeIfGrpcStatusHeaderIsMissing()
+    {
+        $headers = new HeaderCollection();
+        $body = 'Everything is on fire!';
+
+        $expectedStatus = new Status(2, 'Everything is on fire!', $headers);
+
+        $request = $this->prophesize(Request::class);
+
+        $config = $this->config;
+        $request->fail($expectedStatus)->will(function (array $args) use ($config) {
+            throw new Error($config, $args[0]);
+        });
+
+        $h2Request = $this->prophesize(H2ProxyRequest::class);
+
+        $serializer = $this->prophesize(Serializer::class);
+        $requestFactory = $this->prophesize(RequestFactory::class);
+        $requestFactory->build($request->reveal())->willReturn($h2Request->reveal());
+
+        $exception = new RequestException($body, $headers);
+
+        $this->executorProphecy->send($h2Request->reveal())->willThrow($exception);
+
+        $subject = new Strategy(
+            $serializer->reveal(),
+            $requestFactory->reveal(),
+            $this->executorProphecy->reveal()
+        );
+
+        $this->expectException(Error::class);
+        $this->expectExceptionMessage('Everything is on fire!');
+        $this->expectExceptionCode(2);
+
+        $subject->execute($request->reveal());
     }
 }
