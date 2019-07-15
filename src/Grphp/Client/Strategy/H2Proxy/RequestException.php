@@ -19,12 +19,15 @@ declare(strict_types = 1);
 
 namespace Grphp\Client\Strategy\H2Proxy;
 
+use Exception;
+use Grphp\Client\Error\Status;
 use Grphp\Client\HeaderCollection;
+use Throwable;
 
 /**
  * Represents a failed request that stores the body response, headers, and error message
  */
-class RequestException extends \Exception
+class RequestException extends Exception
 {
     /** @var string */
     protected $body;
@@ -35,11 +38,23 @@ class RequestException extends \Exception
      * @param string $body
      * @param HeaderCollection $headers
      */
-    public function __construct(string $body, HeaderCollection $headers, \Throwable $previous = null)
+    public function __construct(string $body, HeaderCollection $headers, Throwable $previous = null)
     {
         $this->body = $body;
         $this->headers = $headers;
-        parent::__construct($this->getErrorMessage(), 0, $previous);
+
+        parent::__construct($this->getErrorMessage(), $this->getStatusCode(), $previous);
+    }
+
+    /**
+     * Get the gRPC status code for this request
+     *
+     * @return integer
+     */
+    private function getStatusCode(): int
+    {
+        $header = $this->headers->get('grpc-status');
+        return $header ? (int)$header->getFirstValue() : Status::CODE_UNKNOWN;
     }
 
     /**

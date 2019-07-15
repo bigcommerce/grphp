@@ -71,7 +71,7 @@ class Strategy implements StrategyInterface
         try {
             $response = $this->requestExecutor->send($request);
         } catch (RequestException $e) {
-            $status = new Error\Status(Error\Status::CODE_INTERNAL, $e->getErrorMessage(), $e->getHeaders());
+            $status = new Error\Status($e->getCode(), $e->getMessage(), $e->getHeaders());
             $clientRequest->fail($status);
         }
 

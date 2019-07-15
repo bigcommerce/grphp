@@ -19,6 +19,7 @@ declare(strict_types = 1);
 
 namespace Grphp\Client;
 
+use Exception;
 use Grphp\Client\Error\Status;
 use Grphp\Serializers\Errors\Base as BaseSerializer;
 
@@ -28,18 +29,18 @@ use Grphp\Serializers\Errors\Base as BaseSerializer;
  *
  * @package Grphp\Client
  */
-class Error extends \Exception
+class Error extends Exception
 {
     /** @const string */
     const ERROR_METADATA_KEY = 'error-internal-bin';
 
-    /** @var \stdClass $status */
+    /** @var Status $status */
     protected $status;
     /** @var Config $config */
     private $config;
 
     /**
-     * @param \Grphp\Client\Config $config
+     * @param Config $config
      * @param Status $status
      */
     public function __construct(Config $config, Status $status)
