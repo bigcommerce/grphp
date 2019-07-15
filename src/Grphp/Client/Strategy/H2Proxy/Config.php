@@ -19,12 +19,14 @@ declare(strict_types=1);
 
 namespace Grphp\Client\Strategy\H2Proxy;
 
+use InvalidArgumentException;
+
 /**
  * Configuration for the h2proxy strategy
  */
 class Config
 {
-    const DEFAULT_ADDRESS = '0.0.0.0:3000';
+    const DEFAULT_ADDRESS = 'http://0.0.0.0:3000';
     /** @var int The default timeout for connecting to the nghttpx proxy and resolving its result */
     const DEFAULT_TIMEOUT = 15;
 
@@ -43,13 +45,26 @@ class Config
      * @param string $proxyUri
      */
     public function __construct(
-        string $baseUri = Config::DEFAULT_ADDRESS,
-        int $timeout = Config::DEFAULT_TIMEOUT,
+        string $baseUri = self::DEFAULT_ADDRESS,
+        int $timeout = self::DEFAULT_TIMEOUT,
         string $proxyUri = ''
     ) {
-        $this->baseUri = $baseUri;
+        $this->baseUri = $this->validateBaseUri($baseUri);
         $this->timeout = $timeout;
         $this->proxyUri = $proxyUri;
+    }
+
+    /**
+     * @param string $baseUri
+     * @return string
+     */
+    private function validateBaseUri(string $baseUri): string
+    {
+        if (!parse_url($baseUri, PHP_URL_SCHEME)) {
+            throw new InvalidArgumentException("Wrong base URI provided, scheme is missing: {$baseUri}");
+        }
+
+        return $baseUri;
     }
 
     /**

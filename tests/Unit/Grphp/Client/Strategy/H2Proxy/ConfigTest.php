@@ -17,34 +17,45 @@
  */
 namespace Grphp\Client\Strategy\H2Proxy;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 final class ConfigTest extends TestCase
 {
-    /**
-     * @param string $baseUri
-     * @param int $timeout
-     * @dataProvider providerCustom
-     */
-    public function testCustom(string $baseUri, int $timeout)
+    public function testConfigWithTimeout()
     {
+        $baseUri = 'http://localhost:1234';
+        $timeout = 5;
+
         $config = new Config($baseUri, $timeout);
-        static::assertEquals($baseUri, $config->getBaseUri());
-        static::assertEquals($timeout, $config->getTimeout());
-    }
-    public function providerCustom()
-    {
-        return [
-            ['localhost:1234', 5],
-            ['my.service:5000', 0]
-        ];
+
+        $this->assertSame($baseUri, $config->getBaseUri());
+        $this->assertSame($timeout, $config->getTimeout());
     }
 
-    public function testDefaults()
+    public function testConfigWithoutTimeout()
+    {
+        $baseUri = 'https://my.service:5000';
+        $timeout = 0;
+
+        $config = new Config($baseUri, $timeout);
+
+        $this->assertSame($baseUri, $config->getBaseUri());
+        $this->assertSame($timeout, $config->getTimeout());
+    }
+
+    public function testConfigWithDefaults()
     {
         $config = new Config();
-        static::assertEquals(Config::DEFAULT_ADDRESS, $config->getBaseUri());
-        static::assertEquals(Config::DEFAULT_TIMEOUT, $config->getTimeout());
-        static::assertEquals('', $config->getProxyUri());
+        $this->assertSame(Config::DEFAULT_ADDRESS, $config->getBaseUri());
+        $this->assertSame(Config::DEFAULT_TIMEOUT, $config->getTimeout());
+        $this->assertSame('', $config->getProxyUri());
+    }
+
+    public function testConfigRejectsBaseUriWithoutAScheme()
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new Config('service.internal:8080');
     }
 }
