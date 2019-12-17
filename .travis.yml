@@ -17,17 +17,17 @@ before_install:
 
 matrix:
     include:
-        - name: PHP 7.0 with lowest versions of dependencies
-          php: '7.0'
+        - name: PHP 7.2 with lowest versions of dependencies
+          php: '7.2'
           install: composer update --prefer-lowest
-        - name: PHP 7.0
-          php: '7.0'
-          install: composer update
-        - name: PHP 7.1
-          php: '7.1'
-          install: composer update
         - name: PHP 7.2
           php: '7.2'
+          install: composer update
+        - name: PHP 7.3
+          php: '7.3'
+          install: composer update
+        - name: PHP 7.4
+          php: '7.4'
           install: composer update
 
 script:
