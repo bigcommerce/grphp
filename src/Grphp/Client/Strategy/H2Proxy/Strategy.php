@@ -19,8 +19,8 @@ declare(strict_types = 1);
 
 namespace Grphp\Client\Strategy\H2Proxy;
 
-use Grphp\Client\Error;
 use Grphp\Client\ErrorStatus;
+use Grphp\Client\Error\Status;
 use Grphp\Client\Request as ClientRequest;
 use Grphp\Client\Response as ClientResponse;
 use Grphp\Client\Strategy\StrategyInterface;
@@ -60,7 +60,7 @@ class Strategy implements StrategyInterface
      *
      * @param ClientRequest $clientRequest
      * @return ClientResponse
-     * @throws Error
+     * @throws \Grphp\Client\Error
      * @throws \Google\Protobuf\Internal\Exception
      * @throws \Grphp\Protobuf\SerializationException
      */
@@ -71,8 +71,8 @@ class Strategy implements StrategyInterface
         try {
             $response = $this->requestExecutor->send($request);
         } catch (RequestException $e) {
-            $status = new Error\Status($e->getCode(), $e->getMessage(), $e->getHeaders());
-            $clientRequest->fail($status);
+            $message = "gRPC call `{$clientRequest->getPath()}` failed with `{$e->getMessage()}`";
+            $clientRequest->fail(new Status($e->getCode(), $message, $e->getHeaders()));
         }
 
         return $this->handleSuccess($clientRequest, $response);
@@ -92,7 +92,7 @@ class Strategy implements StrategyInterface
             $clientRequest->getExpectedResponseMessageClass()
         );
 
-        $status = new Error\Status(Error\Status::CODE_OK, '', $response->getHeaders());
+        $status = new Status(Status::CODE_OK, '', $response->getHeaders());
         return $clientRequest->succeed($responseMessage, $status);
     }
 }
