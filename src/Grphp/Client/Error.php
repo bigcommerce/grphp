@@ -20,6 +20,7 @@ declare(strict_types = 1);
 namespace Grphp\Client;
 
 use Exception;
+use Grphp\Client\Config;
 use Grphp\Client\Error\Status;
 use Grphp\Serializers\Errors\Base as BaseSerializer;
 
@@ -31,9 +32,6 @@ use Grphp\Serializers\Errors\Base as BaseSerializer;
  */
 class Error extends Exception
 {
-    /** @const string */
-    const ERROR_METADATA_KEY = 'error-internal-bin';
-
     /** @var Status $status */
     protected $status;
     /** @var Config $config */
@@ -79,15 +77,17 @@ class Error extends Exception
      */
     public function getTrailer()
     {
-        $trailer = null;
         $err = $this->getTrailingMetadataError();
         if ($err) {
             $serializer = $this->getErrorSerializer();
             if ($serializer) {
-                $trailer = $serializer->deserialize($err);
+                return $serializer->deserialize($err);
             }
+
+            return $err;
         }
-        return $trailer;
+
+        return null;
     }
 
     /**
@@ -101,28 +101,31 @@ class Error extends Exception
     /**
      * @return null|string
      */
-    private function getTrailingMetadataError()
+    private function getTrailingMetadataError(): ?string
     {
         $headers = $this->status->getHeaders();
-        $metadataHeader = $headers->get(self::ERROR_METADATA_KEY);
+        $metadataHeader = $headers->get($this->config->getErrorMetadataKey());
         if ($metadataHeader) {
             return $metadataHeader->getFirstValue();
         }
+
         return null;
     }
 
     /**
      * @return BaseSerializer
      */
-    private function getErrorSerializer(): BaseSerializer
+    private function getErrorSerializer(): ?BaseSerializer
     {
         $class = $this->config->errorSerializer;
-        if (is_object($class) && is_a($class, BaseSerializer::class)) {
+        if ($class instanceof BaseSerializer) {
             return $class;
-        } elseif (is_string($class) && class_exists($class)) {
-            return new $class($this->config->errorSerializerOptions);
-        } else {
-            return null;
         }
+
+        if (is_string($class) && class_exists($class)) {
+            return new $class($this->config->errorSerializerOptions);
+        }
+
+        return null;
     }
 }

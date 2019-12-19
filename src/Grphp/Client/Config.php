@@ -84,4 +84,12 @@ class Config
         $this->strategy = $strategy;
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getErrorMetadataKey(): string
+    {
+        return $this->errorMetadataKey;
+    }
 }

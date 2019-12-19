@@ -33,6 +33,8 @@ final class ErrorTest extends TestCase
     /** @var \Grphp\Client\Config */
     private $clientConfig;
 
+    private const ERROR_METADATA_KEY = 'error-internal-bin';
+
     private function buildClient(array $options = [])
     {
         $options = array_merge([
@@ -51,7 +53,7 @@ final class ErrorTest extends TestCase
         $this->elapsed = rand(0.0, 20.0);
 
         $headerRegistry = new HeaderCollection();
-        $headerRegistry->add(Error::ERROR_METADATA_KEY, '{"message": "Test"}');
+        $headerRegistry->add('error-internal-bin', '{"message": "Test"}');
         $this->status = new Error\Status(0, 'OK', $headerRegistry);
     }
 
