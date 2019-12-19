@@ -31,56 +31,40 @@ use Grphp\Serializers\Errors\Json as JsonSerializer;
 class Config
 {
     /** @var string $hostname */
-    public $hostname = '';
+    public $hostname;
     /** @var string $authentication */
     public $authentication;
     /** @var array $authenticationOptions */
-    public $authenticationOptions = [];
+    public $authenticationOptions;
     /** @var string $errorSerializer */
     public $errorSerializer;
     /** @var array $errorSerializerOptions */
-    public $errorSerializerOptions = [];
+    public $errorSerializerOptions;
     /** @var string $errorMetadataKey */
-    public $errorMetadataKey = 'error-internal-bin';
+    public $errorMetadataKey;
     /** @var array $interceptorOptions */
-    public $interceptorOptions = [];
+    public $interceptorOptions;
     /** @var bool $useDefaultInterceptors */
-    public $useDefaultInterceptors = true;
+    public $useDefaultInterceptors;
     /** @var \stdClass */
     private $strategy;
+
+    private const ERROR_METADATA_KEY = 'error-internal-bin';
 
     /**
      * @param array $options
      */
     public function __construct($options = [])
     {
-        $this->hostname = array_key_exists('hostname', $options)
-            ? $options['hostname']
-            : '';
-        $this->authentication = array_key_exists('authentication', $options)
-            ? $options['authentication']
-            : null;
-        $this->authenticationOptions = array_key_exists('authentication_options', $options)
-            ? $options['authentication_options']
-            : [];
-        $this->errorSerializer = array_key_exists('error_serializer', $options)
-            ? $options['error_serializer']
-            : JsonSerializer::class;
-        $this->errorSerializerOptions = array_key_exists('error_serializer_options', $options)
-            ? $options['error_serializer_options']
-            : [];
-        $this->errorMetadataKey = array_key_exists('error_metadata_key', $options)
-            ? $options['error_metadata_key']
-            : 'error-internal-bin';
-        $this->interceptorOptions = array_key_exists('interceptor_options', $options)
-            ? $options['interceptor_options']
-            : [];
-        $this->useDefaultInterceptors = array_key_exists('use_default_interceptors', $options)
-            ? $options['use_default_interceptors']
-            : true;
-        $this->strategy = array_key_exists('strategy', $options)
-            ? $options['strategy']
-            : new GrpcStrategy(new GrpcConfig());
+        $this->hostname = $options['hostname'] ?? '';
+        $this->authentication = $options['authentication'] ?? null;
+        $this->authenticationOptions = $options['authentication_options'] ?? [];
+        $this->errorSerializer = $options['error_serializer'] ?? JsonSerializer::class;
+        $this->errorSerializerOptions = $options['error_serializer_options'] ?? [];
+        $this->errorMetadataKey = $options['error_metadata_key'] ?? self::ERROR_METADATA_KEY;
+        $this->interceptorOptions = $options['interceptor_options'] ?? [];
+        $this->useDefaultInterceptors = $options['use_default_interceptors'] ?? true;
+        $this->strategy = $options['strategy'] ?? new GrpcStrategy(new GrpcConfig());
     }
 
     /**
