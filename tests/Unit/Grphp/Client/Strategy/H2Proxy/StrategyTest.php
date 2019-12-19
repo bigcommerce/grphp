@@ -115,14 +115,14 @@ final class StrategyTest extends TestCase
         $headers->add('grpc-message', 'Unathorized');
         $body = 'Unauthorized, sorry!';
 
-        $expectedStatus = new Status(16, 'Unathorized', $headers);
-
         $request = $this->prophesize(Request::class);
+        $request->getPath()->willReturn("foo.barService/BazCall");
 
         $config = $this->config;
-        $request->fail($expectedStatus)->will(function (array $args) use ($config) {
-            throw new Error($config, $args[0]);
-        });
+        $request->fail(Argument::allOf(Argument::Type(Status::class), Argument::which('getCode', 16)))
+            ->will(function (array $args) use ($config) {
+                throw new Error($config, $args[0]);
+            });
 
         $h2Request = $this->prophesize(H2ProxyRequest::class);
 
@@ -152,14 +152,14 @@ final class StrategyTest extends TestCase
         $headers = new HeaderCollection();
         $body = 'Everything is on fire!';
 
-        $expectedStatus = new Status(2, 'Everything is on fire!', $headers);
-
         $request = $this->prophesize(Request::class);
+        $request->getPath()->willReturn("foo.bar.bazService/GetThing");
 
         $config = $this->config;
-        $request->fail($expectedStatus)->will(function (array $args) use ($config) {
-            throw new Error($config, $args[0]);
-        });
+        $request->fail(Argument::allOf(Argument::Type(Status::class), Argument::which('getCode', 2)))
+            ->will(function (array $args) use ($config) {
+                throw new Error($config, $args[0]);
+            });
 
         $h2Request = $this->prophesize(H2ProxyRequest::class);
 

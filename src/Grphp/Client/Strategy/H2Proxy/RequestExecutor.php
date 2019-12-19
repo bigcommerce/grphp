@@ -78,14 +78,14 @@ class RequestExecutor
         );
 
         $response = curl_exec($ch);
-        if (empty($response)) {
-            throw new RequestException('Empty body from nghttpx proxy: ' . curl_error($ch), $responseHeaders);
+        if (curl_errno($ch)) {
+            throw new RequestException(curl_error($ch), $responseHeaders);
         }
 
         $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
         curl_close($ch);
 
-        return $this->handleResponse($response, $responseHeaders, $headerSize);
+        return $this->handleResponse($responseHeaders, substr($response, $headerSize));
     }
 
     /**
@@ -95,16 +95,15 @@ class RequestExecutor
      * @return Response
      * @throws RequestException
      */
-    private function handleResponse(string $response, HeaderCollection $responseHeaders, int $headerSize): Response
+    private function handleResponse(HeaderCollection $responseHeaders, string $body): Response
     {
-        $body = substr($response, $headerSize);
-        if (!empty($body)) {
-            $body = substr($body, static::PACK_START); // strip off pack
-        }
-
         $header = $responseHeaders->get(static::GRPC_STATUS_HEADER);
         if (!$header || $header->getFirstValue() != static::GRPC_STATUS_OK) {
-            throw new RequestException($body, $responseHeaders);
+            throw new RequestException($body ?: 'Unknown reason', $responseHeaders);
+        }
+
+        if (!empty($body)) {
+            $body = substr($body, static::PACK_START); // strip off pack
         }
 
         return new Response($body, $responseHeaders);
