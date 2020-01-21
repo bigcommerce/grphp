@@ -35,6 +35,8 @@ class RequestExecutor
     const PACK_ARGS = '\0';
     const PACK_FORMAT = 'cN';
     const PACK_START = 5;
+    private const UNCOMPRESSED_EMPTY_GRPC_MESSAGE = "\x00\x00\x00\x00\x00";
+    private const COMPRESSED_EMPTY_GRPC_MESSAGE = "\x01\x00\x00\x00\x00";
     /**
      * curl automatically sets "expect: 100-continue" header, if either
      * - the request is a PUT, or
@@ -98,8 +100,17 @@ class RequestExecutor
     private function handleResponse(HeaderCollection $responseHeaders, string $body): Response
     {
         $header = $responseHeaders->get(static::GRPC_STATUS_HEADER);
-        if (!$header || $header->getFirstValue() != static::GRPC_STATUS_OK) {
-            throw new RequestException($body ?: 'Unknown reason', $responseHeaders);
+        if (!$header) {
+            $message = $body;
+            if ($this->isEmptyMessage($message)) {
+                $message = "Missing grpc-status header";
+            }
+
+            throw new RequestException($message, $responseHeaders);
+        }
+
+        if ($header->getFirstValue() != static::GRPC_STATUS_OK) {
+            throw new RequestException("gRPC status: {$header->getFirstValue()}", $responseHeaders);
         }
 
         if (!empty($body)) {
@@ -107,6 +118,13 @@ class RequestExecutor
         }
 
         return new Response($body, $responseHeaders);
+    }
+
+    private function isEmptyMessage(string $body): bool
+    {
+        return !$body ||
+            $body === static::COMPRESSED_EMPTY_GRPC_MESSAGE ||
+            $body === static::UNCOMPRESSED_EMPTY_GRPC_MESSAGE;
     }
 
     /**
