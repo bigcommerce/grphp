@@ -173,7 +173,7 @@ class Request
     {
         $service = explode('\\', get_class($this->client));
         $clientName = array_pop($service);
-        $clientName = str_replace('Client', '', $clientName);
+        $clientName = preg_replace('/Client\z/', '', $clientName);
         return strtolower(implode('.', $service)) . '.' . $clientName;
     }
 }
