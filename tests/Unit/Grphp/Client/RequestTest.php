@@ -22,6 +22,8 @@ use Grphp\Client\Error\Status;
 use Grphp\Test\GetThingReq;
 use Grphp\Test\GetThingResp;
 use Grphp\Test\ThingsClient;
+use Grphp\Test\DummyClient;
+use Grphp\Test\DummyClientAgainClient;
 use PHPUnit\Framework\TestCase;
 
 final class RequestTest extends TestCase
@@ -76,10 +78,10 @@ final class RequestTest extends TestCase
 
     public function testGetPath()
     {
-        $request = $this->buildRequest();
+        $request = new Request($this->config, 'GetThings', null, new DummyClient());
         $path = $request->getPath();
-        static::assertStringStartsWith('double.grphp.test.thingsclient', $path);
-        static::assertStringEndsWith('/GetThing', $path);
+
+        static::assertEquals('grphp.test.Dummy/GetThings', $path);
     }
 
     public function testBuildDefaultDeadline()
@@ -101,8 +103,11 @@ final class RequestTest extends TestCase
 
     public function testGetServiceName()
     {
-        $request = $this->buildRequest();
-        static::assertStringStartsWith('double.grphp.test.thingsclient', $request->getServiceName());
+        $request = new Request($this->config, 'GetThings', null, new DummyClient());
+        static::assertEquals('grphp.test.Dummy', $request->getServiceName());
+
+        $request = new Request($this->config, 'GetThings', null, new DummyClientAgainClient());
+        static::assertEquals('grphp.test.DummyClientAgain', $request->getServiceName());
     }
 
     public function testFail()
