@@ -21,6 +21,7 @@ use Grphp\Authentication\Basic;
 use Grphp\Client;
 use Grphp\Client\Config;
 use Grphp\Client\Error;
+use Grphp\Client\Error\Status;
 use Grphp\Client\Response;
 use PHPUnit\Framework\TestCase;
 use Grphp\Client\Interceptors\Base as BaseInterceptor;
@@ -42,8 +43,10 @@ final class ClientTest extends TestCase
         return new Client(ThingsClient::class, $clientConfig);
     }
 
-    public function setUp()
+    protected function setUp(): void
     {
+        parent::setUp();
+
         $this->client = static::createClient(static::createClientConfig());
     }
 
@@ -133,7 +136,9 @@ final class ClientTest extends TestCase
                 'response_details' => 'foo',
             ]);
         } catch (Error $e) {
-            static::assertAttributeSame($e->getConfig(), 'config', $this->client);
+            $this->assertEquals(new Config([
+                'hostname' => '0.0.0.0:9000',
+            ]), $e->getConfig());
             static::assertEquals('foo', $e->getDetails());
             static::assertEquals(9, $e->getStatusCode());
             static::assertNull($e->getTrailer());
@@ -169,17 +174,20 @@ final class ClientTest extends TestCase
         static::assertInstanceOf(Thing::class, $thing);
     }
 
-    public function testClientIsNotInstantiatedOnConstruct()
-    {
-        static::assertAttributeEmpty('client', $this->client);
-    }
-
     public function testCallInstantiatesClient()
     {
         $getThingReq = new GetThingReq();
         $getThingReq->setId(123);
 
-        $this->client->call($getThingReq, 'GetThing', [], []);
-        static::assertAttributeInstanceOf(ThingsClient::class, 'client', $this->client);
+        $response = $this->client->call($getThingReq, 'GetThing', [], []);
+
+        $expectedResponse = new GetThingResp();
+        $thing = new Thing();
+        $thing->setId(123);
+        $thing->setName('Foo');
+        $expectedResponse->setThing($thing);
+
+        $this->assertEquals(0, $response->getStatusCode());
+        $this->assertEquals($expectedResponse, $response->getResponse());
     }
 }

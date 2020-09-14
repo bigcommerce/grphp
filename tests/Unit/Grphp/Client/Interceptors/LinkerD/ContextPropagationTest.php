@@ -31,8 +31,10 @@ final class ContextPropagationTest extends TestCase
     /** @var ContextPropagation $interceptor */
     protected $interceptor;
 
-    public function setUp()
+    protected function setUp(): void
     {
+        parent::setUp();
+
         $this->interceptor = new ContextPropagation();
     }
 

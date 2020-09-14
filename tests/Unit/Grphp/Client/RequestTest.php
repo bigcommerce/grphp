@@ -32,7 +32,7 @@ final class RequestTest extends TestCase
     private $config;
     private $clientProphecy;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->config = new Config();

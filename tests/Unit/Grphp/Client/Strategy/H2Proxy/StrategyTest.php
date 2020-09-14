@@ -46,9 +46,10 @@ final class StrategyTest extends TestCase
     private $responseHeaders;
     private $responseStatus;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
+
         $this->executorProphecy = $this->prophesize(RequestExecutor::class);
 
         $this->config = new \Grphp\Client\Config();

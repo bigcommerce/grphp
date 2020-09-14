@@ -50,7 +50,7 @@ final class RequestFactoryTest extends TestCase
         return new RequestContext($this->config, 'GetThing', $req, $clientProphecy->reveal(), $metadata, $options);
     }
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->config = new Config();

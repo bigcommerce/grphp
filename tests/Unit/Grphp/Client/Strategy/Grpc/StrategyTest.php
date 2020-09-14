@@ -42,7 +42,7 @@ final class StrategyTest extends TestCase
     /** @var Strategy */
     private $strategy;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->config = new Config();

@@ -31,8 +31,10 @@ final class ResponseTest extends TestCase
     /** @var float */
     protected $elapsed;
 
-    public function setUp()
+    protected function setUp(): void
     {
+        parent::setUp();
+
         $thing = new \Grphp\Test\Thing();
         $thing->setId(1234);
         $thing->setName('Test');

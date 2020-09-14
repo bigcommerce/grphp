@@ -45,8 +45,10 @@ final class ErrorTest extends TestCase
         $this->client = new \Grphp\Client(\Grphp\Test\ThingsClient::class, $this->clientConfig);
     }
 
-    public function setUp()
+    protected function setUp(): void
     {
+        parent::setUp();
+
         $this->buildClient([
             'error_serializer' => \Grphp\Serializers\Errors\Json::class,
         ]);
