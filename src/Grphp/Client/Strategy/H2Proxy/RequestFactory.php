@@ -54,7 +54,14 @@ class RequestFactory
         $url = trim($this->config->getBaseUri(), '/') . '/' . $requestContext->getPath();
         $message = $this->serializer->serializeRequest($requestContext);
         $headers = $this->buildHeaders($requestContext);
-        return new Request($url, $message, $headers, $this->config->getProxyUri());
+
+        return new Request(
+            $url,
+            $message,
+            $headers,
+            $this->config->getProxyUri(),
+            $requestContext->getTimeout()
+        );
     }
 
     /**

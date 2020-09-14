@@ -126,6 +126,7 @@ final class RequestFactoryTest extends TestCase
         $requestContext->getMetadata()->willReturn([]);
         $requestContext->buildDeadline()->willReturn(0);
         $requestContext->getPath()->willReturn('/espresso.machine/PullDoubleShot');
+        $requestContext->getTimeout()->willReturn(null);
 
         $config->getProxyUri()->willReturn('')->shouldBeCalled();
 
@@ -148,12 +149,14 @@ final class RequestFactoryTest extends TestCase
         $requestContext->getMetadata()->willReturn([]);
         $requestContext->buildDeadline()->willReturn(0);
         $requestContext->getPath()->willReturn('/My.GRPC.Service/rpc');
+        $requestContext->getTimeout()->willReturn(0.15);
 
         $config->getProxyUri()->willReturn('127.0.0.1:1234')->shouldBeCalled();
 
         $subject = new RequestFactory($config->reveal(), $serializer->reveal());
 
         $request = $subject->build($requestContext->reveal());
-        static::assertEquals('127.0.0.1:1234', $request->getProxyUri());
+        $this->assertSame('127.0.0.1:1234', $request->getProxyUri());
+        $this->assertSame(0.15, $request->getTimeout());
     }
 }

@@ -129,4 +129,20 @@ final class RequestTest extends TestCase
         static::assertInstanceOf(Response::class, $response);
         static::assertEquals($responseMessage, $response->getResponse());
     }
+
+    public function testGetTimeoutReturnsNullIfNoTimeoutSpecified()
+    {
+        $request = $this->buildRequest();
+
+        $this->assertSame(null, $request->getTimeout());
+    }
+
+    public function testGetTimeoutReturnsTimeoutFromOptions()
+    {
+        $options = ['timeout' => 1.55];
+
+        $request = $this->buildRequest('GetThings', null, [], $options);
+
+        $this->assertSame(1.55, $request->getTimeout());
+    }
 }

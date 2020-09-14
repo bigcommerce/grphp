@@ -176,4 +176,12 @@ class Request
         $clientName = preg_replace('/Client\z/', '', $clientName);
         return strtolower(implode('.', $service)) . '.' . $clientName;
     }
+
+    /**
+     * @return float|null
+     */
+    public function getTimeout(): ?float
+    {
+        return $this->options['timeout'] ?? null;
+    }
 }
