@@ -19,7 +19,6 @@ declare(strict_types = 1);
 
 namespace Grphp\Client\Strategy\H2Proxy;
 
-use Grphp\Client\ErrorStatus;
 use Grphp\Client\Error\Status;
 use Grphp\Client\Request as ClientRequest;
 use Grphp\Client\Response as ClientResponse;

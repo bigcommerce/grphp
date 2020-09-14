@@ -148,7 +148,6 @@ class RequestExecutor
         $headers[] = self::EXPECT_CONTINUE_DISABLING_HEADER;
         $curlOptions = [
             CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_BINARYTRANSFER => true,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_CUSTOMREQUEST => 'POST',
             CURLOPT_HTTPHEADER => $headers,
