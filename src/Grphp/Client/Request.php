@@ -130,19 +130,19 @@ class Request
      * @return string
      * @throws FailedResponseClassLookupException
      */
-    public function getExpectedResponseMessageClass()
+    public function getExpectedResponseMessageClass(): string
     {
         $method = lcfirst($this->method);
         $clientClass = get_class($this->client);
         if (!method_exists($this->client, 'getExpectedResponseMessages')) {
             throw new FailedResponseClassLookupException(
-                "No getExpectedResponseMessages method found on {$clientClass}, is bc-interfaces up to date?"
+                "No getExpectedResponseMessages method found on the {$clientClass} client class"
             );
         }
         $clientResponses = $this->client->getExpectedResponseMessages();
         if (!array_key_exists($method, $clientResponses)) {
             throw new FailedResponseClassLookupException(
-                "No response class mapping found for $method on client {$clientClass}"
+                "No response class mapping found for {$method} on the {$clientClass} client class"
             );
         }
         return $clientResponses[$method];
@@ -159,7 +159,7 @@ class Request
     /**
      * @return float
      */
-    public function buildDeadline() : float
+    public function buildDeadline(): float
     {
         $options = $this->getOptions();
         $timeout = floatval($options['timeout'] ?? static::DEFAULT_TIMEOUT);
@@ -175,5 +175,13 @@ class Request
         $clientName = array_pop($service);
         $clientName = preg_replace('/Client\z/', '', $clientName);
         return strtolower(implode('.', $service)) . '.' . $clientName;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getTimeout(): ?float
+    {
+        return $this->options['timeout'] ?? null;
     }
 }

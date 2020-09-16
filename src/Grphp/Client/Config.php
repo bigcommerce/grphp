@@ -46,7 +46,7 @@ class Config
     public $interceptorOptions;
     /** @var bool $useDefaultInterceptors */
     public $useDefaultInterceptors;
-    /** @var \stdClass */
+    /** @var StrategyInterface */
     private $strategy;
 
     private const ERROR_METADATA_KEY = 'error-internal-bin';

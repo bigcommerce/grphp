@@ -29,7 +29,7 @@ final class StrategyFactoryTest extends TestCase
     /** @var Config */
     private $h2Config;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->h2Config = new Config();

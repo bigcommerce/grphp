@@ -31,19 +31,28 @@ class Request
     private $message;
     /** @var HeaderCollection */
     private $headers;
+    /** @var float|null */
+    private $timeout;
 
     /**
      * @param string $url The URL of the nghttpx proxy
      * @param string $message The binary serialized protobuf message
      * @param HeaderCollection $headers Headers to send
      * @param string $proxyUri
+     * @param float|null $timeout
      */
-    public function __construct(string $url, string $message, HeaderCollection $headers, string $proxyUri = '')
-    {
+    public function __construct(
+        string $url,
+        string $message,
+        HeaderCollection $headers,
+        string $proxyUri = '',
+        ?float $timeout = null
+    ) {
         $this->url = $url;
         $this->message = $message;
         $this->headers = $headers;
         $this->proxyUri = $proxyUri;
+        $this->timeout = $timeout;
     }
 
     /**
@@ -76,5 +85,13 @@ class Request
     public function getProxyUri(): string
     {
         return $this->proxyUri;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getTimeout(): ?float
+    {
+        return $this->timeout;
     }
 }

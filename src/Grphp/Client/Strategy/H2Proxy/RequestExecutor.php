@@ -37,6 +37,7 @@ class RequestExecutor
     const PACK_START = 5;
     private const UNCOMPRESSED_EMPTY_GRPC_MESSAGE = "\x00\x00\x00\x00\x00";
     private const COMPRESSED_EMPTY_GRPC_MESSAGE = "\x01\x00\x00\x00\x00";
+    private const MILLISECONDS_IN_SECOND = 1000;
     /**
      * curl automatically sets "expect: 100-continue" header, if either
      * - the request is a PUT, or
@@ -148,7 +149,6 @@ class RequestExecutor
         $headers[] = self::EXPECT_CONTINUE_DISABLING_HEADER;
         $curlOptions = [
             CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_BINARYTRANSFER => true,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_CUSTOMREQUEST => 'POST',
             CURLOPT_HTTPHEADER => $headers,
@@ -159,6 +159,10 @@ class RequestExecutor
         ];
         if ($request->getProxyUri()) {
             $curlOptions[CURLOPT_PROXY] = $request->getProxyUri();
+        }
+
+        if ($request->getTimeout() !== null) {
+            $curlOptions[CURLOPT_TIMEOUT_MS] = round($request->getTimeout() * self::MILLISECONDS_IN_SECOND);
         }
         return $curlOptions;
     }

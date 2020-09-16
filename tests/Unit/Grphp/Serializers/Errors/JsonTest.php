@@ -24,8 +24,10 @@ final class JsonTest extends TestCase
     /** @var Json $serializer */
     protected $serializer;
 
-    public function setUp()
+    protected function setUp(): void
     {
+        parent::setUp();
+
         $this->serializer = new Json();
     }
 

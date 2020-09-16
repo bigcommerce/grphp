@@ -32,7 +32,7 @@ final class RequestTest extends TestCase
     private $config;
     private $clientProphecy;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->config = new Config();
@@ -128,5 +128,21 @@ final class RequestTest extends TestCase
         $response = $request->succeed($responseMessage, $status);
         static::assertInstanceOf(Response::class, $response);
         static::assertEquals($responseMessage, $response->getResponse());
+    }
+
+    public function testGetTimeoutReturnsNullIfNoTimeoutSpecified()
+    {
+        $request = $this->buildRequest();
+
+        $this->assertSame(null, $request->getTimeout());
+    }
+
+    public function testGetTimeoutReturnsTimeoutFromOptions()
+    {
+        $options = ['timeout' => 1.55];
+
+        $request = $this->buildRequest('GetThings', null, [], $options);
+
+        $this->assertSame(1.55, $request->getTimeout());
     }
 }
