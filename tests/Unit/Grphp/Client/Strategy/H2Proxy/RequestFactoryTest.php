@@ -27,10 +27,13 @@ use Grphp\Test\GetThingReq;
 use Grphp\Test\ThingsClient;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 
 final class RequestFactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     /** @var Config */
     private $config;
 
