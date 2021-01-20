@@ -25,9 +25,12 @@ use Grphp\Test\ThingsClient;
 use Grphp\Test\DummyClient;
 use Grphp\Test\DummyClientAgainClient;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 final class RequestTest extends TestCase
 {
+    use ProphecyTrait;
+
     /** @var Config */
     private $config;
     private $clientProphecy;

@@ -1,0 +1,76 @@
+version: 2.1
+
+orbs:
+  ci: bigcommerce/internal@volatile
+  php: bigcommerce/internal-php@volatile
+
+jobs:
+  tests-unit:
+    parameters:
+      php-version:
+        type: string
+        default: 7.3-fpm
+    executor:
+      name: php/php
+      php-version: << parameters.php-version >>
+    steps:
+      - ci/pre-setup
+      - php/install-extensions:
+          composer_version: ''
+          additional_apt_packages: ''
+          additional_php_extensions: ''
+          additional_pecl_extensions: 'grpc'
+      - php/composer-install
+      - php/unit-phpunit:
+          configuration: 'phpunit.xml.dist'
+  codesniffer:
+    parameters:
+      php-version:
+        type: string
+        default: 7.3-fpm
+    executor:
+      name: php/php
+      php-version: << parameters.php-version >>
+    steps:
+      - ci/pre-setup
+      - php/install-extensions:
+          composer_version: ''
+          additional_apt_packages: ''
+          additional_php_extensions: ''
+          additional_pecl_extensions: ''
+      - php/composer-install
+      - run: ./vendor/bin/phpcs --standard=PSR2 --ignore=src/Grphp/grpc.stubs.php src
+  cs-fixer:
+    parameters:
+      php-version:
+        type: string
+        default: 7.3-fpm
+    executor:
+      name: php/php
+      php-version: << parameters.php-version >>
+    steps:
+      - ci/pre-setup
+      - php/install-extensions:
+          composer_version: ''
+          additional_apt_packages: ''
+          additional_php_extensions: ''
+          additional_pecl_extensions: ''
+      - php/composer-install
+      - run: ./vendor/bin/php-cs-fixer fix --diff --dry-run -v
+
+workflows:
+  version: 2
+  full:
+    jobs:
+      - tests-unit:
+          matrix:
+            parameters:
+              php-version: [ "7.3-fpm", "7.4-fpm" ]
+      - codesniffer:
+          matrix:
+            parameters:
+              php-version: [ "7.3-fpm", "7.4-fpm" ]
+      - cs-fixer:
+          matrix:
+            parameters:
+              php-version: [ "7.3-fpm", "7.4-fpm" ]

@@ -34,9 +34,12 @@ use Grphp\Test\GetThingResp;
 use Grphp\Test\ThingsClient;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 final class StrategyTest extends TestCase
 {
+    use ProphecyTrait;
+
     private $executorProphecy;
     private $config;
     private $h2ProxyConfig;

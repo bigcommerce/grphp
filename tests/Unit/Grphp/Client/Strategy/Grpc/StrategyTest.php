@@ -30,9 +30,12 @@ use Grphp\Test\GetThingReq;
 use Grphp\Test\GetThingResp;
 use Grphp\Test\ThingsClient;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 final class StrategyTest extends TestCase
 {
+    use ProphecyTrait;
+
     /** @var Config */
     private $config;
     /** @var GrpcConfig */

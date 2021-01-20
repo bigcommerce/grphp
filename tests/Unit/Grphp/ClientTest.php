@@ -25,9 +25,12 @@ use Grphp\Client\Error\Status;
 use Grphp\Client\Response;
 use PHPUnit\Framework\TestCase;
 use Grphp\Client\Interceptors\Base as BaseInterceptor;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 final class ClientTest extends TestCase
 {
+    use ProphecyTrait;
+
     /** @var Config $clientConfig */
     protected $clientConfig;
     /** @var Client $client */
