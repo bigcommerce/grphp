@@ -37,7 +37,7 @@ abstract class Base
     /** @var string */
     protected $method;
     /** @var array */
-    protected $metadata;
+    protected $metadata = [];
     /** @var BaseStub */
     protected $stub;
 
