@@ -50,6 +50,18 @@ final class ConfigTest extends TestCase
         $this->assertSame(Config::DEFAULT_ADDRESS, $config->getBaseUri());
         $this->assertSame(Config::DEFAULT_TIMEOUT, $config->getTimeout());
         $this->assertSame('', $config->getProxyUri());
+        $this->assertSame(Config::DEFAULT_CONTENT_TYPE, $config->getContentType());
+    }
+
+    public function testConfigWithSetContentType()
+    {
+        $config = new Config(
+            Config::DEFAULT_ADDRESS,
+            Config::DEFAULT_TIMEOUT,
+            '',
+            'application/grpc'
+        );
+        $this->assertSame('application/grpc', $config->getContentType());
     }
 
     public function testConfigRejectsBaseUriWithoutAScheme()

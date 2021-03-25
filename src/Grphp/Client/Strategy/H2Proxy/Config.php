@@ -29,6 +29,8 @@ class Config
     const DEFAULT_ADDRESS = 'http://0.0.0.0:3000';
     /** @var int The default timeout for connecting to the nghttpx proxy and resolving its result */
     const DEFAULT_TIMEOUT = 15;
+    /** @var string The default content type to send on client requests */
+    const DEFAULT_CONTENT_TYPE = 'application/grpc+proto';
 
     /** @var string */
     private $baseUri;
@@ -39,19 +41,25 @@ class Config
     /** @var int */
     private $timeout;
 
+    /** @var string */
+    private $contentType;
+
     /**
      * @param string $baseUri The address and port of the nghttpx proxy
      * @param int $timeout The timeout to connect to the proxy, in seconds
      * @param string $proxyUri
+     * @param string $contentType The content type to use when issuing requests through this strategy
      */
     public function __construct(
         string $baseUri = self::DEFAULT_ADDRESS,
         int $timeout = self::DEFAULT_TIMEOUT,
-        string $proxyUri = ''
+        string $proxyUri = '',
+        string $contentType = self::DEFAULT_CONTENT_TYPE
     ) {
         $this->baseUri = $this->validateBaseUri($baseUri);
         $this->timeout = $timeout;
         $this->proxyUri = $proxyUri;
+        $this->contentType = $contentType;
     }
 
     /**
@@ -89,5 +97,13 @@ class Config
     public function getProxyUri(): string
     {
         return $this->proxyUri;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContentType(): string
+    {
+        return $this->contentType;
     }
 }
