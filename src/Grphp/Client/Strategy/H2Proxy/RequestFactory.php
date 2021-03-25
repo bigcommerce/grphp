@@ -88,7 +88,7 @@ class RequestFactory
         }
         $headers->add('Upgrade', 'h2c');
         $headers->add('Connection', 'Upgrade');
-        $headers->add('Content-Type', 'application/grpc+proto');
+        $headers->add('Content-Type', $this->config->getContentType());
         $headers->add('TE', 'trailers');
         $headers->add('User-Agent', 'grphp/1.0.0');
         $headers->add('Grpc-Encoding', 'identity');

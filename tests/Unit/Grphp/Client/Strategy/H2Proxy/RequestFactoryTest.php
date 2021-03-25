@@ -123,6 +123,7 @@ final class RequestFactoryTest extends TestCase
         /** @var H2ProxyConfig|ObjectProphecy $config */
         $config = $this->prophesize(\Grphp\Client\Strategy\H2Proxy\Config::class);
         $config->getBaseUri()->willReturn('service.com:5678');
+        $config->getContentType()->willReturn(\Grphp\Client\Strategy\H2Proxy\Config::DEFAULT_CONTENT_TYPE);
 
         /** @var RequestContext|ObjectProphecy $requestContext */
         $requestContext = $this->prophesize(RequestContext::class);
@@ -146,6 +147,7 @@ final class RequestFactoryTest extends TestCase
         /** @var H2ProxyConfig|ObjectProphecy $config */
         $config = $this->prophesize(\Grphp\Client\Strategy\H2Proxy\Config::class);
         $config->getBaseUri()->willReturn('service.com:5678');
+        $config->getContentType()->willReturn(\Grphp\Client\Strategy\H2Proxy\Config::DEFAULT_CONTENT_TYPE);
 
         /** @var RequestContext|ObjectProphecy $requestContext */
         $requestContext = $this->prophesize(RequestContext::class);
