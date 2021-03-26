@@ -2,6 +2,10 @@ Changelog for grphp.
 
 ### Pending Release
 
+### 3.1.1
+
+* Make Grphp\Client#getClient protected instead of private
+
 ### 3.1.0
 
 * Add the ability to configure the content-type header for requests using the H2Proxy strategy
