@@ -95,7 +95,7 @@ class Client
      * Lazy-load/instantiate client instance and appropriate channel credentials
      * @return \Grpc\BaseStub
      */
-    private function getClient()
+    protected function getClient()
     {
         if ($this->client === null) {
             $this->client = new $this->clientClassName($this->config->hostname, [
