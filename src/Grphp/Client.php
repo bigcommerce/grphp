@@ -27,8 +27,8 @@ use Grphp\Client\Interceptors\Timer as TimerInterceptor;
 use Grphp\Client\Interceptors\LinkerD\ContextPropagation as LinkerDContextInterceptor;
 use Grphp\Client\Request;
 use Grphp\Client\Response;
+use Grphp\Client\Strategy\Grpc\Strategy as GrpcStrategy;
 use Grphp\Client\Strategy\H2Proxy\Config as H2ProxyConfig;
-use Grphp\Client\Strategy\H2Proxy\Strategy as H2ProxyStrategy;
 use Grphp\Client\Strategy\H2Proxy\StrategyFactory as H2ProxyStrategyFactory;
 
 /**
@@ -192,9 +192,9 @@ class Client
     }
 
     /**
-     * Load stubs and use h2proxy strategy if the C extension is not loaded
+     * Load stubs and use h2proxy strategy if the C extension is not loaded and grpc strategy is set
      */
-    private function validateAndDetermineStrategy()
+    private function validateAndDetermineStrategy(): void
     {
         if (extension_loaded('grpc')) {
             return;
@@ -202,9 +202,9 @@ class Client
 
         require_once dirname(__FILE__) . '/grpc.stubs.php';
 
-        // force the h2proxy strategy
+        // if grpc extension is not loaded but is set to be used, force the h2proxy strategy instead
         $strategy = $this->config->getStrategy();
-        if (!is_a($strategy, H2ProxyStrategy::class)) {
+        if (is_a($strategy, GrpcStrategy::class)) {
             $h2ProxyConfig = new H2ProxyConfig();
             $h2ProxyStrategy = (new H2ProxyStrategyFactory($h2ProxyConfig))->build();
             $this->config->setStrategy($h2ProxyStrategy);

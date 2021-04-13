@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+set -eou pipefail
+
+echo "Running test suite..."
+
+echo "Running composer install..."
+composer install
+
+echo "Running PHPCS code sniffer..."
+./vendor/bin/phpcs --standard=.php_cs.ruleset.xml src
+
+echo "Running CS fixer..."
+./vendor/bin/php-cs-fixer fix --diff --dry-run -v
+
+echo "Running phpunit..."
+./vendor/bin/phpunit --configuration phpunit.xml.dist
+
+echo "Done!"

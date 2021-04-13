@@ -68,16 +68,33 @@ You can use and configure the proxy strategy like so, assuming we have a nghttpx
 on port 3000:
 
 ```php
-
-$shovelConfig = new Grphp\Client\Strategy\Shovel\Config('http://0.0.0.0:3000', 15);
-$shovelStrategyFactory = new Grphp\Client\Strategy\Shovel\StrategyFactory($shovelConfig);
+$proxyConfig = new Grphp\Client\Strategy\H2Proxy\Config('http://0.0.0.0:3000', 15);
+$proxyStrategyFactory = new Grphp\Client\Strategy\H2Proxy\StrategyFactory($proxyConfig);
 $config = new Grphp\Client\Config([
-    'strategy' => $shovelStrategyFactory->build(),
+    'strategy' => $proxyStrategyFactory->build(),
 ]);
 ```
 
 This sets the proxy client to also utilize a timeout of 15 seconds. This setup is configurable per-client, so you can
-adjust these settings - and the strategy - on a service-by-service basis. 
+adjust these settings - and the strategy - on a service-by-service basis.
+
+### Envoy Strategy
+
+The Envoy strategy uses [Envoy](https://www.envoyproxy.io/) as an HTTP/1.1 bridge for gRPC egress traffic. It 
+automatically serializes messages and buffers requests to handle the response trailers. More can be read about the
+[Envoy bridge here](https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/grpc_http1_bridge_filter).
+
+```php
+// Connect to Envoy at 127.0.0.1:19000
+$envoyConfig = new Grphp\Client\Strategy\Envoy\Config('127.0.0.1', 19000, 2);
+$envoyStrategyFactory = new Grphp\Client\Strategy\Envoy\StrategyFactory($envoyConfig);
+$config = new Grphp\Client\Config([
+    'strategy' => $envoyStrategyFactory->build(),
+]);
+```
+
+This sets the proxy client to also utilize a timeout of 2 seconds. This setup is configurable per-client, so you can
+adjust these settings - and the strategy - on a service-by-service basis.
 
 ## Authentication
 

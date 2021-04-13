@@ -28,6 +28,30 @@ class HeaderCollection
     protected $headers = [];
 
     /**
+     * @param Request $request
+     * @return static
+     */
+    public static function fromRequest(Request $request): self
+    {
+        $headers = new self();
+        $metadata = $request->getMetadata();
+        foreach ($metadata as $k => $v) {
+            if (is_string($v)) {
+                $headers->add($k, $v);
+            } else {
+                foreach ($v as $v2) {
+                    $headers->add($k, $v2);
+                }
+            }
+        }
+        $deadline = $request->buildDeadline();
+        if (!empty($deadline)) {
+            $headers->add('Deadline', strval($deadline));
+        }
+        return $headers;
+    }
+
+    /**
      * Add a value to a header
      *
      * @param string $name The name of the header

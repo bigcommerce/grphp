@@ -2,6 +2,8 @@ Changelog for grphp.
 
 ### Pending Release
 
+* Add Envoy strategy for using grphp with an Envoy proxy for gRPC egress communication
+
 ### 3.1.1
 
 * Make Grphp\Client#getClient protected instead of private
