@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<ruleset name="grphp phpcs">
+    <description>grphp phpcs custom standard to ignore grpc stubs</description>
+    <rule ref="PSR2">
+        <exclude-pattern>grpc.stubs.php</exclude-pattern>
+    </rule>
+    <rule ref="PSR1.Files.SideEffects">
+        <exclude-pattern>Client.php</exclude-pattern>
+    </rule>
+</ruleset>

@@ -15,24 +15,24 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
-namespace Grphp\Client\Strategy\H2Proxy;
+namespace Grphp\Client\Strategy\Envoy;
 
 use Grphp\Client\HeaderCollection;
-use Grphp\Client\Request as RequestContext;
+use Grphp\Client\Request as ClientRequest;
 use Grphp\Protobuf\SerializationException;
 use Grphp\Protobuf\Serializer;
 
 /**
- * Build HTTP requests for the nghttpx h2 proxy
+ * Build Envoy requests from grphp request objects
  */
 class RequestFactory
 {
-    /** @var Config */
-    private $config;
-    /** @var Serializer */
-    private $serializer;
+    /** @var Config $config */
+    protected $config;
+    /** @var Serializer $serializer */
+    protected $serializer;
 
     /**
      * @param Config $config
@@ -45,13 +45,13 @@ class RequestFactory
     }
 
     /**
-     * @param RequestContext $requestContext
+     * @param ClientRequest $requestContext
      * @return Request
      * @throws SerializationException
      */
-    public function build(RequestContext $requestContext): Request
+    public function build(ClientRequest $requestContext): Request
     {
-        $url = trim($this->config->getBaseUri(), '/') . '/' . $requestContext->getPath();
+        $url = $this->config->getAddress() . '/' . $requestContext->getPath();
         $message = $this->serializer->serializeRequest($requestContext);
         $headers = $this->buildHeaders($requestContext);
 
@@ -59,24 +59,19 @@ class RequestFactory
             $url,
             $message,
             $headers,
-            $this->config->getProxyUri(),
             $requestContext->getTimeout()
         );
     }
 
     /**
-     * @param RequestContext $requestContext
+     * @param ClientRequest $clientRequest
      * @return HeaderCollection
      */
-    private function buildHeaders(RequestContext $requestContext): HeaderCollection
+    private function buildHeaders(ClientRequest $clientRequest): HeaderCollection
     {
-        $headers = HeaderCollection::fromRequest($requestContext);
-        $headers->add('Upgrade', 'h2c');
-        $headers->add('Connection', 'Upgrade');
+        $headers = HeaderCollection::fromRequest($clientRequest);
         $headers->add('Content-Type', $this->config->getContentType());
-        $headers->add('TE', 'trailers');
-        $headers->add('User-Agent', 'grphp/1.0.0');
-        $headers->add('Grpc-Encoding', 'identity');
+        $headers->add('User-Agent', $this->config->getUserAgent());
         return $headers;
     }
 }

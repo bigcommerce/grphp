@@ -15,8 +15,27 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-$_ENV['TEST_MODE'] = 1;
-error_reporting(E_ALL | E_STRICT);
-date_default_timezone_set('UTC');
-require dirname(__DIR__) . '/tests/Support/Client.php';
-require dirname(__DIR__) . '/tests/Support/TestInterceptors.php';
+declare(strict_types = 1);
+
+namespace Grphp\Client\Strategy\Envoy;
+
+use Grphp\Client\HeaderCollection;
+use PHPUnit\Framework\TestCase;
+
+final class ResponseTest extends TestCase
+{
+    public function testGetBody()
+    {
+        $body = 'fooooooo bar.';
+        $response = new Response($body, new HeaderCollection());
+        $this->assertEquals($body, $response->getBody());
+    }
+
+    public function testGetHeaders()
+    {
+        $headers = new HeaderCollection();
+        $headers->add('baz', 'baaaaaaz');
+        $response = new Response('', $headers);
+        $this->assertEquals($headers, $response->getHeaders());
+    }
+}

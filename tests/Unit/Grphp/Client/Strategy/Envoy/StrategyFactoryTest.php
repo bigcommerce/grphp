@@ -15,8 +15,20 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-$_ENV['TEST_MODE'] = 1;
-error_reporting(E_ALL | E_STRICT);
-date_default_timezone_set('UTC');
-require dirname(__DIR__) . '/tests/Support/Client.php';
-require dirname(__DIR__) . '/tests/Support/TestInterceptors.php';
+declare(strict_types = 1);
+
+namespace Grphp\Client\Strategy\Envoy;
+
+use Grphp\Client\Strategy\H2Proxy\Config;
+use Grphp\Client\Strategy\H2Proxy\Strategy;
+use Grphp\Client\Strategy\H2Proxy\StrategyFactory;
+use PHPUnit\Framework\TestCase;
+
+final class StrategyFactoryTest extends TestCase
+{
+    public function testBuild()
+    {
+        $factory = new StrategyFactory(new Config());
+        $this->assertInstanceOf(Strategy::class, $factory->build());
+    }
+}
