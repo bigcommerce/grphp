@@ -27,7 +27,6 @@ use Grphp\Client\HeaderCollection;
 class RequestExecutor
 {
     const GRPC_BINARY_ENCODED_METADATA_POSTFIX = '-bin';
-    const GRPC_CONTENT_TYPE = 'application/grpc';
     const GRPC_ENCODING = 'identity';
     const GRPC_STATUS_HEADER = 'grpc-status';
     const GRPC_STATUS_OK = '0';
@@ -160,8 +159,7 @@ class RequestExecutor
             CURLOPT_POSTFIELDS => $payload,
             CURLOPT_HEADER => true,
             CURLOPT_USERAGENT => static::GRPHP_USER_AGENT,
-            CURLOPT_ENCODING => static::GRPC_ENCODING,
-            CURLOPT_CONTENT_TYPE => static::GRPC_CONTENT_TYPE
+            CURLOPT_ENCODING => static::GRPC_ENCODING
         ];
         if ($request->getTimeout() !== null) {
             $curlOptions[CURLOPT_TIMEOUT_MS] = round($request->getTimeout() * self::MILLISECONDS_IN_SECOND);

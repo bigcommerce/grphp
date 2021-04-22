@@ -2,6 +2,8 @@ Changelog for grphp.
 
 ### Pending Release
 
+* `CURLOPT_CONTENT_TYPE` is deprecated; remove references and allow `CURLOPT_HTTPHEADER` to handle Content-Type headers
+
 ### 3.2.0
 
 * Add Envoy strategy for using grphp with an Envoy proxy for gRPC egress communication
