@@ -2,6 +2,8 @@ Changelog for grphp.
 
 ### Pending Release
 
+### 3.2.1
+
 * `CURLOPT_CONTENT_TYPE` is deprecated; remove references and allow `CURLOPT_HTTPHEADER` to handle Content-Type headers
 
 ### 3.2.0
