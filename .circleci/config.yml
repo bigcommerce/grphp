@@ -65,12 +65,12 @@ workflows:
       - tests-unit:
           matrix:
             parameters:
-              php-version: [ "7.3-fpm", "7.4-fpm" ]
+              php-version: [ "7.3-fpm", "7.4-fpm", "8.0-fpm" ]
       - codesniffer:
           matrix:
             parameters:
-              php-version: [ "7.3-fpm", "7.4-fpm" ]
+              php-version: [ "7.3-fpm", "7.4-fpm", "8.0-fpm" ]
       - cs-fixer:
           matrix:
             parameters:
-              php-version: [ "7.3-fpm", "7.4-fpm" ]
+              php-version: [ "7.3-fpm", "7.4-fpm", "8.0-fpm" ]
