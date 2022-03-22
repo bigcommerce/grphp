@@ -72,6 +72,8 @@ class RequestFactory
         $headers = HeaderCollection::fromRequest($clientRequest);
         $headers->add('Content-Type', $this->config->getContentType());
         $headers->add('User-Agent', $this->config->getUserAgent());
+        // @see https://github.com/grpc/grpc/blob/653ba62/doc/PROTOCOL-HTTP2.md?plain=1#L30
+        $headers->add('TE', 'trailers');
         return $headers;
     }
 }

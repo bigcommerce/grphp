@@ -2,6 +2,9 @@ Changelog for grphp.
 
 ### Pending Release
 
+### 3.2.2
+* Add header `TE: trailers` for envoy requests.
+
 ### 3.2.1
 
 * `CURLOPT_CONTENT_TYPE` is deprecated; remove references and allow `CURLOPT_HTTPHEADER` to handle Content-Type headers
