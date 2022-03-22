@@ -61,6 +61,7 @@ final class RequestFactoryTest extends TestCase
         $headers = $httpRequest->getHeaders();
         $this->assertEquals('application/grpc', $headers->get('Content-Type')->getValuesAsString());
         $this->assertEquals('grphp/1.0.0', $headers->get('User-Agent')->getValuesAsString());
+        $this->assertSame('trailers', $headers->get('TE')->getValuesAsString());
 
         $deadlineish = intval(microtime(true) + RequestContext::DEFAULT_TIMEOUT);
         $this->assertEquals($deadlineish, intval($headers->get('Deadline')->getValuesAsString()));
