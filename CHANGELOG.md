@@ -2,6 +2,12 @@ Changelog for grphp.
 
 ### Pending Release
 
+### 3.3.x
+
+* Add automatic retry support to `\Grphp\Client` on UNAVAILABLE (configurable) responses
+* Add ability to pass in channel arguments to clients
+* Drop support for PHP 7.3 (EOLed)
+
 ### 3.2.2
 * Add header `TE: trailers` for envoy requests.
 

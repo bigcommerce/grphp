@@ -30,9 +30,9 @@ use Grphp\Protobuf\Serializer;
 class RequestFactory
 {
     /** @var Config $config */
-    protected $config;
+    protected Config $config;
     /** @var Serializer $serializer */
-    protected $serializer;
+    protected Serializer $serializer;
 
     /**
      * @param Config $config
@@ -59,6 +59,9 @@ class RequestFactory
             $url,
             $message,
             $headers,
+            $this->config->areRetriesEnabled(),
+            $this->config->getMaxRetries(),
+            $this->config->getRetryableStatusCodes(),
             $requestContext->getTimeout()
         );
     }

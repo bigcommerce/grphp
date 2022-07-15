@@ -9,7 +9,7 @@ jobs:
     parameters:
       php-version:
         type: string
-        default: 7.3-fpm
+        default: 7.4-fpm
     executor:
       name: php/php
       php-version: << parameters.php-version >>
@@ -27,7 +27,7 @@ jobs:
     parameters:
       php-version:
         type: string
-        default: 7.3-fpm
+        default: 7.4-fpm
     executor:
       name: php/php
       php-version: << parameters.php-version >>
@@ -44,7 +44,7 @@ jobs:
     parameters:
       php-version:
         type: string
-        default: 7.3-fpm
+        default: 7.4-fpm
     executor:
       name: php/php
       php-version: << parameters.php-version >>
@@ -65,12 +65,12 @@ workflows:
       - tests-unit:
           matrix:
             parameters:
-              php-version: [ "7.3-fpm", "7.4-fpm", "8.0-fpm" ]
+              php-version: [ "7.4-fpm", "8.0-fpm", "8.1-fpm" ]
       - codesniffer:
           matrix:
             parameters:
-              php-version: [ "7.3-fpm", "7.4-fpm", "8.0-fpm" ]
+              php-version: [ "7.4-fpm", "8.0-fpm", "8.1-fpm" ]
       - cs-fixer:
           matrix:
             parameters:
-              php-version: [ "7.3-fpm", "7.4-fpm", "8.0-fpm" ]
+              php-version: [ "7.4-fpm", "8.0-fpm", "8.1-fpm" ]

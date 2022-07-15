@@ -27,6 +27,7 @@ use Grphp\Client\Interceptors\Timer as TimerInterceptor;
 use Grphp\Client\Interceptors\LinkerD\ContextPropagation as LinkerDContextInterceptor;
 use Grphp\Client\Request;
 use Grphp\Client\Response;
+use Grphp\Client\RetryPoliciesFactory;
 use Grphp\Client\Strategy\Grpc\Strategy as GrpcStrategy;
 use Grphp\Client\Strategy\H2Proxy\Config as H2ProxyConfig;
 use Grphp\Client\Strategy\H2Proxy\StrategyFactory as H2ProxyStrategyFactory;
@@ -42,11 +43,11 @@ class Client
     /** @var BaseStub $client */
     protected $client;
     /** @var Config $config */
-    protected $config;
+    protected Config $config;
     /** @var array<BaseInterceptor> $interceptors */
-    protected $interceptors = [];
+    protected array $interceptors = [];
     /** @var string */
-    private $clientClassName;
+    private string $clientClassName;
 
     /**
      * @param string $clientClassName
@@ -98,9 +99,18 @@ class Client
     protected function getClient()
     {
         if ($this->client === null) {
+            $channelArguments = $this->config->channelArguments;
+            if ($this->config->retriesEnabled) {
+                $retryPolicies = $this->buildRetryPolicies();
+                $channelArguments = array_merge([
+                    'grpc.enable_retries' => 1,
+                    'grpc.service_config' => json_encode($retryPolicies),
+                ], $channelArguments);
+            }
+            $channel = new \Grpc\Channel($this->config->hostname, $channelArguments);
             $this->client = new $this->clientClassName($this->config->hostname, [
                 'credentials' => \Grpc\ChannelCredentials::createInsecure(),
-            ]);
+            ], $channel);
         }
 
         return $this->client;
@@ -209,5 +219,15 @@ class Client
             $h2ProxyStrategy = (new H2ProxyStrategyFactory($h2ProxyConfig))->build();
             $this->config->setStrategy($h2ProxyStrategy);
         }
+    }
+
+    /**
+     * @return array
+     */
+    private function buildRetryPolicies(): array
+    {
+        $client = $this->getClient();
+        $factory = new RetryPoliciesFactory();
+        return $factory->build($client, $this->config);
     }
 }

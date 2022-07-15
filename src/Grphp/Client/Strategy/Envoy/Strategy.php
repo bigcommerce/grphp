@@ -34,11 +34,11 @@ use Grphp\Protobuf\Serializer;
 class Strategy implements StrategyInterface
 {
     /** @var RequestExecutor $requestExecutor */
-    private $requestExecutor;
+    private RequestExecutor $requestExecutor;
     /** @var RequestFactory $requestFactory */
-    private $requestFactory;
+    private RequestFactory $requestFactory;
     /** @var Serializer $serializer */
-    private $serializer;
+    private Serializer $serializer;
 
     /**
      * @param Serializer $serializer
@@ -64,7 +64,6 @@ class Strategy implements StrategyInterface
      */
     public function execute(ClientRequest $request): ClientResponse
     {
-        $response = null;
         $proxyRequest = $this->requestFactory->build($request);
         try {
             $response = $this->requestExecutor->send($proxyRequest);
@@ -73,7 +72,6 @@ class Strategy implements StrategyInterface
             $message = "gRPC call `{$request->getPath()}` failed with `{$e->getMessage()}`";
             $request->fail(new Status($e->getCode(), $message, $e->getHeaders()));
         }
-        return $this->handleSuccess($request, $response);
     }
 
     /**

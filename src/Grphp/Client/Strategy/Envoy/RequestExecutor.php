@@ -26,18 +26,20 @@ use Grphp\Client\HeaderCollection;
  */
 class RequestExecutor
 {
-    const GRPC_BINARY_ENCODED_METADATA_POSTFIX = '-bin';
-    const GRPC_ENCODING = 'identity';
-    const GRPC_STATUS_HEADER = 'grpc-status';
-    const GRPC_STATUS_OK = '0';
-    const GRPHP_USER_AGENT = 'grphp/1.0.0';
-    const PACK_ARGS = '\0';
-    const PACK_FORMAT = 'cN';
-    const PACK_START = 5;
+    protected const GRPC_BINARY_ENCODED_METADATA_POSTFIX = '-bin';
+    protected const GRPC_ENCODING = 'identity';
+    protected const GRPHP_USER_AGENT = 'grphp/1.0.0';
+    protected const PACK_ARGS = '\0';
+    protected const PACK_FORMAT = 'cN';
+    protected const PACK_START = 5;
 
-    private const UNCOMPRESSED_EMPTY_GRPC_MESSAGE = "\x00\x00\x00\x00\x00";
-    private const COMPRESSED_EMPTY_GRPC_MESSAGE = "\x01\x00\x00\x00\x00";
-    private const MILLISECONDS_IN_SECOND = 1000;
+    protected const GRPC_STATUS_HEADER = 'grpc-status';
+    protected const GRPC_STATUS_OK = 0;
+    protected const GRPC_STATUS_UNKNOWN = 2;
+
+    protected const UNCOMPRESSED_EMPTY_GRPC_MESSAGE = "\x00\x00\x00\x00\x00";
+    protected const COMPRESSED_EMPTY_GRPC_MESSAGE = "\x01\x00\x00\x00\x00";
+    protected const MILLISECONDS_IN_SECOND = 1000;
 
     /**
      * curl automatically sets "expect: 100-continue" header, if either
@@ -57,8 +59,59 @@ class RequestExecutor
     public function send(Request $request): Response
     {
         $payload = $this->buildPayload($request);
-        $responseHeaders = new HeaderCollection();
+        $maxTries = $request->areRetriesEnabled() ? $request->getMaxRetries() : 1;
 
+        $tries = 0;
+        $body = '';
+        $grpcStatusCode = static::GRPC_STATUS_UNKNOWN;
+        $responseHeaders = new HeaderCollection();
+        while ($tries < $maxTries) {
+            $p = $this->execute($request, $payload);
+            $responseHeaders = $p['headers'];
+            $body = $p['body'];
+
+            // get grpc-status header value
+            $header = $responseHeaders->get(static::GRPC_STATUS_HEADER);
+
+            if (!$header) {
+                $message = $body;
+                if ($this->isEmptyMessage($message)) {
+                    $message = "Missing grpc-status header";
+                }
+                // if no grpc status at all, we cannot reliably retry, so bail early with error
+                throw new RequestException($message, $responseHeaders);
+            }
+
+            $grpcStatusCode = (int)$header->getFirstValue();
+
+            // if GRPC::OK, then we can bail out and succeed early
+            if ($grpcStatusCode == static::GRPC_STATUS_OK) {
+                return new Response($body, $responseHeaders);
+            }
+
+            // If the error is not retryable, then just throw an exception and bail out
+            if (!in_array($grpcStatusCode, $request->getRetryableStatusCodes())) {
+                throw new RequestException("gRPC status: {$grpcStatusCode}", $responseHeaders);
+            }
+
+            $tries++;
+        }
+
+        // we've reached max retries, so throw the exception
+        throw new RequestException("Failed after $maxTries retries with gRPC status code $grpcStatusCode and body: $body", $responseHeaders);
+    }
+
+    /**
+     * Execute the request
+     *
+     * @param Request $request
+     * @param string $payload
+     * @return array
+     * @throws RequestException
+     */
+    private function execute(Request $request, string $payload): array
+    {
+        $responseHeaders = new HeaderCollection();
         $ch = curl_init($request->getUrl());
         curl_setopt_array($ch, $this->getCurlOptions($request, $payload));
         curl_setopt(
@@ -82,43 +135,24 @@ class RequestExecutor
         );
 
         $response = curl_exec($ch);
-        if (curl_errno($ch)) {
-            throw new RequestException(curl_error($ch), $responseHeaders);
+        $errNo = curl_errno($ch);
+        if (!empty($errNo)) { // if not 0
+            $errorMessage = curl_error($ch);
+            throw new RequestException("cURL error - code $errNo, message: $errorMessage", $responseHeaders);
         }
 
         $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
         curl_close($ch);
 
-        return $this->handleResponse($responseHeaders, substr($response, $headerSize));
-    }
-
-    /**
-     * @param HeaderCollection $responseHeaders
-     * @param string $body
-     * @return Response
-     * @throws RequestException
-     */
-    private function handleResponse(HeaderCollection $responseHeaders, string $body): Response
-    {
-        $header = $responseHeaders->get(static::GRPC_STATUS_HEADER);
-        if (!$header) {
-            $message = $body;
-            if ($this->isEmptyMessage($message)) {
-                $message = "Missing grpc-status header";
-            }
-
-            throw new RequestException($message, $responseHeaders);
-        }
-
-        if ($header->getFirstValue() != static::GRPC_STATUS_OK) {
-            throw new RequestException("gRPC status: {$header->getFirstValue()}", $responseHeaders);
-        }
-
+        $body = substr($response, $headerSize);
         if (!empty($body)) {
             $body = substr($body, static::PACK_START); // strip off pack
         }
 
-        return new Response($body, $responseHeaders);
+        return [
+            'headers' => $responseHeaders,
+            'body' => $body
+        ];
     }
 
     /**

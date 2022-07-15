@@ -34,19 +34,27 @@ class Config
     const DEFAULT_CONTENT_TYPE = 'application/grpc';
     /** @var string User agent to use when sending cURL requests to Envoy proxy */
     const DEFAULT_USER_AGENT = 'grphp/1.0.0';
+    /** @var bool Are retries enabled */
+    private const DEFAULT_RETRIES_ENABLED = true;
+    /** @var int Default number of retries */
+    private const DEFAULT_RETRIES_MAX = 3;
+    /** @var int[] gRPC status codes to retry on */
+    private const DEFAULT_RETRIES_STATUS_CODES = [14];
 
-    /** @var string */
-    private $address;
-
-    /** @var int */
-    private $timeout;
-
-    /** @var string */
-    private $contentType;
-
-    /** @var string */
-    private $userAgent;
-
+    /** @var string $address */
+    private string $address;
+    /** @var int $timeout */
+    private int $timeout;
+    /** @var string $contentType */
+    private string $contentType;
+    /** @var string $userAgent */
+    private string $userAgent;
+    /** @var bool $retries */
+    private bool $retries;
+    /** @var int $retriesMax */
+    private int $retriesMax;
+    /** @var int[] $retriesStatusCodes */
+    private array $retriesStatusCodes;
     /**
      * @param string|null $host The address of the Envoy proxy
      * @param int|null $port The port the Envoy proxy is receiving ingress on
@@ -59,12 +67,18 @@ class Config
         int $port = self::DEFAULT_ENVOY_PORT,
         int $timeout = self::DEFAULT_TIMEOUT,
         string $contentType = self::DEFAULT_CONTENT_TYPE,
-        string $userAgent = self::DEFAULT_USER_AGENT
+        string $userAgent = self::DEFAULT_USER_AGENT,
+        bool $retries = self::DEFAULT_RETRIES_ENABLED,
+        int $retriesMax = self::DEFAULT_RETRIES_MAX,
+        array $retriesStatusCodes = self::DEFAULT_RETRIES_STATUS_CODES
     ) {
         $this->address = $this->buildAddress($host, $port);
         $this->timeout = $timeout;
         $this->contentType = $contentType;
         $this->userAgent = $userAgent;
+        $this->retries = $retries;
+        $this->retriesMax = $retriesMax;
+        $this->retriesStatusCodes = $retriesStatusCodes;
     }
 
     /**
@@ -109,5 +123,29 @@ class Config
     public function getUserAgent(): string
     {
         return $this->userAgent;
+    }
+
+    /**
+     * @return bool
+     */
+    public function areRetriesEnabled(): bool
+    {
+        return $this->retries;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxRetries(): int
+    {
+        return $this->retriesMax;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getRetryableStatusCodes(): array
+    {
+        return $this->retriesStatusCodes;
     }
 }

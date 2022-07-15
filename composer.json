@@ -4,9 +4,11 @@
   "description": "gRPC PHP Framework",
   "license": "MIT",
   "require": {
-    "php": "^7.3 || ^8.0",
+    "php": "^7.4 || ^8.0",
     "google/protobuf": "^3.7",
-    "grpc/grpc": "^1.13"
+    "grpc/grpc": "^1.13",
+    "ext-json": "*",
+    "ext-curl": "*"
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^2.13",

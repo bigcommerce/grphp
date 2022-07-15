@@ -20,45 +20,56 @@
 
 namespace Grphp\Test;
 
-use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
+use Exception;
+use Google\Protobuf\Internal\Message;
 use Google\Protobuf\Internal\GPBUtil;
+use GPBMetadata\Grphp\Test\Things;
 
 /**
  * Generated from protobuf message <code>grphp.test.GetThingResp</code>
  */
-class GetThingResp extends \Google\Protobuf\Internal\Message
+class GetThingResp extends Message
 {
     /**
      * Generated from protobuf field <code>.grphp.test.Thing thing = 1;</code>
      */
-    private $thing = null;
+    protected ?Thing $thing = null;
 
-    public function __construct()
-    {
-        \GPBMetadata\Grphp\Test\Thing::initOnce();
-        parent::__construct();
+    /**
+     * Constructor.
+     *
+     * @param array|null $data {
+     *     Optional. Data for populating the Message object.
+     *
+     *     @type Thing $thing
+     * }
+     */
+    public function __construct(array $data = null) {
+        Things::initOnce();
+        parent::__construct($data);
     }
 
     /**
      * Generated from protobuf field <code>.grphp.test.Thing thing = 1;</code>
-     * @return \Grphp\Test\Thing
+     * @return Thing
      */
-    public function getThing()
+    public function getThing(): Thing
     {
         return $this->thing;
     }
 
     /**
      * Generated from protobuf field <code>.grphp.test.Thing thing = 1;</code>
-     * @param \Grphp\Test\Thing $var
+     * @param Thing $var
      * @return $this
+     * @throws Exception
      */
-    public function setThing($var)
+    public function setThing(Thing $var): GetThingResp
     {
-        GPBUtil::checkMessage($var, \Grphp\Test\Thing::class);
+        GPBUtil::checkMessage($var, Thing::class);
         $this->thing = $var;
 
         return $this;
     }
+
 }

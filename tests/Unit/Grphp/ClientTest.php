@@ -32,9 +32,9 @@ final class ClientTest extends TestCase
     use ProphecyTrait;
 
     /** @var Config $clientConfig */
-    protected $clientConfig;
+    protected Config $clientConfig;
     /** @var Client $client */
-    protected $client;
+    protected Client $client;
 
     private static function createClientConfig(array $options = []): Config
     {

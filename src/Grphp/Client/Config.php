@@ -31,7 +31,7 @@ use Grphp\Serializers\Errors\Json as JsonSerializer;
 class Config
 {
     /** @var string $hostname */
-    public $hostname;
+    public string $hostname;
     /** @var string $authentication */
     public $authentication;
     /** @var array $authenticationOptions */
@@ -46,17 +46,42 @@ class Config
     public $interceptorOptions;
     /** @var bool $useDefaultInterceptors */
     public $useDefaultInterceptors;
-    /** @var StrategyInterface */
+    /** @var bool $retriesEnabled Whether to enable retries on the client */
+    public bool $retriesEnabled;
+    /** @var array $retriesStatusCodes The gRPC status codes that will be retried. Defaults to UNAVAILABLE. */
+    public array $retriesStatusCodes;
+    /** @var int $retriesMaxAttempts How many retries will be done */
+    public int $retriesMaxAttempts;
+    /** @var string $retriesInitialBackoff The initial backoff period (string, e.g. '0.1s') for each retry attempt */
+    public string $retriesInitialBackoff;
+    /** @var float $retriesBackoffMultiplier The multiplier for the backoff interval for successive retry attempts */
+    public float $retriesBackoffMultiplier;
+    /** @var string $retriesMaxBackoff The maximum amount of seconds to backoff by per retry */
+    public string $retriesMaxBackoff;
+    /** @var array $channelArguments An array of channel options to pass when constructing the client */
+    public array $channelArguments;
+    /** @var StrategyInterface $strategy */
     private $strategy;
 
+    /** @var string */
     private const ERROR_METADATA_KEY = 'error-internal-bin';
+    /** @var string[] The default status codes to retry */
+    private const DEFAULT_RETRIES_STATUS_CODES = ['UNAVAILABLE'];
+    /** @var int The default maximum number of retries to attempt */
+    private const DEFAULT_RETRIES_MAX_ATTEMPTS = 3;
+    /** @var string The default backoff interval for retries (multiplied by the backoff multiplier for successive retries) */
+    private const DEFAULT_RETRIES_INITIAL_BACKOFF = '0.1s';
+    /** @var float Default period to ease the backoff on retries, multiplied by the initial backoff */
+    private const DEFAULT_RETRIES_BACKOFF_MULTIPLIER = 2.0;
+    /** @var string The default maximum backoff period for retries */
+    private const DEFAULT_RETRIES_MAX_BACKOFF = '0.5s';
 
     /**
      * @param array $options
      */
-    public function __construct($options = [])
+    public function __construct(array $options = [])
     {
-        $this->hostname = $options['hostname'] ?? '';
+        $this->hostname = (string)($options['hostname'] ?? '');
         $this->authentication = $options['authentication'] ?? null;
         $this->authenticationOptions = $options['authentication_options'] ?? [];
         $this->errorSerializer = $options['error_serializer'] ?? JsonSerializer::class;
@@ -64,7 +89,14 @@ class Config
         $this->errorMetadataKey = $options['error_metadata_key'] ?? self::ERROR_METADATA_KEY;
         $this->interceptorOptions = $options['interceptor_options'] ?? [];
         $this->useDefaultInterceptors = $options['use_default_interceptors'] ?? true;
+        $this->channelArguments = array_key_exists('channel_arguments', $options) && is_array($options['channel_arguments']) ? $options['channel_arguments'] : [];
         $this->strategy = $options['strategy'] ?? new GrpcStrategy(new GrpcConfig());
+        $this->retriesEnabled = (bool)($options['retries_enabled'] ?? true);
+        $this->retriesStatusCodes = $options['retries_status_codes'] ?? static::DEFAULT_RETRIES_STATUS_CODES;
+        $this->retriesMaxAttempts = (int)($options['retries_max_attempts'] ?? static::DEFAULT_RETRIES_MAX_ATTEMPTS);
+        $this->retriesInitialBackoff = (string)($options['retries_initial_backoff'] ?? static::DEFAULT_RETRIES_INITIAL_BACKOFF);
+        $this->retriesBackoffMultiplier = (float)($options['retries_backoff_multiplier'] ?? static::DEFAULT_RETRIES_BACKOFF_MULTIPLIER);
+        $this->retriesMaxBackoff = (string)($options['retries_max_backoff'] ?? static::DEFAULT_RETRIES_MAX_BACKOFF);
     }
 
     /**

@@ -27,7 +27,7 @@ use Grphp\Protobuf\Serializer;
 class StrategyFactory
 {
     /** @var Config */
-    private $config;
+    private Config $config;
 
     /**
      * @param Config $config

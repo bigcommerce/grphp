@@ -20,45 +20,55 @@
 
 namespace Grphp\Test;
 
-use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
+use Exception;
+use Google\Protobuf\Internal\Message;
 use Google\Protobuf\Internal\GPBUtil;
+use GPBMetadata\Grphp\Test\Things;
 
 /**
  * Generated from protobuf message <code>grphp.test.GetThingReq</code>
  */
-class GetThingReq extends \Google\Protobuf\Internal\Message
+class GetThingReq extends Message
 {
     /**
      * Generated from protobuf field <code>uint64 id = 1;</code>
      */
-    private $id = 0;
+    protected int $id = 0;
 
-    public function __construct()
+    /**
+     * Constructor.
+     *
+     * @param array|null $data {
+     *     Optional. Data for populating the Message object.
+     *
+     */
+    public function __construct(array $data = null)
     {
-        \GPBMetadata\Grphp\Test\Thing::initOnce();
-        parent::__construct();
+        Things::initOnce();
+        parent::__construct($data);
     }
 
     /**
      * Generated from protobuf field <code>uint64 id = 1;</code>
-     * @return int|string
+     * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
      * Generated from protobuf field <code>uint64 id = 1;</code>
-     * @param int|string $var
+     * @param int $var
      * @return $this
+     * @throws Exception
      */
-    public function setId($var)
+    public function setId(int $var): GetThingReq
     {
         GPBUtil::checkUint64($var);
         $this->id = $var;
 
         return $this;
     }
+
 }

@@ -27,29 +27,44 @@ use Grphp\Client\HeaderCollection;
 class Request
 {
     /** @var string */
-    private $url;
+    private string $url;
     /** @var string */
-    private $message;
+    private string $message;
     /** @var HeaderCollection */
-    private $headers;
+    private HeaderCollection $headers;
     /** @var float|null */
-    private $timeout;
+    private ?float $timeout;
+    /** @var bool $retries */
+    private bool $retries;
+    /** @var int $retriesMax */
+    private int $retriesMax;
+    /** @var int[] $retriesStatusCodes */
+    private array $retriesStatusCodes;
 
     /**
      * @param string $url The URL Envoy runs on
      * @param string $message The binary serialized protobuf message
      * @param HeaderCollection $headers Headers to send
+     * @param bool $retries Whether to enable retries for this request
+     * @param int $retriesMax Maximum number of retries
+     * @param int[] $retriesStatusCodes The retryable gRPC status codes
      * @param float|null $timeout
      */
     public function __construct(
         string $url,
         string $message,
         HeaderCollection $headers,
+        bool $retries,
+        int $retriesMax,
+        array $retriesStatusCodes,
         ?float $timeout = null
     ) {
         $this->url = $url;
         $this->message = $message;
         $this->headers = $headers;
+        $this->retries = $retries;
+        $this->retriesMax = $retriesMax;
+        $this->retriesStatusCodes = $retriesStatusCodes;
         $this->timeout = $timeout;
     }
 
@@ -83,5 +98,29 @@ class Request
     public function getTimeout(): ?float
     {
         return $this->timeout;
+    }
+
+    /**
+     * @return bool
+     */
+    public function areRetriesEnabled(): bool
+    {
+        return $this->retries;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxRetries(): int
+    {
+        return $this->retriesMax;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getRetryableStatusCodes(): array
+    {
+        return $this->retriesStatusCodes;
     }
 }

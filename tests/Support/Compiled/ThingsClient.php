@@ -17,39 +17,68 @@
  */
 namespace Grphp\Test;
 
-class ThingsClient extends \Grpc\BaseStub
+// GENERATED CODE -- DO NOT EDIT!
+
+namespace Grphp\Test;
+
+use Exception;
+use \Grpc\BaseStub;
+use Grpc\Channel;
+
+class ThingsClient extends BaseStub
 {
-    public function getExpectedResponseMessages()
+    /** @var Channel $channel */
+    protected Channel $channel;
+
+    /**
+     * @return string[]
+     */
+    public function getExpectedResponseMessages() : array
     {
         return [
             'getThing' => '\Grphp\Test\GetThingResp',
         ];
     }
 
-    protected $channel;
+    /**
+     * @return string
+     */
+    public function getServiceName() : string
+    {
+        return 'grphp.test.Things';
+    }
+
+    /**
+     * @return Channel
+     */
+    public function getChannel() : Channel
+    {
+        return $this->channel;
+    }
 
     /**
      * @param string $hostname hostname
      * @param array $opts channel options
-     * @param \Grpc\Channel $channel (optional) re-use channel object
+     * @param Channel|null $channel (optional) re-use channel object
+     * @throws Exception
      */
-    public function __construct($hostname, $opts, $channel = null)
+    public function __construct(string $hostname, array $opts, Channel $channel = null)
     {
         parent::__construct($hostname, $opts, $channel);
-        $this->channel = new \Grpc\Channel($hostname, $opts);
+        $this->channel = $channel ?? new Channel($hostname, $opts);
     }
 
     /**
-     * @param \Grphp\Test\GetThingReq $argument input argument
+     * @param GetThingReq $argument input argument
      * @param array $metadata metadata
      * @param array $options call options
      * @return StubbedCall
      */
     public function GetThing(
-        \Grphp\Test\GetThingReq $argument,
-        $metadata = [],
-        $options = []
-    ) {
+        GetThingReq $argument,
+        array $metadata = [],
+        array $options = [])
+    {
         $thing = new Thing();
         $thing->setId($argument->getId());
         $thing->setName('Foo');
@@ -60,7 +89,7 @@ class ThingsClient extends \Grpc\BaseStub
             $this->channel,
             '/grphp.test.Things/GetThing',
             ['\Grphp\Test\GetThingResp', 'decode'],
-            $options
+            array_merge(['response_metadata' => $metadata], $options)
         );
     }
 }

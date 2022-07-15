@@ -32,7 +32,7 @@ class RequestException extends Exception
     /** @var string */
     protected $body;
     /** @var HeaderCollection */
-    protected $headers;
+    protected HeaderCollection $headers;
 
     /**
      * @param string $body

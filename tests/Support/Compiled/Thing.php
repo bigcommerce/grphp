@@ -15,37 +15,46 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 namespace Grphp\Test;
 
-use Google\Protobuf\Internal\GPBType;
-use Google\Protobuf\Internal\RepeatedField;
+use Exception;
 use Google\Protobuf\Internal\GPBUtil;
+use Google\Protobuf\Internal\Message;
+use GPBMetadata\Grphp\Test\Things;
 
 /**
  * Generated from protobuf message <code>grphp.test.Thing</code>
  */
-class Thing extends \Google\Protobuf\Internal\Message
+class Thing extends Message
 {
     /**
      * Generated from protobuf field <code>uint64 id = 1;</code>
      */
-    private $id = 0;
+    protected int $id = 0;
     /**
      * Generated from protobuf field <code>string name = 2;</code>
      */
-    private $name = '';
+    protected string $name = '';
 
-    public function __construct()
+    /**
+     * Constructor.
+     *
+     * @param array|null $data {
+     *     Optional. Data for populating the Message object.
+     *
+     */
+    public function __construct(array $data = null)
     {
-        \GPBMetadata\Grphp\Test\Thing::initOnce();
-        parent::__construct();
+        Things::initOnce();
+        parent::__construct($data);
     }
 
     /**
      * Generated from protobuf field <code>uint64 id = 1;</code>
-     * @return int|string
+     * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -54,8 +63,9 @@ class Thing extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>uint64 id = 1;</code>
      * @param int|string $var
      * @return $this
+     * @throws Exception
      */
-    public function setId($var)
+    public function setId($var): Thing
     {
         GPBUtil::checkUint64($var);
         $this->id = $var;
@@ -67,7 +77,7 @@ class Thing extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string name = 2;</code>
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -76,8 +86,9 @@ class Thing extends \Google\Protobuf\Internal\Message
      * Generated from protobuf field <code>string name = 2;</code>
      * @param string $var
      * @return $this
+     * @throws Exception
      */
-    public function setName($var)
+    public function setName(string $var): Thing
     {
         GPBUtil::checkString($var, true);
         $this->name = $var;
