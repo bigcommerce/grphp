@@ -2,7 +2,13 @@ Changelog for grphp.
 
 ### Pending Release
 
+### 3.3.0
+
+* Add `getFullyQualifiedMethodName` and `getExpectedResponseMessageClass` to base Client Interceptor class
+* Drop PHP 7.3 support
+
 ### 3.2.2
+
 * Add header `TE: trailers` for envoy requests.
 
 ### 3.2.1

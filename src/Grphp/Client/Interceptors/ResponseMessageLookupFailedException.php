@@ -15,25 +15,10 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-namespace Grphp\Test;
+declare(strict_types=1);
 
-use Grphp\Client\Interceptors\Base;
+namespace Grphp\Client\Interceptors;
 
-class TestInterceptor extends Base
+class ResponseMessageLookupFailedException extends \Exception
 {
-    public function call(callable $callback)
-    {
-        return $callback();
-    }
-}
-
-class TestMetadataSetInterceptor extends Base
-{
-    public function call(callable $callback)
-    {
-        $md = $this->getMetadata();
-        $md['test'] = 'one';
-        $this->setMetadata($md);
-        return $callback();
-    }
 }

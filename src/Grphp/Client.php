@@ -42,11 +42,11 @@ class Client
     /** @var BaseStub $client */
     protected $client;
     /** @var Config $config */
-    protected $config;
+    protected Config $config;
     /** @var array<BaseInterceptor> $interceptors */
-    protected $interceptors = [];
+    protected array $interceptors = [];
     /** @var string */
-    private $clientClassName;
+    private string $clientClassName;
 
     /**
      * @param string $clientClassName

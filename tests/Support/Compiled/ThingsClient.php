@@ -19,11 +19,16 @@ namespace Grphp\Test;
 
 class ThingsClient extends \Grpc\BaseStub
 {
-    public function getExpectedResponseMessages()
+    public function getExpectedResponseMessages(): array
     {
         return [
             'getThing' => '\Grphp\Test\GetThingResp',
         ];
+    }
+
+    public function getServiceName(): string
+    {
+        return 'grphp.test.Things';
     }
 
     protected $channel;
@@ -32,6 +37,7 @@ class ThingsClient extends \Grpc\BaseStub
      * @param string $hostname hostname
      * @param array $opts channel options
      * @param \Grpc\Channel $channel (optional) re-use channel object
+     * @throws \Exception
      */
     public function __construct($hostname, $opts, $channel = null)
     {
