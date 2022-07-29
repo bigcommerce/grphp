@@ -15,7 +15,7 @@
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Grphp\Client\Interceptors;
 
@@ -31,13 +31,13 @@ use Grphp\Client\Response;
 abstract class Base
 {
     /** @var array */
-    protected $options = [];
+    protected array $options = [];
     /** @var Message */
     protected $request;
     /** @var string */
-    protected $method;
+    protected string $method;
     /** @var array */
-    protected $metadata = [];
+    protected array $metadata = [];
     /** @var BaseStub */
     protected $stub;
 
@@ -73,6 +73,47 @@ abstract class Base
     }
 
     /**
+     * Gets the fully qualified method name, e.g. grphp.catalog.products/GetProduct
+     *
+     * @return string
+     * @throws StubNotFoundException
+     */
+    public function getFullyQualifiedMethodName(): string
+    {
+        $methodName = $this->getMethod();
+        $stub = $this->getStub();
+        if (empty($stub)) {
+            throw new StubNotFoundException("Stub not found for $methodName");
+        }
+
+        return $stub->getServiceName() . '/' . ucfirst($methodName);
+    }
+
+    /**
+     * Get the expected response protobuf message class
+     *
+     * @return string
+     * @throws StubNotFoundException
+     * @throws ResponseMessageLookupFailedException
+     */
+    public function getExpectedResponseMessageClass(): string
+    {
+        $methodName = $this->getMethod();
+        $stub = $this->getStub();
+        if (empty($stub)) {
+            throw new StubNotFoundException("Stub not found for $methodName");
+        }
+
+        $responseMessages = $stub->getExpectedResponseMessages();
+        $methodName = lcfirst($methodName);
+
+        if (!array_key_exists($methodName, $responseMessages)) {
+            throw new ResponseMessageLookupFailedException();
+        }
+        return $responseMessages[$methodName];
+    }
+
+    /**
      * @return string
      */
     public function getMethod(): string
@@ -84,7 +125,7 @@ abstract class Base
      * @param string $method
      * @return void
      */
-    public function setMethod(string &$method)
+    public function setMethod(string &$method): void
     {
         $this->method = $method;
     }
@@ -101,7 +142,7 @@ abstract class Base
      * @param array $metadata
      * @return void
      */
-    public function setMetadata(array &$metadata = [])
+    public function setMetadata(array &$metadata = []): void
     {
         $this->metadata = $metadata;
     }
@@ -118,7 +159,7 @@ abstract class Base
      * @param array $options
      * @return void
      */
-    public function setOptions(array &$options = [])
+    public function setOptions(array &$options = []): void
     {
         $this->options = $options;
     }
@@ -136,13 +177,13 @@ abstract class Base
     /**
      * @return BaseStub
      */
-    public function getStub(): BaseStub
+    public function getStub(): ?BaseStub
     {
         return $this->stub;
     }
 
     /**
-     * @param $stub
+     * @param BaseStub $stub
      */
     public function setStub(BaseStub &$stub)
     {

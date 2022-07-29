@@ -15,7 +15,7 @@ preserving gRPC BadStatus codes
 * Client execution timings in responses
 * H2Proxy via nghttpx support that allows gRPC-based communication without the gRPC C libraries
 
-grphp currently has active support for gRPC 1.9.0, and requires PHP 7.0+ to run.
+grphp currently has active support for gRPC 1.9.0, and requires PHP 7.4+ to run.
 
 ## Installation
 
