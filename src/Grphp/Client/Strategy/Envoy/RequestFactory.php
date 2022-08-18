@@ -29,8 +29,8 @@ use Grphp\Protobuf\Serializer;
  */
 class RequestFactory
 {
-    private Config $config;
-    private Serializer $serializer;
+    protected Config $config;
+    protected Serializer $serializer;
 
     public function __construct(Config $config, Serializer $serializer)
     {
