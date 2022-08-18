@@ -21,10 +21,9 @@ use Grphp\Authentication\Basic;
 use Grphp\Client;
 use Grphp\Client\Config;
 use Grphp\Client\Error;
-use Grphp\Client\Error\Status;
+use Grphp\Client\Interceptors\Base as BaseInterceptor;
 use Grphp\Client\Response;
 use PHPUnit\Framework\TestCase;
-use Grphp\Client\Interceptors\Base as BaseInterceptor;
 use Prophecy\PhpUnit\ProphecyTrait;
 
 final class ClientTest extends TestCase

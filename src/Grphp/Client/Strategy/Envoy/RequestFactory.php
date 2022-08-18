@@ -29,15 +29,9 @@ use Grphp\Protobuf\Serializer;
  */
 class RequestFactory
 {
-    /** @var Config $config */
-    protected $config;
-    /** @var Serializer $serializer */
-    protected $serializer;
+    private Config $config;
+    private Serializer $serializer;
 
-    /**
-     * @param Config $config
-     * @param Serializer $serializer
-     */
     public function __construct(Config $config, Serializer $serializer)
     {
         $this->config = $config;
@@ -59,14 +53,10 @@ class RequestFactory
             $url,
             $message,
             $headers,
-            $requestContext->getTimeout()
+            $requestContext->getTimeout() ?: $this->config->getTimeout()
         );
     }
 
-    /**
-     * @param ClientRequest $clientRequest
-     * @return HeaderCollection
-     */
     private function buildHeaders(ClientRequest $clientRequest): HeaderCollection
     {
         $headers = HeaderCollection::fromRequest($clientRequest);
