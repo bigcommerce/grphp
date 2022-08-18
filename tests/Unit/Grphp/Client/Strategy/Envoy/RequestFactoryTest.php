@@ -17,11 +17,13 @@
  */
 declare(strict_types=1);
 
-namespace Grphp\Client\Strategy\Envoy;
+namespace Unit\Grphp\Client\Strategy\Envoy;
 
 use Grphp\Client\Config;
 use Grphp\Client\Request as RequestContext;
 use Grphp\Client\Strategy\Envoy\Config as EnvoyConfig;
+use Grphp\Client\Strategy\Envoy\Request;
+use Grphp\Client\Strategy\Envoy\RequestFactory;
 use Grphp\Protobuf\Serializer;
 use Grphp\Test\GetThingReq;
 use Grphp\Test\ThingsClient;
@@ -32,11 +34,8 @@ final class RequestFactoryTest extends TestCase
 {
     use ProphecyTrait;
 
-    /** @var Config */
-    private $config;
-
-    /** @var RequestFactory */
-    private $requestFactory;
+    private Config $config;
+    private RequestFactory $requestFactory;
 
     public function buildRequest($req = null, array $metadata = [], array $options = [])
     {
@@ -65,6 +64,15 @@ final class RequestFactoryTest extends TestCase
 
         $deadlineish = intval(microtime(true) + RequestContext::DEFAULT_TIMEOUT);
         $this->assertEquals($deadlineish, intval($headers->get('Deadline')->getValuesAsString()));
+        $this->assertEquals(EnvoyConfig::DEFAULT_TIMEOUT, $httpRequest->getTimeout());
+    }
+
+    public function testBuildWithTimeout(): void
+    {
+        $requestContext = $this->buildRequest(null, [], ['timeout' => 10]);
+        $request = $this->requestFactory->build($requestContext);
+        $this->assertInstanceOf(Request::class, $request);
+        $this->assertEquals(10, $request->getTimeout());
     }
 
     public function testWithHeaders()

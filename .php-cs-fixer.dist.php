@@ -1,6 +1,8 @@
 <?php
 
-return PhpCsFixer\Config::create()
+use PhpCsFixer\Config;
+
+return (new Config())
     ->setFinder(
         PhpCsFixer\Finder::create()
             ->files()

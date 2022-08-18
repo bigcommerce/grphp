@@ -17,11 +17,13 @@
  */
 declare(strict_types=1);
 
-namespace Grphp\Client\Strategy\H2Proxy;
+namespace Unit\Grphp\Client\Strategy\H2Proxy;
 
 use Grphp\Client\Config;
 use Grphp\Client\Request as RequestContext;
 use Grphp\Client\Strategy\H2Proxy\Config as H2ProxyConfig;
+use Grphp\Client\Strategy\H2Proxy\Request;
+use Grphp\Client\Strategy\H2Proxy\RequestFactory;
 use Grphp\Protobuf\Serializer;
 use Grphp\Test\GetThingReq;
 use Grphp\Test\ThingsClient;
@@ -34,17 +36,10 @@ final class RequestFactoryTest extends TestCase
 {
     use ProphecyTrait;
 
-    /** @var Config */
-    private $config;
-
-    /** @var H2ProxyConfig */
-    private $proxyConfig;
-
-    /** @var Serializer */
-    private $serializer;
-
-    /** @var RequestFactory */
-    private $requestFactory;
+    private Config $config;
+    private H2ProxyConfig $proxyConfig;
+    private Serializer $serializer;
+    private RequestFactory  $requestFactory;
 
     public function buildRequest($req = null, array $metadata = [], array $options = [])
     {
@@ -66,18 +61,25 @@ final class RequestFactoryTest extends TestCase
     {
         $requestContext = $this->buildRequest();
         $httpRequest = $this->requestFactory->build($requestContext);
-        static::assertInstanceOf(Request::class, $httpRequest);
+        $this->assertInstanceOf(Request::class, $httpRequest);
 
         $headers = $httpRequest->getHeaders();
-        static::assertEquals('h2c', $headers->get('Upgrade')->getValuesAsString());
-        static::assertEquals('Upgrade', $headers->get('Connection')->getValuesAsString());
-        static::assertEquals('application/grpc+proto', $headers->get('Content-Type')->getValuesAsString());
-        static::assertEquals('trailers', $headers->get('TE')->getValuesAsString());
-        static::assertEquals('grphp/1.0.0', $headers->get('User-Agent')->getValuesAsString());
-        static::assertEquals('identity', $headers->get('Grpc-Encoding')->getValuesAsString());
+        $this->assertEquals('h2c', $headers->get('Upgrade')->getValuesAsString());
+        $this->assertEquals('Upgrade', $headers->get('Connection')->getValuesAsString());
+        $this->assertEquals('application/grpc+proto', $headers->get('Content-Type')->getValuesAsString());
+        $this->assertEquals('trailers', $headers->get('TE')->getValuesAsString());
+        $this->assertEquals('grphp/1.0.0', $headers->get('User-Agent')->getValuesAsString());
+        $this->assertEquals('identity', $headers->get('Grpc-Encoding')->getValuesAsString());
 
         $deadlineish = intval(microtime(true) + RequestContext::DEFAULT_TIMEOUT);
-        static::assertEquals($deadlineish, intval($headers->get('Deadline')->getValuesAsString()));
+        $this->assertEquals($deadlineish, intval($headers->get('Deadline')->getValuesAsString()));
+    }
+
+    public function testBuildWithTimeout(): void
+    {
+        $requestContext = $this->buildRequest(null, [], ['timeout' => 10]);
+        $request = $this->requestFactory->build($requestContext);
+        $this->assertEquals(10, $request->getTimeout());
     }
 
     public function testWithHeaders()
@@ -90,11 +92,11 @@ final class RequestFactoryTest extends TestCase
             ]
         );
         $request = $this->requestFactory->build($requestContext);
-        static::assertInstanceOf(Request::class, $request);
+        $this->assertInstanceOf(Request::class, $request);
 
         $headers = $request->getHeaders();
-        static::assertEquals('bar', $headers->get('Foo')->getValuesAsString());
-        static::assertEquals('123,456', $headers->get('Array')->getValuesAsString());
+        $this->assertEquals('bar', $headers->get('Foo')->getValuesAsString());
+        $this->assertEquals('123,456', $headers->get('Array')->getValuesAsString());
     }
 
     public function testWithCustomDeadline()
@@ -109,11 +111,11 @@ final class RequestFactoryTest extends TestCase
             ]
         );
         $httpRequest = $this->requestFactory->build($requestContext);
-        static::assertInstanceOf(Request::class, $httpRequest);
+        $this->assertInstanceOf(Request::class, $httpRequest);
 
         $deadlineish = intval(microtime(true) + $newDeadline);
         $headers = $httpRequest->getHeaders();
-        static::assertEquals($deadlineish, intval($headers->get('Deadline')->getValuesAsString()));
+        $this->assertEquals($deadlineish, intval($headers->get('Deadline')->getValuesAsString()));
     }
 
     public function testWithoutProxy()
@@ -121,9 +123,10 @@ final class RequestFactoryTest extends TestCase
         $serializer = $this->prophesize(Serializer::class);
         $serializer->serializeRequest(Argument::any())->willReturn('');
         /** @var H2ProxyConfig|ObjectProphecy $config */
-        $config = $this->prophesize(\Grphp\Client\Strategy\H2Proxy\Config::class);
+        $config = $this->prophesize(H2ProxyConfig::class);
         $config->getBaseUri()->willReturn('service.com:5678');
-        $config->getContentType()->willReturn(\Grphp\Client\Strategy\H2Proxy\Config::DEFAULT_CONTENT_TYPE);
+        $config->getContentType()->willReturn(H2ProxyConfig::DEFAULT_CONTENT_TYPE);
+        $config->getTimeout()->willReturn(15)->shouldBeCalled();
 
         /** @var RequestContext|ObjectProphecy $requestContext */
         $requestContext = $this->prophesize(RequestContext::class);
@@ -137,7 +140,8 @@ final class RequestFactoryTest extends TestCase
         $subject = new RequestFactory($config->reveal(), $serializer->reveal());
 
         $request = $subject->build($requestContext->reveal());
-        static::assertEquals('', $request->getProxyUri());
+        $this->assertEmpty($request->getProxyUri());
+        $this->assertEquals(15, $request->getTimeout());
     }
 
     public function testWithProxy()
@@ -145,9 +149,9 @@ final class RequestFactoryTest extends TestCase
         $serializer = $this->prophesize(Serializer::class);
         $serializer->serializeRequest(Argument::any())->willReturn('');
         /** @var H2ProxyConfig|ObjectProphecy $config */
-        $config = $this->prophesize(\Grphp\Client\Strategy\H2Proxy\Config::class);
+        $config = $this->prophesize(H2ProxyConfig::class);
         $config->getBaseUri()->willReturn('service.com:5678');
-        $config->getContentType()->willReturn(\Grphp\Client\Strategy\H2Proxy\Config::DEFAULT_CONTENT_TYPE);
+        $config->getContentType()->willReturn(H2ProxyConfig::DEFAULT_CONTENT_TYPE);
 
         /** @var RequestContext|ObjectProphecy $requestContext */
         $requestContext = $this->prophesize(RequestContext::class);
