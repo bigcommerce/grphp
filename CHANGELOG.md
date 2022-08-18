@@ -5,6 +5,7 @@ Changelog for grphp.
 ### 3.4.0
 
 * Set default request timeout to the proxy client config value.
+* Upgrade php-cs-fixer to v3.10.0.
 
 ### 3.3.0
 
