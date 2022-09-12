@@ -20,6 +20,7 @@ declare(strict_types = 1);
 namespace Grphp\Client\Error;
 
 use Grphp\Client\HeaderCollection;
+use InvalidArgumentException;
 
 /**
  * Represents an error status response from a gRPC (or proxied) call
@@ -43,6 +44,42 @@ class Status
     const CODE_UNAVAILABLE = 14;
     const CODE_DATA_LOSS = 15;
     const CODE_UNAUTHENTICATED = 16;
+
+    private const CODE_STRING_MAP = [
+        self::CODE_OK => 'OK',
+        self::CODE_CANCELLED => 'CANCELLED',
+        self::CODE_UNKNOWN => 'UNKNOWN',
+        self::CODE_INVALID_ARGUMENT => 'INVALID_ARGUMENT',
+        self::CODE_DEADLINE_EXCEEDED => 'DEADLINE_EXCEEDED',
+        self::CODE_NOT_FOUND => 'NOT_FOUND',
+        self::CODE_ALREADY_EXISTS => 'ALREADY_EXISTS',
+        self::CODE_PERMISSION_DENIED => 'PERMISSION_DENIED',
+        self::CODE_RESOURCE_EXHAUSTED => 'RESOURCE_EXHAUSTED',
+        self::CODE_FAILED_PRECONDITION => 'FAILED_PRECONDITION',
+        self::CODE_ABORTED => 'ABORTED',
+        self::CODE_OUT_OF_RANGE => 'OUT_OF_RANGE',
+        self::CODE_UNIMPLEMENTED => 'UNIMPLEMENTED',
+        self::CODE_INTERNAL => 'INTERNAL',
+        self::CODE_UNAVAILABLE => 'UNAVAILABLE',
+        self::CODE_DATA_LOSS => 'DATA_LOSS',
+        self::CODE_UNAUTHENTICATED => 'UNAUTHENTICATED',
+    ];
+
+    /**
+     * Returns the descriptive string for a given status code number.
+     *
+     * @param int $number
+     *
+     * @return string
+     */
+    public static function getStatusCodeString(int $number): string
+    {
+        if (!isset(self::CODE_STRING_MAP[$number])) {
+            throw new InvalidArgumentException("Invalid gRPC status code number: $number");
+        }
+
+        return self::CODE_STRING_MAP[$number];
+    }
 
     /** @var int */
     private $code;
@@ -71,6 +108,16 @@ class Status
     public function getCode(): int
     {
         return $this->code;
+    }
+
+    /**
+     * The named gRPC status code string that was returned (e.g. "DEADLINE_EXCEEDED").
+     *
+     * @return string
+     */
+    public function getString(): string
+    {
+        return self::getStatusCodeString($this->code);
     }
 
     /**

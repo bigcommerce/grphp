@@ -17,6 +17,8 @@
  */
 namespace Grphp\Client;
 
+use Grphp\Client\Error\Status;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 final class ErrorTest extends TestCase
@@ -98,5 +100,16 @@ final class ErrorTest extends TestCase
     {
         $error = new Error($this->clientConfig, $this->status);
         static::assertEquals($this->clientConfig, $error->getConfig());
+    }
+
+    public function testGetStatusCodeStringForValidStatus()
+    {
+        static::assertEquals('UNAUTHENTICATED', Status::getStatusCodeString(16));
+    }
+
+    public function testGetStatusCodeStringForInvalidStatus()
+    {
+        static::expectException(InvalidArgumentException::class);
+        Status::getStatusCodeString(255);
     }
 }
