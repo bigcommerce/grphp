@@ -161,6 +161,25 @@ $client->addInterceptor($i);
 
 Interceptors run in the order that they are added, wrapping each as they go.
 
+## Retry Interceptor
+
+Retries can be enabled for given gRPC error status codes with the `Retry` interceptor. 
+```php
+use Grphp\Client\Interceptors\Retry;
+
+$client->addInterceptor(new Retry(['max_retries' => 3]));
+```
+
+The retry behaviour can be customized by passing in an array of options to the constructor. The following options are available:
+
+| Option               | Default                                                                         | Description                                                    |
+|----------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------|
+| `max_retries`        | `3`                                                                             | The maximum number of retries to attempt.                      |
+| `retry_on_statuses`  | `[Grphp\Client\Error::CODE_UNAVAILABLE]`                                        | An array of gRPC error status codes that should be retried on. |
+| `delay_milliseconds` | `200`                                                                           | The initial delay in milliseconds before a retry.              |
+| `backoff_func`       | `function (int $attempt, int $delayMilliseconds) { /* exponential backoff */ }` | A callback defining the backoff behaviour.                     |
+
+
 ## Error Handling
 
 gRPC prefers handling errors through status (BadStatus) codes; however, these do not return much information as to 
