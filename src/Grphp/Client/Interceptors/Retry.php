@@ -63,21 +63,16 @@ class Retry extends Base
      */
     public function call(callable $callback): Response
     {
-        return $this->attemptCall($callback, 0);
-    }
+        for ($attempt = 0; $attempt <= $this->maxRetries; $attempt ++) {
+            try {
+                return $callback();
+            } catch (Error $e) {
+                if ($attempt >= $this->maxRetries || !in_array($e->getStatusCode(), $this->retryOnStatuses)) {
+                    throw $e;
+                }
 
-    private function attemptCall(callable $callback, int $attempt): Response
-    {
-        try {
-            return $callback();
-        } catch (Error $e) {
-            if ($this->maxRetries > $attempt && in_array($e->getStatusCode(), $this->retryOnStatuses)) {
-                call_user_func_array($this->backoffFunc, [$attempt, $this->delayMilliseconds]);
-
-                return $this->attemptCall($callback, $attempt + 1);
+                call_user_func($this->backoffFunc, $attempt, $this->delayMilliseconds);
             }
-
-            throw $e;
         }
     }
 }
