@@ -2,6 +2,14 @@ Changelog for grphp.
 
 ### Pending Release
 
+### 3.5.1
+
+* Add retry support with the Retry interceptor.
+
+### 3.5.0
+
+* Add methods for mapping status code numbers to descriptive strings
+
 ### 3.4.0
 
 * Set default request timeout to the proxy client config value.
