@@ -172,12 +172,12 @@ $client->addInterceptor(new Retry(['max_retries' => 3]));
 
 The retry behaviour can be customized by passing in an array of options to the constructor. The following options are available:
 
-| Option               | Default                                                                         | Description                                                    |
-|----------------------|---------------------------------------------------------------------------------|----------------------------------------------------------------|
-| `max_retries`        | `3`                                                                             | The maximum number of retries to attempt.                      |
-| `retry_on_statuses`  | `[Grphp\Client\Error::CODE_UNAVAILABLE]`                                        | An array of gRPC error status codes that should be retried on. |
-| `delay_milliseconds` | `200`                                                                           | The initial delay in milliseconds before a retry.              |
-| `backoff_func`       | `function (int $attempt, int $delayMilliseconds) { /* exponential backoff */ }` | A callback defining the backoff behaviour.                     |
+| Option               | Default                                                                                     | Description                                                    |
+|----------------------|---------------------------------------------------------------------------------------------|----------------------------------------------------------------|
+| `max_retries`        | `3`                                                                                         | The maximum number of retries to attempt.                      |
+| `retry_on_statuses`  | `[Grphp\Client\Error::CODE_UNAVAILABLE]`                                                    | An array of gRPC error status codes that should be retried on. |
+| `delay_milliseconds` | `200`                                                                                       | The initial delay in milliseconds before a retry.              |
+| `backoff_func`       | `function (int $attempt, int $delayMilliseconds) { /* exponential backoff with jitter */ }` | A callback defining the backoff behaviour.                     |
 
 
 ## Error Handling

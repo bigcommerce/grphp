@@ -51,7 +51,8 @@ class Retry extends Base
         $this->delayMilliseconds = $options['delay_milliseconds'] ?? self::DEFAULT_DELAY_MS;
         $this->retryOnStatuses = $options['retry_on_statuses'] ?? [Status::CODE_UNAVAILABLE];
         $this->backoffFunc = $options['backoff_func'] ?? function (int $attempt, int $delayMilliseconds) {
-            usleep(pow(2, $attempt) * $delayMilliseconds * 1000);
+            $delay = pow(2, $attempt) * $delayMilliseconds;
+            usleep(rand((int)($delay / 2), $delay) * 1000);
         };
     }
 
