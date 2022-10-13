@@ -16,7 +16,6 @@ jobs:
     steps:
       - ci/pre-setup
       - php/install-extensions:
-          composer_version: ''
           additional_apt_packages: ''
           additional_php_extensions: ''
           additional_pecl_extensions: 'grpc'
@@ -34,7 +33,6 @@ jobs:
     steps:
       - ci/pre-setup
       - php/install-extensions:
-          composer_version: ''
           additional_apt_packages: ''
           additional_php_extensions: ''
           additional_pecl_extensions: ''
@@ -51,7 +49,6 @@ jobs:
     steps:
       - ci/pre-setup
       - php/install-extensions:
-          composer_version: ''
           additional_apt_packages: ''
           additional_php_extensions: ''
           additional_pecl_extensions: ''
