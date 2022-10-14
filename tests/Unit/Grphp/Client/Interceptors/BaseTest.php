@@ -102,6 +102,19 @@ class BaseTest extends TestCase
         $this->assertEquals('grphp.test.Things/GetThing', $interceptor->getFullyQualifiedMethodName());
     }
 
+    public function testGetServiceName(): void
+    {
+        $requestMessage = new GetThingReq();
+        $requestMessage->setId(1);
+        $client = new ThingsClient('127.0.0.1:9000', [ 'credentials' => null ]);
+        $method = 'getThing';
+
+        $interceptor = new TestInterceptor();
+        $interceptor->setMethod($method);
+        $interceptor->setStub($client);
+        $this->assertEquals('grphp.test.Things', $interceptor->getServiceName());
+    }
+
     // When then stub is not set for some wild reason
     public function testGetFullyQualifiedMethodNameWhenNoStub(): void
     {
