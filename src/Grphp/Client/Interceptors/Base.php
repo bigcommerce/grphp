@@ -73,7 +73,7 @@ abstract class Base
     }
 
     /**
-     * Gets the fully qualified method name, e.g. grphp.catalog.products/GetProduct
+     * Gets the fully qualified method name, e.g. grphp.test.Things/GetThing
      *
      * @return string
      * @throws StubNotFoundException
@@ -87,6 +87,24 @@ abstract class Base
         }
 
         return $stub->getServiceName() . '/' . ucfirst($methodName);
+    }
+
+    /**
+     * Gets the fully qualified service name, e.g. grphp.test.Things
+     *
+     * @return string
+     * @throws StubNotFoundException
+     */
+    public function getServiceName(): string
+    {
+        $stub = $this->getStub();
+
+        if (empty($stub)) {
+            $method = $this->getMethod();
+            throw new StubNotFoundException("Stub not found for $method");
+        }
+
+        return $stub->getServiceName();
     }
 
     /**
