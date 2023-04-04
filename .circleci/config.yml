@@ -5,23 +5,6 @@ orbs:
   php: bigcommerce/internal-php@volatile
 
 jobs:
-  tests-unit:
-    parameters:
-      php-version:
-        type: string
-        default: "8.0"
-    executor:
-      name: php/php
-      php-version: << parameters.php-version >>
-    steps:
-      - ci/pre-setup
-      - php/install-extensions:
-          additional_apt_packages: ''
-          additional_php_extensions: ''
-          additional_pecl_extensions: 'grpc'
-      - php/composer-install
-      - php/unit-phpunit:
-          configuration: 'phpunit.xml.dist'
   codesniffer:
     parameters:
       php-version:
@@ -59,15 +42,17 @@ workflows:
   version: 2
   full:
     jobs:
-      - tests-unit:
+      - php/phpunit-tests:
+          configuration: "phpunit.xml.dist"
+          pecl_extensions: "grpc"
           matrix:
             parameters:
-              php-version: [ "8.0" ]
+              php-version: [ "8.0", "8.1", "8.2" ]
       - codesniffer:
           matrix:
             parameters:
-              php-version: [ "8.0" ]
+              php-version: [ "8.0", "8.1", "8.2" ]
       - cs-fixer:
           matrix:
             parameters:
-              php-version: [ "8.0" ]
+              php-version: [ "8.0", "8.1", "8.2" ]
