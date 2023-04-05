@@ -32,7 +32,7 @@ class Config
 {
     /** @var string $hostname */
     public $hostname;
-    /** @var string $authentication */
+    /** @var string|null $authentication */
     public $authentication;
     /** @var array $authenticationOptions */
     public $authenticationOptions;

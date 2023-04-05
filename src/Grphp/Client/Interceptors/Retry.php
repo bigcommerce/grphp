@@ -74,5 +74,6 @@ class Retry extends Base
                 call_user_func($this->backoffFunc, $attempt, $this->delayMilliseconds);
             }
         }
+        throw new \RuntimeException('Unable to create a Response');
     }
 }

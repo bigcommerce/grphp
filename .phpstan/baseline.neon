@@ -1,0 +1,386 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Method Grphp\\\\Authentication\\\\Base\\:\\:__construct\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Authentication/Base.php
+
+		-
+			message: "#^Property Grphp\\\\Authentication\\\\Base\\:\\:\\$options type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Authentication/Base.php
+
+		-
+			message: "#^Method Grphp\\\\Authentication\\\\Basic\\:\\:getMetadata\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Authentication/Basic.php
+
+		-
+			message: "#^Elseif condition is always false\\.$#"
+			count: 1
+			path: ../src/Grphp/Authentication/Builder.php
+
+		-
+			message: "#^Method Grphp\\\\Authentication\\\\Iface\\:\\:getMetadata\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Authentication/Iface.php
+
+		-
+			message: "#^Anonymous function has an unused use \\$interceptors\\.$#"
+			count: 1
+			path: ../src/Grphp/Client.php
+
+		-
+			message: "#^If condition is always true\\.$#"
+			count: 1
+			path: ../src/Grphp/Client.php
+
+		-
+			message: "#^Method Grphp\\\\Client\\:\\:addInterceptor\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: ../src/Grphp/Client.php
+
+		-
+			message: "#^Method Grphp\\\\Client\\:\\:buildAuthenticationMetadata\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client.php
+
+		-
+			message: "#^Method Grphp\\\\Client\\:\\:call\\(\\) has parameter \\$metadata with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client.php
+
+		-
+			message: "#^Method Grphp\\\\Client\\:\\:call\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client.php
+
+		-
+			message: "#^Method Grphp\\\\Client\\:\\:intercept\\(\\) has parameter \\$interceptors with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client.php
+
+		-
+			message: "#^Method Grphp\\\\Client\\:\\:intercept\\(\\) has parameter \\$metadata with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client.php
+
+		-
+			message: "#^Method Grphp\\\\Client\\:\\:intercept\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client.php
+
+		-
+			message: "#^PHPDoc tag @param for parameter \\$config with type Grphp\\\\Client\\\\Config\\|null is not subtype of native type Grphp\\\\Client\\\\Config\\.$#"
+			count: 1
+			path: ../src/Grphp/Client.php
+
+		-
+			message: "#^Method Grphp\\\\Client\\\\Config\\:\\:__construct\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Config.php
+
+		-
+			message: "#^Property Grphp\\\\Client\\\\Config\\:\\:\\$authenticationOptions type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Config.php
+
+		-
+			message: "#^Property Grphp\\\\Client\\\\Config\\:\\:\\$errorSerializerOptions type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Config.php
+
+		-
+			message: "#^Property Grphp\\\\Client\\\\Config\\:\\:\\$interceptorOptions type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Config.php
+
+		-
+			message: "#^Instanceof between string and Grphp\\\\Serializers\\\\Errors\\\\Base will always evaluate to false\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Error.php
+
+		-
+			message: "#^Method Grphp\\\\Client\\\\Error\\:\\:getStatusMetadata\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Error.php
+
+		-
+			message: "#^Method Grphp\\\\Client\\\\HeaderCollection\\:\\:compress\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/HeaderCollection.php
+
+		-
+			message: "#^Method Grphp\\\\Client\\\\HeaderCollection\\:\\:fromRequest\\(\\) should return static\\(Grphp\\\\Client\\\\HeaderCollection\\) but returns Grphp\\\\Client\\\\HeaderCollection\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/HeaderCollection.php
+
+		-
+			message: "#^Method Grphp\\\\Client\\\\HeaderCollection\\:\\:toArray\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/HeaderCollection.php
+
+		-
+			message: "#^Call to an undefined method Grpc\\\\BaseStub\\:\\:getExpectedResponseMessages\\(\\)\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Interceptors/Base.php
+
+		-
+			message: "#^Call to an undefined method Grpc\\\\BaseStub\\:\\:getServiceName\\(\\)\\.$#"
+			count: 2
+			path: ../src/Grphp/Client/Interceptors/Base.php
+
+		-
+			message: "#^Method Grphp\\\\Client\\\\Interceptors\\\\Base\\:\\:__construct\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Interceptors/Base.php
+
+		-
+			message: "#^Method Grphp\\\\Client\\\\Interceptors\\\\Base\\:\\:getMetadata\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Interceptors/Base.php
+
+		-
+			message: "#^Method Grphp\\\\Client\\\\Interceptors\\\\Base\\:\\:getOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Interceptors/Base.php
+
+		-
+			message: "#^Method Grphp\\\\Client\\\\Interceptors\\\\Base\\:\\:setMetadata\\(\\) has parameter \\$metadata with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Interceptors/Base.php
+
+		-
+			message: "#^Method Grphp\\\\Client\\\\Interceptors\\\\Base\\:\\:setOptions\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Interceptors/Base.php
+
+		-
+			message: "#^Method Grphp\\\\Client\\\\Interceptors\\\\Base\\:\\:setStub\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Interceptors/Base.php
+
+		-
+			message: "#^Property Grphp\\\\Client\\\\Interceptors\\\\Base\\:\\:\\$metadata type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Interceptors/Base.php
+
+		-
+			message: "#^Property Grphp\\\\Client\\\\Interceptors\\\\Base\\:\\:\\$options type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Interceptors/Base.php
+
+		-
+			message: "#^Default value of the parameter \\#1 \\$options \\(array\\{\\}\\) of method Grphp\\\\Client\\\\Interceptors\\\\Retry\\:\\:__construct\\(\\) is incompatible with type array\\{max_retries\\: int, delay_milliseconds\\: int, retry_on_statuses\\: array\\<string\\>, backoff_func\\: Closure\\}\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Interceptors/Retry.php
+
+		-
+			message: "#^Offset 'backoff_func' on array\\{max_retries\\: int, delay_milliseconds\\: int, retry_on_statuses\\: array\\<string\\>, backoff_func\\: Closure\\} on left side of \\?\\? always exists and is not nullable\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Interceptors/Retry.php
+
+		-
+			message: "#^Offset 'delay_milliseconds' on array\\{max_retries\\: int, delay_milliseconds\\: int, retry_on_statuses\\: array\\<string\\>, backoff_func\\: Closure\\} on left side of \\?\\? always exists and is not nullable\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Interceptors/Retry.php
+
+		-
+			message: "#^Offset 'max_retries' on array\\{max_retries\\: int, delay_milliseconds\\: int, retry_on_statuses\\: array\\<string\\>, backoff_func\\: Closure\\} on left side of \\?\\? always exists and is not nullable\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Interceptors/Retry.php
+
+		-
+			message: "#^Offset 'retry_on_statuses' on array\\{max_retries\\: int, delay_milliseconds\\: int, retry_on_statuses\\: array\\<string\\>, backoff_func\\: Closure\\} on left side of \\?\\? always exists and is not nullable\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Interceptors/Retry.php
+
+		-
+			message: "#^Method Grphp\\\\Client\\\\Request\\:\\:__construct\\(\\) has parameter \\$metadata with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Request.php
+
+		-
+			message: "#^Method Grphp\\\\Client\\\\Request\\:\\:__construct\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Request.php
+
+		-
+			message: "#^Method Grphp\\\\Client\\\\Request\\:\\:fail\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Request.php
+
+		-
+			message: "#^Method Grphp\\\\Client\\\\Request\\:\\:getMetadata\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Request.php
+
+		-
+			message: "#^Method Grphp\\\\Client\\\\Request\\:\\:getOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Request.php
+
+		-
+			message: "#^Property Grphp\\\\Client\\\\Request\\:\\:\\$metadata type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Request.php
+
+		-
+			message: "#^Property Grphp\\\\Client\\\\Request\\:\\:\\$options type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Request.php
+
+		-
+			message: "#^Method Grphp\\\\Client\\\\Response\\:\\:getMetadata\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Response.php
+
+		-
+			message: "#^PHPDoc tag @param for parameter \\$contentType with type string\\|null is not subtype of native type string\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Strategy/Envoy/Config.php
+
+		-
+			message: "#^PHPDoc tag @param for parameter \\$host with type string\\|null is not subtype of native type string\\.$#"
+			count: 2
+			path: ../src/Grphp/Client/Strategy/Envoy/Config.php
+
+		-
+			message: "#^PHPDoc tag @param for parameter \\$port with type int\\|null is not subtype of native type int\\.$#"
+			count: 2
+			path: ../src/Grphp/Client/Strategy/Envoy/Config.php
+
+		-
+			message: "#^PHPDoc tag @param for parameter \\$timeout with type int\\|null is not subtype of native type int\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Strategy/Envoy/Config.php
+
+		-
+			message: "#^PHPDoc tag @param for parameter \\$userAgent with type string\\|null is not subtype of native type string\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Strategy/Envoy/Config.php
+
+		-
+			message: "#^Method Grphp\\\\Client\\\\Strategy\\\\Envoy\\\\RequestExecutor\\:\\:getCurlOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Strategy/Envoy/RequestExecutor.php
+
+		-
+			message: "#^Unsafe access to private constant Grphp\\\\Client\\\\Strategy\\\\Envoy\\\\RequestExecutor\\:\\:COMPRESSED_EMPTY_GRPC_MESSAGE through static\\:\\:\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Strategy/Envoy/RequestExecutor.php
+
+		-
+			message: "#^Unsafe access to private constant Grphp\\\\Client\\\\Strategy\\\\Envoy\\\\RequestExecutor\\:\\:UNCOMPRESSED_EMPTY_GRPC_MESSAGE through static\\:\\:\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Strategy/Envoy/RequestExecutor.php
+
+		-
+			message: "#^Variable \\$vs in empty\\(\\) always exists and is not falsy\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Strategy/Envoy/RequestExecutor.php
+
+		-
+			message: "#^Method Grphp\\\\Client\\\\Strategy\\\\Envoy\\\\Response\\:\\:getHeaders\\(\\) should return Grphp\\\\Client\\\\HeaderCollection but returns array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Strategy/Envoy/Response.php
+
+		-
+			message: "#^Property Grphp\\\\Client\\\\Strategy\\\\Envoy\\\\Response\\:\\:\\$headers \\(array\\) does not accept Grphp\\\\Client\\\\HeaderCollection\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Strategy/Envoy/Response.php
+
+		-
+			message: "#^Property Grphp\\\\Client\\\\Strategy\\\\Envoy\\\\Response\\:\\:\\$headers type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Strategy/Envoy/Response.php
+
+		-
+			message: "#^Parameter \\#2 \\$response of method Grphp\\\\Client\\\\Strategy\\\\Envoy\\\\Strategy\\:\\:handleSuccess\\(\\) expects Grphp\\\\Client\\\\Strategy\\\\Envoy\\\\Response, null given\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Strategy/Envoy/Strategy.php
+
+		-
+			message: "#^Property Grphp\\\\Client\\\\Strategy\\\\Grpc\\\\Strategy\\:\\:\\$config is never read, only written\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Strategy/Grpc/Strategy.php
+
+		-
+			message: "#^Method Grphp\\\\Client\\\\Strategy\\\\H2Proxy\\\\RequestExecutor\\:\\:getCurlOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Strategy/H2Proxy/RequestExecutor.php
+
+		-
+			message: "#^PHPDoc tag @param references unknown parameter\\: \\$headerSize$#"
+			count: 1
+			path: ../src/Grphp/Client/Strategy/H2Proxy/RequestExecutor.php
+
+		-
+			message: "#^PHPDoc tag @param references unknown parameter\\: \\$response$#"
+			count: 1
+			path: ../src/Grphp/Client/Strategy/H2Proxy/RequestExecutor.php
+
+		-
+			message: "#^Unsafe access to private constant Grphp\\\\Client\\\\Strategy\\\\H2Proxy\\\\RequestExecutor\\:\\:COMPRESSED_EMPTY_GRPC_MESSAGE through static\\:\\:\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Strategy/H2Proxy/RequestExecutor.php
+
+		-
+			message: "#^Unsafe access to private constant Grphp\\\\Client\\\\Strategy\\\\H2Proxy\\\\RequestExecutor\\:\\:UNCOMPRESSED_EMPTY_GRPC_MESSAGE through static\\:\\:\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Strategy/H2Proxy/RequestExecutor.php
+
+		-
+			message: "#^Variable \\$vs in empty\\(\\) always exists and is not falsy\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Strategy/H2Proxy/RequestExecutor.php
+
+		-
+			message: "#^Method Grphp\\\\Client\\\\Strategy\\\\H2Proxy\\\\Response\\:\\:getHeaders\\(\\) should return Grphp\\\\Client\\\\HeaderCollection but returns array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Strategy/H2Proxy/Response.php
+
+		-
+			message: "#^Property Grphp\\\\Client\\\\Strategy\\\\H2Proxy\\\\Response\\:\\:\\$headers \\(array\\) does not accept Grphp\\\\Client\\\\HeaderCollection\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Strategy/H2Proxy/Response.php
+
+		-
+			message: "#^Property Grphp\\\\Client\\\\Strategy\\\\H2Proxy\\\\Response\\:\\:\\$headers type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Client/Strategy/H2Proxy/Response.php
+
+		-
+			message: "#^PHPDoc tag @throws with type Google\\\\Protobuf\\\\Internal\\\\Exception\\|Grphp\\\\Client\\\\Error\\|Grphp\\\\Protobuf\\\\SerializationException is not subtype of Throwable$#"
+			count: 1
+			path: ../src/Grphp/Client/Strategy/H2Proxy/Strategy.php
+
+		-
+			message: "#^PHPDoc tag @throws with type Google\\\\Protobuf\\\\Internal\\\\Exception\\|Grphp\\\\Protobuf\\\\SerializationException is not subtype of Throwable$#"
+			count: 1
+			path: ../src/Grphp/Client/Strategy/H2Proxy/Strategy.php
+
+		-
+			message: "#^PHPDoc tag @throws with type Google\\\\Protobuf\\\\Internal\\\\Exception\\|Grphp\\\\Protobuf\\\\SerializationException is not subtype of Throwable$#"
+			count: 1
+			path: ../src/Grphp/Protobuf/Serializer.php
+
+		-
+			message: "#^Method Grphp\\\\Serializers\\\\Errors\\\\Base\\:\\:__construct\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Serializers/Errors/Base.php
+
+		-
+			message: "#^Property Grphp\\\\Serializers\\\\Errors\\\\Base\\:\\:\\$options type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Serializers/Errors/Base.php
+
+		-
+			message: "#^Method Grphp\\\\Serializers\\\\Errors\\\\Json\\:\\:deserialize\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: ../src/Grphp/Serializers/Errors/Json.php
+
+		-
+			message: "#^Method Grpc\\\\Timeval\\:\\:infFuture\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: ../src/Grphp/grpc.stubs.php

@@ -4,6 +4,10 @@ orbs:
   ci: bigcommerce/internal@volatile
   php: bigcommerce/internal-php@volatile
 
+php_matrix: &php_matrix
+  matrix:
+    parameters:
+      php-version: [ "8.0", "8.1", "8.2" ]
 jobs:
   codesniffer:
     parameters:
@@ -42,17 +46,13 @@ workflows:
   version: 2
   full:
     jobs:
+      - php/static-analysis:
+          <<: *php_matrix
       - php/phpunit-tests:
           configuration: "phpunit.xml.dist"
           pecl_extensions: "grpc"
-          matrix:
-            parameters:
-              php-version: [ "8.0", "8.1", "8.2" ]
+          <<: *php_matrix
       - codesniffer:
-          matrix:
-            parameters:
-              php-version: [ "8.0", "8.1", "8.2" ]
+          <<: *php_matrix
       - cs-fixer:
-          matrix:
-            parameters:
-              php-version: [ "8.0", "8.1", "8.2" ]
+          <<: *php_matrix
