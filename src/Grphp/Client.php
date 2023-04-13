@@ -21,10 +21,12 @@ namespace Grphp;
 
 use Google\Protobuf\Internal\Message;
 use Grpc\BaseStub;
+use Grpc\ChannelCredentials;
+use Grphp\Authentication\Builder as AuthBuilder;
 use Grphp\Client\Config;
-use Grphp\Client\Interceptors\Base as BaseInterceptor;
-use Grphp\Client\Interceptors\Timer as TimerInterceptor;
+use Grphp\Client\Interceptors\Base as Interceptor;
 use Grphp\Client\Interceptors\LinkerD\ContextPropagation as LinkerDContextInterceptor;
+use Grphp\Client\Interceptors\Timer as TimerInterceptor;
 use Grphp\Client\Request;
 use Grphp\Client\Response;
 use Grphp\Client\Strategy\Grpc\Strategy as GrpcStrategy;
@@ -41,22 +43,13 @@ class Client
 {
     /** @var BaseStub $client */
     protected $client;
-    /** @var Config $config */
-    protected Config $config;
-    /** @var array<BaseInterceptor> $interceptors */
+    /** @var array<Interceptor> $interceptors */
     protected array $interceptors = [];
-    /** @var string */
-    private string $clientClassName;
 
-    /**
-     * @param string $clientClassName
-     * @param Client\Config|null $config
-     */
-    public function __construct(string $clientClassName, Config $config)
-    {
-        $this->clientClassName = $clientClassName;
-        $this->config = $config;
-
+    public function __construct(
+        private string $clientClassName,
+        private Config $config
+    ) {
         if ($this->config->useDefaultInterceptors) {
             $this->addInterceptor(new TimerInterceptor());
             $this->addInterceptor(new LinkerDContextInterceptor());
@@ -66,40 +59,30 @@ class Client
 
     /**
      * Issue the call to the server, wrapping with the given interceptors
-     *
-     * @param Message $request
-     * @param string $method
-     * @param array $metadata
-     * @param array $options
-     * @return Response
      */
     public function call(Message $request, string $method, array $metadata = [], array $options = []): Response
     {
         $metadata = array_merge($this->buildAuthenticationMetadata(), $metadata);
 
-        $interceptors = $this->interceptors;
-        return $this->intercept($interceptors, $request, $method, $metadata, $options, function () use (
-            &$interceptors,
-            &$request,
-            &$method,
-            &$metadata,
-            &$options
-        ) {
-            $strategy = $this->config->getStrategy();
-            $request = new Request($this->config, $method, $request, $this->getClient(), $metadata, $options);
-            return $strategy->execute($request);
-        });
+        return $this->intercept($this->interceptors, $request, $method, $metadata, $options, fn () =>
+            $this->config->getStrategy()->execute(new Request(
+                $this->config,
+                $method,
+                $request,
+                $this->getClient(),
+                $metadata,
+                $options
+            )));
     }
 
     /**
      * Lazy-load/instantiate client instance and appropriate channel credentials
-     * @return \Grpc\BaseStub
      */
-    protected function getClient()
+    protected function getClient(): BaseStub
     {
         if ($this->client === null) {
             $this->client = new $this->clientClassName($this->config->hostname, [
-                'credentials' => \Grpc\ChannelCredentials::createInsecure(),
+                'credentials' => ChannelCredentials::createInsecure(),
             ]);
         }
 
@@ -108,17 +91,14 @@ class Client
 
     /**
      * Add an interceptor to the client interceptor registry
-     *
-     * @param BaseInterceptor $interceptor
-     * @throws \InvalidArgumentException if the interceptor does not extend \Grphp\Interceptors\Base
      */
-    public function addInterceptor(BaseInterceptor $interceptor)
+    public function addInterceptor(Interceptor $interceptor): void
     {
         $this->interceptors[] = $interceptor;
     }
 
     /**
-     * @return array<BaseInterceptor> An array of all interceptor objects assigned to this client
+     * @return array<Interceptor> An array of all interceptor objects assigned to this client
      */
     public function getInterceptors(): array
     {
@@ -127,68 +107,49 @@ class Client
 
     /**
      * Clears all interceptors on the client
-     *
-     * @return void
      */
-    public function clearInterceptors()
+    public function clearInterceptors(): void
     {
         $this->interceptors = [];
     }
 
-    /**
-     * @return array
-     */
     private function buildAuthenticationMetadata(): array
     {
-        $authentication = Authentication\Builder::fromClientConfig($this->config);
+        $authentication = AuthBuilder::fromClientConfig($this->config);
         if ($authentication) {
             return $authentication->getMetadata();
-        } else {
-            return [];
         }
+
+        return [];
     }
 
     /**
      * Intercept the call with the registered interceptors for the client
      *
-     * @param array $interceptors
-     * @param \Google\Protobuf\Internal\Message $request
-     * @param string $method
-     * @param array $metadata
-     * @param array $options
-     * @param callable $callback
-     * @return mixed
+     * @param array<Interceptor> $interceptors
+     * @param callable(): Response $callback
      */
-    private function intercept(array &$interceptors, &$request, &$method, &$metadata, &$options, callable $callback)
-    {
-        /** @var Client\Interceptors\Base $i */
+    private function intercept(
+        array $interceptors,
+        Message $request,
+        string $method,
+        array $metadata,
+        array $options,
+        callable $callback
+    ): Response {
         $i = array_shift($interceptors);
-        if ($i) {
-            $i->setRequest($request);
-            $i->setMethod($method);
-            $i->setMetadata($metadata);
-            $client = $this->getClient();
-            $i->setStub($client);
-            return $i->call(function () use (
-                &$i,
-                &$interceptors,
-                &$method,
-                &$request,
-                &$metadata,
-                &$options,
-                &$callback
-            ) {
-                $metadata = $i->getMetadata();
-                $request = $i->getRequest();
-                if (count($interceptors) > 0) {
-                    return $this->intercept($interceptors, $request, $method, $metadata, $options, $callback);
-                } else {
-                    return $callback();
-                }
-            });
-        } else {
+        if (!$i) {
             return $callback();
         }
+
+        $i->setRequest($request);
+        $i->setMethod($method);
+        $i->setMetadata($metadata);
+        $client = $this->getClient();
+        $i->setStub($client);
+
+        return $i->call(fn () =>
+            $this->intercept($interceptors, $i->getRequest(), $method, $i->getMetadata(), $options, $callback));
     }
 
     /**

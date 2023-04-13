@@ -17,7 +17,12 @@
  */
 namespace Grphp\Test;
 
-class ThingsClient extends \Grpc\BaseStub
+use Exception;
+use Grpc\AbstractCall;
+use Grpc\BaseStub;
+use Grpc\Channel;
+
+class ThingsClient extends BaseStub
 {
     public function getExpectedResponseMessages(): array
     {
@@ -36,36 +41,37 @@ class ThingsClient extends \Grpc\BaseStub
     /**
      * @param string $hostname hostname
      * @param array $opts channel options
-     * @param \Grpc\Channel $channel (optional) re-use channel object
-     * @throws \Exception
+     * @param Channel $channel (optional) re-use channel object
+     * @throws Exception
      */
     public function __construct($hostname, $opts, $channel = null)
     {
         parent::__construct($hostname, $opts, $channel);
-        $this->channel = new \Grpc\Channel($hostname, $opts);
+        $this->channel = new Channel($hostname, $opts);
     }
 
     /**
-     * @param \Grphp\Test\GetThingReq $argument input argument
+     * @param GetThingReq $argument input argument
      * @param array $metadata metadata
      * @param array $options call options
      * @return StubbedCall
      */
     public function GetThing(
-        \Grphp\Test\GetThingReq $argument,
+        GetThingReq $argument,
         $metadata = [],
         $options = []
-    ) {
+    ): AbstractCall {
         $thing = new Thing();
         $thing->setId($argument->getId());
         $thing->setName('Foo');
         $resp = new GetThingResp();
         $resp->setThing($thing);
+
         return new StubbedCall(
             $resp,
             $this->channel,
             '/grphp.test.Things/GetThing',
-            ['\Grphp\Test\GetThingResp', 'decode'],
+            [GetThingResp::class, 'decode'],
             $options
         );
     }

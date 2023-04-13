@@ -18,18 +18,28 @@
 namespace Grphp\Test;
 
 use Grphp\Client\Interceptors\Base;
+use Grphp\Client\Response;
 
 class TestInterceptor extends Base
 {
-    public function call(callable $callback)
+    private bool $hasBeenCalled = false;
+
+    public function call(callable $callback): Response
     {
+        $this->hasBeenCalled = true;
+
         return $callback();
+    }
+
+    public function hasBeenCalled(): bool
+    {
+        return $this->hasBeenCalled;
     }
 }
 
 class TestMetadataSetInterceptor extends Base
 {
-    public function call(callable $callback)
+    public function call(callable $callback): Response
     {
         $md = $this->getMetadata();
         $md['test'] = 'one';
