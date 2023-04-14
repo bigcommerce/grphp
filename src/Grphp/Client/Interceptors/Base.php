@@ -53,7 +53,7 @@ abstract class Base
      * @param callable $callback
      * @return Response
      */
-    abstract public function call(callable $callback);
+    abstract public function call(callable $callback): Response;
 
     /**
      * @return Message
@@ -67,7 +67,7 @@ abstract class Base
      * @param Message $request
      * @return void
      */
-    public function setRequest(&$request)
+    public function setRequest($request): void
     {
         $this->request = $request;
     }
@@ -143,7 +143,7 @@ abstract class Base
      * @param string $method
      * @return void
      */
-    public function setMethod(string &$method): void
+    public function setMethod(string $method): void
     {
         $this->method = $method;
     }
@@ -160,7 +160,7 @@ abstract class Base
      * @param array $metadata
      * @return void
      */
-    public function setMetadata(array &$metadata = []): void
+    public function setMetadata(array $metadata = []): void
     {
         $this->metadata = $metadata;
     }
@@ -177,7 +177,7 @@ abstract class Base
      * @param array $options
      * @return void
      */
-    public function setOptions(array &$options = []): void
+    public function setOptions(array $options = []): void
     {
         $this->options = $options;
     }
@@ -203,7 +203,7 @@ abstract class Base
     /**
      * @param BaseStub $stub
      */
-    public function setStub(BaseStub &$stub)
+    public function setStub(BaseStub $stub): void
     {
         $this->stub = $stub;
     }

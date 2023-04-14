@@ -35,12 +35,12 @@ final class ClientTest extends TestCase
     /** @var Client $client */
     protected $client;
 
-    private static function createClientConfig(array $options = []): Config
+    private function createClientConfig(array $options = []): Config
     {
         return new Config(['hostname' => '0.0.0.0:9000'] + $options);
     }
 
-    private static function createClient(Config $clientConfig): Client
+    private function createClient(Config $clientConfig): Client
     {
         return new Client(ThingsClient::class, $clientConfig);
     }
@@ -49,7 +49,7 @@ final class ClientTest extends TestCase
     {
         parent::setUp();
 
-        $this->client = static::createClient(static::createClientConfig());
+        $this->client = $this->createClient($this->createClientConfig());
     }
 
     public function testClearInterceptors()
@@ -58,7 +58,7 @@ final class ClientTest extends TestCase
 
         $this->client->addInterceptor($interceptorProphecy->reveal());
         $this->client->clearInterceptors();
-        static::assertCount(0, $this->client->getInterceptors());
+        $this->assertCount(0, $this->client->getInterceptors());
     }
 
     public function testAddInterceptor()
@@ -67,7 +67,7 @@ final class ClientTest extends TestCase
         $interceptorMock = $interceptorProphecy->reveal();
 
         $this->client->addInterceptor($interceptorMock);
-        static::assertContains($interceptorMock, $this->client->getInterceptors());
+        $this->assertContains($interceptorMock, $this->client->getInterceptors());
     }
 
     /**
@@ -81,7 +81,7 @@ final class ClientTest extends TestCase
         $this->client->addInterceptor($this->prophesize(BaseInterceptor::class)->reveal());
         $this->client->addInterceptor($this->prophesize(BaseInterceptor::class)->reveal());
 
-        static::assertCount(2, $this->client->getInterceptors());
+        $this->assertCount(2, $this->client->getInterceptors());
     }
 
     /**
@@ -99,11 +99,11 @@ final class ClientTest extends TestCase
         $req = new GetThingReq();
         $req->setId($id);
         $resp = $this->client->call($req, 'GetThing', [], $opts);
-        static::assertInstanceOf(Response::class, $resp);
-        static::assertEquals($isSuccess, $resp->isSuccess());
-        static::assertEquals($opts['response_code'], $resp->getStatusCode());
-        static::assertEquals($opts['response_details'], $resp->getStatusDetails());
-        static::assertEquals($opts['response_metadata'], $resp->getStatus()->getHeaders()->toArray());
+        $this->assertInstanceOf(Response::class, $resp);
+        $this->assertEquals($isSuccess, $resp->isSuccess());
+        $this->assertEquals($opts['response_code'], $resp->getStatusCode());
+        $this->assertEquals($opts['response_details'], $resp->getStatusDetails());
+        $this->assertEquals($opts['response_metadata'], $resp->getStatus()->getHeaders()->toArray());
 
         /** @var GetThingResp $message */
         $message = $resp->getResponse();
@@ -111,9 +111,9 @@ final class ClientTest extends TestCase
 
         /** @var Thing $thing */
         $thing = $message->getThing();
-        static::assertInstanceOf(Thing::class, $thing);
-        static::assertEquals($id, $thing->getId());
-        static::assertEquals('Foo', $thing->getName());
+        $this->assertInstanceOf(Thing::class, $thing);
+        $this->assertEquals($id, $thing->getId());
+        $this->assertEquals('Foo', $thing->getName());
     }
 
     public function providerCall()
@@ -141,9 +141,9 @@ final class ClientTest extends TestCase
             $this->assertEquals(new Config([
                 'hostname' => '0.0.0.0:9000',
             ]), $e->getConfig());
-            static::assertEquals('foo', $e->getDetails());
-            static::assertEquals(9, $e->getStatusCode());
-            static::assertNull($e->getTrailer());
+            $this->assertEquals('foo', $e->getDetails());
+            $this->assertEquals(9, $e->getStatusCode());
+            $this->assertNull($e->getTrailer());
         }
     }
 
@@ -152,8 +152,8 @@ final class ClientTest extends TestCase
      */
     public function testCallWithAuth()
     {
-        $client = static::createClient(
-            static::createClientConfig([
+        $client = $this->createClient(
+            $this->createClientConfig([
                 'authentication' => new Basic([
                     'username' => 'foo',
                     'password' => 'bar',
@@ -164,16 +164,16 @@ final class ClientTest extends TestCase
         $req = new GetThingReq();
         $req->setId(123);
         $resp = $client->call($req, 'GetThing', [], []);
-        static::assertInstanceOf(Response::class, $resp);
-        static::assertEquals(true, $resp->isSuccess());
+        $this->assertInstanceOf(Response::class, $resp);
+        $this->assertEquals(true, $resp->isSuccess());
 
         /** @var GetThingResp $message */
         $message = $resp->getResponse();
-        static::assertInstanceOf(GetThingResp::class, $message);
+        $this->assertInstanceOf(GetThingResp::class, $message);
 
         /** @var Thing $thing */
         $thing = $message->getThing();
-        static::assertInstanceOf(Thing::class, $thing);
+        $this->assertInstanceOf(Thing::class, $thing);
     }
 
     public function testCallInstantiatesClient()
@@ -191,5 +191,42 @@ final class ClientTest extends TestCase
 
         $this->assertEquals(0, $response->getStatusCode());
         $this->assertEquals($expectedResponse, $response->getResponse());
+    }
+
+    public function testInterceptors()
+    {
+        $subject = new Client(
+            ThingsClient::class,
+            $this->createClientConfig(['use_default_interceptors' => false])
+        );
+
+        $interceptor1 = new TestInterceptor();
+        $interceptor2 = new TestInterceptor();
+
+        $subject->addInterceptor($interceptor1);
+        $subject->addInterceptor($interceptor2);
+
+        $opts = [
+            'response_code' => 0,
+            'response_details' => 'OK',
+            'response_metadata' => ['x-metadata-key' => ['x-metadata-value']],
+        ];
+
+        $req = new GetThingReq();
+        $req->setId(345);
+
+        $resp = $subject->call($req, 'GetThing', [], $opts);
+
+        $this->assertInstanceOf(Response::class, $resp);
+        $this->assertEquals(true, $resp->isSuccess());
+        $this->assertEquals(0, $resp->getStatusCode());
+        $this->assertEquals('OK', $resp->getStatusDetails());
+        $this->assertEquals(
+            ['x-metadata-key' => ['x-metadata-value']],
+            $resp->getStatus()->getHeaders()->toArray()
+        );
+
+        $this->assertTrue($interceptor1->hasBeenCalled());
+        $this->assertTrue($interceptor2->hasBeenCalled());
     }
 }

@@ -21,30 +21,36 @@ namespace Unit\Grphp\Client\Interceptors;
 
 use Grphp\Client\Interceptors\ResponseMessageLookupFailedException;
 use Grphp\Client\Interceptors\StubNotFoundException;
+use Grphp\Client\Response;
 use Grphp\Test\GetThingReq;
 use Grphp\Test\TestInterceptor;
 use Grphp\Test\TestMetadataSetInterceptor;
 use Grphp\Test\ThingsClient;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class BaseTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testCall(): void
     {
         $interceptor = new TestInterceptor();
-        $result = $interceptor->call(function () {
-            return 42;
-        });
-        $this->assertSame($result, 42);
+        $expectedResponse = $this->prophesize(Response::class)->reveal();
+
+        $result = $interceptor->call(fn () => $expectedResponse);
+
+        $this->assertSame($expectedResponse, $result);
     }
 
     public function testMetadata(): void
     {
         $interceptor = new TestMetadataSetInterceptor();
-        $result = $interceptor->call(function () {
-            return 1;
-        });
-        $this->assertSame($result, 1);
+
+        $expectedResponse = $this->prophesize(Response::class)->reveal();
+
+        $result = $interceptor->call(fn () => $expectedResponse);
+        $this->assertSame($expectedResponse, $result);
         $md = $interceptor->getMetadata();
         $this->assertArrayHasKey('test', $md);
         $this->assertEquals('one', $md['test']);
