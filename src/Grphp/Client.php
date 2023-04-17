@@ -48,7 +48,7 @@ class Client
 
     public function __construct(
         private string $clientClassName,
-        private Config $config
+        protected Config $config
     ) {
         if ($this->config->useDefaultInterceptors) {
             $this->addInterceptor(new TimerInterceptor());
