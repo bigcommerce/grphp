@@ -2,6 +2,13 @@ Changelog for grphp.
 
 ### Pending Release
 
+### 4.0.0
+
+* Dropped support for PHP 7 as it reached its EOL in November 2022
+* Changed a bunch of method signatures, added return type hints
+  * Most notably added a return type to the `Grphp\Client\Interceptors\Base::call()` abstract method forcing all interceptors to add it as well.
+* Eliminated method arguments that are taken by reference
+
 ### 3.5.1
 
 * Add retry support with the Retry interceptor.
@@ -53,7 +60,7 @@ Changelog for grphp.
 ### 2.1.0
 
 * Originally, this library relied solely upon the deadline gRPC feature, i.e. that the service will terminate request
-  when the deadline is reached. With this release, client will also terminate the connection after the specified 
+  when the deadline is reached. With this release, client will also terminate the connection after the specified
   amount of time if the service wasn't able to respond in time and did not terminate the request for some reason.
 
 ### 2.0.2
@@ -62,7 +69,7 @@ Changelog for grphp.
 
 ### 2.0.1
 
-* Ensure that no null byte or other unprintable characters are included into the exception message as a result of 
+* Ensure that no null byte or other unprintable characters are included into the exception message as a result of
   failed gRPC response with a valid gRPC message.
 
 ### 2.0.0
@@ -73,9 +80,9 @@ Changelog for grphp.
 
 ### 1.0.0
 
-* This release contains an improvement to reporting an error status from gRPC stack by propagating it as part of the 
+* This release contains an improvement to reporting an error status from gRPC stack by propagating it as part of the
   Status attached to the RequestException.
-* A breaking change to the config to require a scheme for a given base URI is introduced in order to fix certain 
+* A breaking change to the config to require a scheme for a given base URI is introduced in order to fix certain
   situations where proxied request is sent to the service without a scheme causing request parsing failures.
 
 ### 0.5.6
@@ -110,7 +117,7 @@ Changelog for grphp.
 extension
 * Adds a new Error\Status class for representing gRPC error statuses
 * Adds a new client request object for encapsulating contextual information about the outgoing request
-* Adds new Header and HeaderCollection classes for representing HTTP headers both outbound and inbound  
+* Adds new Header and HeaderCollection classes for representing HTTP headers both outbound and inbound
 
 ### 0.4.0
 
