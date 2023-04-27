@@ -64,7 +64,12 @@ class Client
     {
         $metadata = array_merge($this->buildAuthenticationMetadata(), $metadata);
 
-        return $this->intercept($this->interceptors, $request, $method, $metadata, $options, fn () =>
+        return $this->intercept($this->interceptors, $request, $method, $metadata, $options, fn (
+            string $method,
+            Message $request,
+            array $metadata,
+            array $options,
+        ) =>
             $this->config->getStrategy()->execute(new Request(
                 $this->config,
                 $method,
@@ -127,7 +132,7 @@ class Client
      * Intercept the call with the registered interceptors for the client
      *
      * @param array<Interceptor> $interceptors
-     * @param callable(): Response $callback
+     * @param callable(string, Message, array, array): Response $callback
      */
     private function intercept(
         array $interceptors,
@@ -139,7 +144,7 @@ class Client
     ): Response {
         $i = array_shift($interceptors);
         if (!$i) {
-            return $callback();
+            return $callback($method, $request, $metadata, $options);
         }
 
         $i->setRequest($request);
