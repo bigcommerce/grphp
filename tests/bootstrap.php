@@ -16,7 +16,7 @@
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 $_ENV['TEST_MODE'] = 1;
-error_reporting(E_ALL | E_STRICT);
+error_reporting(E_ALL);
 date_default_timezone_set('UTC');
 require dirname(__DIR__) . '/tests/Support/Client.php';
 require dirname(__DIR__) . '/tests/Support/TestInterceptors.php';
