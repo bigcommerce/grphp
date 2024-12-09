@@ -93,7 +93,7 @@ class Status
      * @param string $details
      * @param HeaderCollection $headers
      */
-    public function __construct(int $code, string $details, HeaderCollection $headers = null)
+    public function __construct(int $code, string $details, ?HeaderCollection $headers = null)
     {
         $this->code = $code;
         $this->details = $details;

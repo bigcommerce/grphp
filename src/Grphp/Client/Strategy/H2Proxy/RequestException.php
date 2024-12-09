@@ -38,7 +38,7 @@ class RequestException extends Exception
      * @param string $body
      * @param HeaderCollection $headers
      */
-    public function __construct(string $body, HeaderCollection $headers, Throwable $previous = null)
+    public function __construct(string $body, HeaderCollection $headers, ?Throwable $previous = null)
     {
         $this->body = $body;
         $this->headers = $headers;
