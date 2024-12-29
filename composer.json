@@ -4,8 +4,8 @@
   "description": "gRPC PHP Framework",
   "license": "MIT",
   "require": {
-    "php": "^8.0",
-    "google/protobuf": "^3.7",
+    "php": "^8.1",
+    "google/protobuf": "^3.7 || ^4.0",
     "grpc/grpc": "^1.13"
   },
   "require-dev": {

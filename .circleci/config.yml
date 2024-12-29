@@ -45,6 +45,9 @@ workflows:
       - php/phpunit-tests:
           configuration: "phpunit.xml.dist"
           pecl_extensions: "grpc"
+          e:
+            name: php/php
+            php-version: <<matrix.php-version>>
           matrix:
             parameters:
               php-version: [ "8.1", "8.2", "8.3", "8.4" ]
