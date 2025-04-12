@@ -17,6 +17,7 @@
  */
 namespace Grphp\Serializers\Errors;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class JsonTest extends TestCase
@@ -32,16 +33,17 @@ final class JsonTest extends TestCase
     }
 
     /**
-     * @dataProvider providerDeserialize
      * @param string $input
      * @param array $output
      */
+    #[DataProvider('providerDeserialize')]
     public function testDeserialize(string $input, array $output = [])
     {
         $o = $this->serializer->deserialize($input);
         $this->assertEquals($output, $o);
     }
-    public function providerDeserialize()
+
+    public static function providerDeserialize()
     {
         return [
             ['{"foo":123,"bar":"go!"}',['foo' => 123,'bar' => 'go!']],

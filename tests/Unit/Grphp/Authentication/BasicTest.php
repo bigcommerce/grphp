@@ -17,20 +17,19 @@
  */
 namespace Grphp\Authentication;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class BasicTest extends TestCase
 {
-    /**
-     * @dataProvider providerGetMetadata
-     * @param array $options
-     */
+    #[DataProvider('providerGetMetadata')]
     public function testGetMetadata(array $options = [], array $expected = [])
     {
         $auth = new Basic($options);
         $this->assertEquals($expected, $auth->getMetadata());
     }
-    public function providerGetMetadata()
+
+    public static function providerGetMetadata()
     {
         return [
             [ // no options
@@ -39,14 +38,14 @@ final class BasicTest extends TestCase
             ],
             [ // password only
                 ['password' => 'foo'],
-                ['authorization' => [$this->encode('foo')]],
+                ['authorization' => [self::encode('foo')]],
             ],
             [ // username + password
                 [
                     'username' => 'foo',
                     'password' => 'bar',
                 ],
-                ['authorization' => [$this->encode('foo:bar')]],
+                ['authorization' => [self::encode('foo:bar')]],
             ],
             [ // custom metadata key
                 [
@@ -54,16 +53,16 @@ final class BasicTest extends TestCase
                     'password' => 'bar',
                     'metadata_key' => 'baz',
                 ],
-                ['baz' => [$this->encode('foo:bar')]],
+                ['baz' => [self::encode('foo:bar')]],
             ]
         ];
     }
 
-    /**]
+    /**
      * @param string $str
      * @return string
      */
-    private function encode(string $str)
+    private static function encode(string $str)
     {
         $s = base64_encode($str);
         return "Basic $s";

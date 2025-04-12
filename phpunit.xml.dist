@@ -2,21 +2,27 @@
 <phpunit
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   bootstrap="tests/bootstrap.php"
-  convertWarningsToExceptions="true"
-  convertNoticesToExceptions="true"
-  convertErrorsToExceptions="true"
-  backupStaticAttributes="false"
+  displayDetailsOnPhpunitDeprecations="true"
+  displayDetailsOnTestsThatTriggerDeprecations="true"
+  displayDetailsOnTestsThatTriggerNotices="true"
+  displayDetailsOnTestsThatTriggerWarnings="true"
+  displayDetailsOnTestsThatTriggerErrors="true"
+  failOnNotice="true"
+  failOnWarning="true"
+  failOnDeprecation="true"
+  failOnPhpunitDeprecation="true"
   processIsolation="false"
   backupGlobals="false"
   stopOnFailure="false"
   colors="true"
-  failOnWarning="true"
   xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
 >
-  <coverage>
+  <source>
     <include>
       <directory>./src</directory>
     </include>
+  </source>
+  <coverage>
     <report>
       <clover outputFile="coverage/coverage.xml"/>
       <html outputDirectory="coverage" lowUpperBound="35" highLowerBound="70"/>

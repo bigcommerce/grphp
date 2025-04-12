@@ -9,7 +9,7 @@ jobs:
     parameters:
       php-version:
         type: string
-        default: "8.1"
+        default: "8.2"
     executor:
       name: php/php
       php-version: << parameters.php-version >>
@@ -25,7 +25,7 @@ jobs:
     parameters:
       php-version:
         type: string
-        default: "8.1"
+        default: "8.2"
     executor:
       name: php/php
       php-version: << parameters.php-version >>
@@ -50,12 +50,12 @@ workflows:
             php-version: <<matrix.php-version>>
           matrix:
             parameters:
-              php-version: [ "8.1", "8.2", "8.3", "8.4" ]
+              php-version: [ "8.2", "8.3", "8.4" ]
       - codesniffer:
           matrix:
             parameters:
-              php-version: [ "8.1", "8.2", "8.3", "8.4" ]
+              php-version: [ "8.2", "8.3", "8.4" ]
       - cs-fixer:
           matrix:
             parameters:
-              php-version: [ "8.1", "8.2", "8.3" ]
+              php-version: [ "8.2", "8.3" ]
