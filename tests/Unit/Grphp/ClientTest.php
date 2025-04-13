@@ -23,6 +23,8 @@ use Grphp\Client\Config;
 use Grphp\Client\Error;
 use Grphp\Client\Interceptors\Base as BaseInterceptor;
 use Grphp\Client\Response;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 
@@ -70,10 +72,8 @@ final class ClientTest extends TestCase
         $this->assertContains($interceptorMock, $this->client->getInterceptors());
     }
 
-    /**
-     * @depends testClearInterceptors
-     * @depends testAddInterceptor
-     */
+    #[Depends('testClearInterceptors')]
+    #[Depends('testAddInterceptor')]
     public function testGetInterceptors()
     {
         $this->client->clearInterceptors();
@@ -86,9 +86,8 @@ final class ClientTest extends TestCase
 
     /**
      * Test the call method
-     *
-     * @dataProvider providerCall
      */
+    #[DataProvider('providerCall')]
     public function testCall($id, $isSuccess = true, $responseCode = 0, $responseDetails = '', $responseMetadata = [])
     {
         $opts = [
@@ -116,7 +115,7 @@ final class ClientTest extends TestCase
         $this->assertEquals('Foo', $thing->getName());
     }
 
-    public function providerCall()
+    public static function providerCall()
     {
         return [
             [123, true, 0, 'Whoa now', ['one' => ['two']]],

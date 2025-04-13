@@ -91,7 +91,7 @@ class Status
     /**
      * @param int $code
      * @param string $details
-     * @param HeaderCollection $headers
+     * @param ?HeaderCollection $headers
      */
     public function __construct(int $code, string $details, ?HeaderCollection $headers = null)
     {

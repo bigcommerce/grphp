@@ -23,6 +23,7 @@ use Grphp\Client\Error\Status;
 use Grphp\Client\HeaderCollection;
 use Grphp\Client\Response;
 use Grphp\Test\GetThingResp;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Grphp\Client\Interceptors\Base;
 
@@ -42,8 +43,8 @@ final class ContextPropagationTest extends TestCase
      * @param string $incomingKey
      * @param string $metadataKey
      * @param string $value
-     * @dataProvider providerMetadataInServer
      */
+    #[DataProvider('providerMetadataInServer')]
     public function testMetadataInServer($incomingKey, $metadataKey, $value)
     {
         $_SERVER[$incomingKey] = $value;
@@ -51,7 +52,8 @@ final class ContextPropagationTest extends TestCase
         $interceptorMetadata = $this->interceptor->getMetadata();
         $this->assertEquals($value, $interceptorMetadata[$metadataKey][0]);
     }
-    public function providerMetadataInServer()
+
+    public static function providerMetadataInServer()
     {
         $data = [];
         foreach (ContextPropagation::METADATA_KEYS as $k => $v) {
@@ -64,8 +66,8 @@ final class ContextPropagationTest extends TestCase
      * @param string $incomingKey
      * @param string $metadataKey
      * @param string $value
-     * @dataProvider providerMetadataInRequest
      */
+    #[DataProvider('providerMetadataInRequest')]
     public function testMetadataInRequest($incomingKey, $metadataKey, $value)
     {
         $_REQUEST[$incomingKey] = $value;
@@ -73,7 +75,8 @@ final class ContextPropagationTest extends TestCase
         $interceptorMetadata = $this->interceptor->getMetadata();
         $this->assertEquals($value, $interceptorMetadata[$metadataKey][0]);
     }
-    public function providerMetadataInRequest()
+
+    public static function providerMetadataInRequest()
     {
         $data = [];
         foreach (ContextPropagation::METADATA_KEYS as $k => $v) {
@@ -87,8 +90,8 @@ final class ContextPropagationTest extends TestCase
      * @param string $metadataKey
      * @param string $serverValue
      * @param string $requestValue
-     * @dataProvider providerMetadataPrecedence
      */
+    #[DataProvider('providerMetadataPrecedence')]
     public function testMetadataPrecedence($incomingKey, $metadataKey, $serverValue, $requestValue)
     {
         $_SERVER[$incomingKey] = $serverValue;
@@ -97,7 +100,8 @@ final class ContextPropagationTest extends TestCase
         $interceptorMetadata = $this->interceptor->getMetadata();
         $this->assertEquals($requestValue, $interceptorMetadata[$metadataKey][0]);
     }
-    public function providerMetadataPrecedence()
+
+    public static function providerMetadataPrecedence()
     {
         $data = [];
         foreach (ContextPropagation::METADATA_KEYS as $k => $v) {
