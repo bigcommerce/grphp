@@ -83,7 +83,9 @@ class RequestExecutor
 
         $response = curl_exec($ch);
         if (curl_errno($ch)) {
-            throw new RequestException(curl_error($ch), $responseHeaders);
+            $errorMessage = curl_error($ch);
+            curl_close($ch);
+            throw new RequestException($errorMessage, $responseHeaders);
         }
 
         $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
