@@ -2,6 +2,7 @@
   "name": "bigcommerce/grphp",
   "type": "library",
   "description": "gRPC PHP Framework",
+  "homepage": "https://github.com/bigcommerce/grphp",
   "license": "MIT",
   "require": {
     "php": "^8.1",
